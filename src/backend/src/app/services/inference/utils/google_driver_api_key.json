@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "insightface-model-download",
+  "private_key_id": "f4ed7b6b9dcb9e562ddbe3c49de798c08a4707f0",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCYTBO4y13b3w6B\nDbcWgSADv+iFkQ3PeQosi1rkFsEp8cLrE1/g+CuddrCiKwXOuL8NYW+55UvHK0Zu\nGfAxnJ7ATFlCN5etvkmss/i19FGybB5LGV5jOTHWa8PjJUT7KaWwtnM1p95KSQNV\nXDMJ9kSgqQ2xAkFs5flLPC0CBsWL+7yVNO78JXBrSXEhtU/GRMLpaKt++AGvH+jx\nUZ+OLu96i4Ctz1P26IvBEmQe8CvEJsp5UVTW7xt71BwDtUVvAlRkTtx2ldEiXzZB\nNdNirbZRLZEHn8PT1Zodcd4blqqdAt5zcs8uL3UStMmPA0A9cDsH5dk/ntK8IOeo\njLK58p25AgMBAAECggEAPW+3Jv1W/BrzyWjEen4VcZ3JiZQV26Oq0IRY4pkxTB/c\nbyMuMt06Dvfx0kGDwrwxSg8L2JRgqNRSwZiSFhllyxIhkb5GYE7afqJNSu1nxY+q\n+sWdl25bpfFsIKYIuT84OVyohjUVTac9goJCjpq7XYpE3SqZRPpSwiBg0af0qf5/\n+dWcKzumDuUTRgzIAuUxv78Cu1u7y2j3NzaveMkvpYmaYgH9H90piVNnmFvcXmbE\n56m6xe/STPpugaXZKm7gA2AthZ3AsGYddhir+kVp8QPqnqPq1GFsauzKpkuB2Xlj\nk2dYFvW67A0oNDN8QMJOecx4xmY44XOhzDqgcj/TRwKBgQDUr7pPbeyzUVqU8J90\nAyTYU0IqWrrtTQXLuKD1gqOPDDU/fpM7zQSFVy0ounRAkz2Ubgh+Bc1MLeNTAEGw\nk6MyxQGF98Ky47mUAOukNy5HCVJ+98oTZOdUy61bbnNUWl9qhYFBos1D9BlyccO0\n/k3YCrH6SQc5K6z+UyxNOP5fEwKBgQC3T/5YEN6NHZ79yBb57HhSnSdY3FOXdC2U\nvpXxDWlp2IQMHVTrvkm+TEtfDt7ObK3mANcCOuGs8M9b4Mb9WcGsUAJd15VNaQIU\nr3EuxMPIF0p7/GooSg36/NgDAJYiiZ+zOwwEZypNLwJn7Pm+MAmhF2L0clu02s9g\nbv1IQbwNgwKBgFQy8WYqlW90AJFAJVAPQpHlfCc6XhA90tKQ2B/5xPiHk7j8Sht9\nkZGcLoOWNRmvcMyHNxN1Bo5nCDy+uELIX+5kcbLwoAKkBr7iEmejdM2okiEzxash\n4jb+nzW4Jy44zNdl3QL4CZ0iUMSu5xSLLJQfv8/fA14NvWG92acEridDAoGBAJKx\nbAtTbJUm2B2kamaTynHqGxusLSStLvCyV1Ewd2PhhUIgkt2YSHEFoucuAjTUmZDO\nqUC6l/AKQRX4WaVSl37qBArOw0bQOn8NKpjPkxDjOpLfmqAlKuzoO4CjjoGS+n62\nSNaZLCvZ66X46J4+2OXVzjVp8mNXGs7D4uJY4EE7AoGAUgwg6RyMjjmmnumJODvw\nfMxXgdPi0+i+rUIYUHLbQjFWVb4ycJxuBrDGbAPn2mq3q8Yq2YBu/5QGVavLcIQi\nlqtVrJpTQq0xtgNH4gAWvEtkX87JXFGJEg/u8ZLzBN9iH9jDHMdqYlf+h0SUkW23\nGaG3U32b/G8t95R2N1aSi/U=\n-----END PRIVATE KEY-----\n",
+  "client_email": "insightface-models@insightface-model-download.iam.gserviceaccount.com",
+  "client_id": "107514529507073250331",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/insightface-models%40insightface-model-download.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
