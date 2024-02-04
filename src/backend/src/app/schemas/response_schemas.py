@@ -33,3 +33,5 @@ class SystemStats(BaseModel):
             ram_percent=cloud_system_stats.get_ram_usage(),
             net_throughput=cloud_system_stats.get_network_throughput()
         )
+
+
