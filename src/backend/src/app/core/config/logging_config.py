@@ -1,4 +1,3 @@
-# coding=utf-8
 """
 config stream handler and websocket handler for root logger
 """
@@ -9,7 +8,7 @@ from multiprocessing import Queue
 
 log_queue = asyncio.Queue()
 
-log_format = logging.Formatter('%(asctime)s : %(levelname)s - %(message)s')
+log_format = logging.Formatter("%(asctime)s : %(levelname)s - %(message)s")
 
 
 class WebSocketHandler(logging.Handler):
@@ -44,10 +43,7 @@ sub_process_msg_queue = Queue()
 
 # listener for sub process logs ,msg handled by handlers
 queue_listener = QueueListener(
-    sub_process_msg_queue,
-    ws_handler,
-    stream_handler,
-    respect_handler_level=True
+    sub_process_msg_queue, ws_handler, stream_handler, respect_handler_level=True
 )
 
 logger = logging.getLogger(__name__)

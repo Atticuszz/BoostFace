@@ -1,14 +1,14 @@
 import collections
 import logging
 from logging.handlers import QueueHandler
-from multiprocessing import Process, Event, Queue
+from multiprocessing import Event, Process, Queue
 from pathlib import Path
 
-from boostface.types import Embedding
 from app.services.inference.common import Face, TaskType
-from .model_zoo import ArcFaceONNX
-from .model_zoo import get_model
+from boostface.types import Embedding
+
 from ..db.operations import Matcher, Registrar
+from .model_zoo import ArcFaceONNX, get_model
 
 matched_and_in_screen_deque = collections.deque(maxlen=1)
 
@@ -19,10 +19,12 @@ class Extractor:
     """
 
     def __init__(self):
-        root = Path(__file__).parent / \
-            'model_zoo' / 'models' / 'irn50_glint360k_r50.onnx'
-        self.rec_model: ArcFaceONNX = get_model(root, providers=(
-            'CUDAExecutionProvider', 'CPUExecutionProvider'))
+        root = (
+            Path(__file__).parent / "model_zoo" / "models" / "irn50_glint360k_r50.onnx"
+        )
+        self.rec_model: ArcFaceONNX = get_model(
+            root, providers=("CUDAExecutionProvider", "CPUExecutionProvider")
+        )
         self.rec_model.prepare(ctx_id=0)
 
     def run_onnx(self, face: Face) -> Embedding:
@@ -41,11 +43,12 @@ class IdentifyWorker(Process):
     """
 
     def __init__(
-            self,
-            task_queue: Queue,
-            result_queue: Queue,
-            registered_queue: Queue,
-            sub_process_msg_queue: Queue):
+        self,
+        task_queue: Queue,
+        result_queue: Queue,
+        registered_queue: Queue,
+        sub_process_msg_queue: Queue,
+    ):
         super().__init__(daemon=True)
         self._registrar = None
         self._matcher = None
@@ -92,10 +95,7 @@ class IdentifyWorker(Process):
 
     def _register(self, face: Face):
         normed_embedding = self._extractor.run_onnx(face)
-        self._registrar.sign_up(
-            normed_embedding,
-            face.sign_up_id,
-            face.sign_up_name)
+        self._registrar.sign_up(normed_embedding, face.sign_up_id, face.sign_up_name)
         # self._result_queue.put(face.face_id)
 
     def _configure_logging(self):

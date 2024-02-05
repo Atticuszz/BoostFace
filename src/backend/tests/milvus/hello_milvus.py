@@ -2,10 +2,12 @@ import random
 from timeit import default_timer
 
 from pymilvus import (
-    connections,
-    FieldSchema, CollectionSchema, DataType,
     Collection,
-    utility
+    CollectionSchema,
+    DataType,
+    FieldSchema,
+    connections,
+    utility,
 )
 
 # This example shows how to:
@@ -16,21 +18,21 @@ from pymilvus import (
 #   5. search
 
 
-_HOST = '127.0.0.1'
-_PORT = '19530'
+_HOST = "127.0.0.1"
+_PORT = "19530"
 
 # Const names
-_COLLECTION_NAME = 'demo'
-_ID_FIELD_NAME = 'id_field'
-_VECTOR_FIELD_NAME = 'float_vector_field'
+_COLLECTION_NAME = "demo"
+_ID_FIELD_NAME = "id_field"
+_VECTOR_FIELD_NAME = "float_vector_field"
 
 # Vector parameters
 _DIM = 512
 _INDEX_FILE_SIZE = 32  # max file size of stored index
 
 # Index parameters
-_METRIC_TYPE = 'L2'
-_INDEX_TYPE = 'IVF_FLAT'
+_METRIC_TYPE = "L2"
+_INDEX_TYPE = "IVF_FLAT"
 _NLIST = 1024
 _NPROBE = 16
 _TOPK = 3
@@ -46,11 +48,22 @@ def create_connection():
 
 # Create a collection named 'demo'
 def create_collection(name, id_field, vector_field):
-    field1 = FieldSchema(name=id_field, dtype=DataType.INT64, description="int64", is_primary=True)
-    field2 = FieldSchema(name=vector_field, dtype=DataType.FLOAT_VECTOR, description="float vector", dim=_DIM,
-                         is_primary=False)
-    schema = CollectionSchema(fields=[field1, field2], description="collection description")
-    collection = Collection(name=name, data=None, schema=schema, properties={"collection.ttl.seconds": 15})
+    field1 = FieldSchema(
+        name=id_field, dtype=DataType.INT64, description="int64", is_primary=True
+    )
+    field2 = FieldSchema(
+        name=vector_field,
+        dtype=DataType.FLOAT_VECTOR,
+        description="float vector",
+        dim=_DIM,
+        is_primary=False,
+    )
+    schema = CollectionSchema(
+        fields=[field1, field2], description="collection description"
+    )
+    collection = Collection(
+        name=name, data=None, schema=schema, properties={"collection.ttl.seconds": 15}
+    )
     print("\ncollection created:", name)
     return collection
 
@@ -63,7 +76,7 @@ def has_collection(name):
 def drop_collection(name):
     collection = Collection(name)
     collection.drop()
-    print("\nDrop collection: {}".format(name))
+    print(f"\nDrop collection: {name}")
 
 
 # List all collections in Milvus
@@ -90,9 +103,10 @@ def create_index(collection, filed_name):
     index_param = {
         "index_type": _INDEX_TYPE,
         "params": {"nlist": _NLIST},
-        "metric_type": _METRIC_TYPE}
+        "metric_type": _METRIC_TYPE,
+    }
     collection.create_index(filed_name, index_param)
-    print("\nCreated index:\n{}".format(collection.index().params))
+    print(f"\nCreated index:\n{collection.index().params}")
 
 
 def drop_index(collection):
@@ -114,12 +128,13 @@ def search(collection, vector_field, id_field, search_vectors):
         "anns_field": vector_field,
         "param": {"metric_type": _METRIC_TYPE, "params": {"nprobe": _NPROBE}},
         "limit": _TOPK,
-        "expr": "id_field >= 0"}
+        "expr": "id_field >= 0",
+    }
     results = collection.search(**search_param)
     for i, result in enumerate(results):
-        print("\nSearch result for {}th vector: ".format(i))
+        print(f"\nSearch result for {i}th vector: ")
         for j, res in enumerate(result):
-            print("Top {}: {}".format(j, res))
+            print(f"Top {j}: {res}")
 
 
 def set_properties(collection):
@@ -171,5 +186,5 @@ def main():
     drop_collection(_COLLECTION_NAME)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

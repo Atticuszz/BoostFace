@@ -8,26 +8,27 @@ import cv2
 import numpy as np
 import websockets
 from cv2 import Mat
-from numpy import ndarray, dtype
+from numpy import dtype, ndarray
 from websockets import WebSocketClientProtocol
 
 from src.app.common.types import WebsocketRSData
-from .client import client
+
 from ...config import qt_logger
 from ...utils.decorator import error_handler
 from ...utils.time_tracker import time_tracker
+from .client import client
 
 
 class WebSocketDataProcessor:
     """WebSocket data processor"""
 
-    def _decode(self, data: str |
-                bytes) -> dict | str | Mat | ndarray[Any, dtype] | ndarray:
+    def _decode(
+        self, data: str | bytes
+    ) -> dict | str | Mat | ndarray[Any, dtype] | ndarray:
         """decode data"""
         raise NotImplementedError
 
-    def _encode(self, data: dict | WebsocketRSData |
-                str | bytes) -> str | bytes:
+    def _encode(self, data: dict | WebsocketRSData | str | bytes) -> str | bytes:
         """encode data"""
         raise NotImplementedError
 
@@ -51,8 +52,7 @@ class WebSocketBase(Thread, WebSocketDataProcessor):
         """
         raise NotImplementedError
 
-    def receive(
-            self) -> dict | str | Mat | ndarray[Any, dtype] | ndarray | None:
+    def receive(self) -> dict | str | Mat | ndarray[Any, dtype] | ndarray | None:
         """
         Receive data from the WebSocket.
 
@@ -87,7 +87,7 @@ class WebSocketClient(WebSocketBase):
 
     @error_handler
     def start_ws(self):
-        """ start websocket"""
+        """start websocket"""
         self._is_running = True
         super().start_ws()
         qt_logger.info(f"{self.base_url} : websocket started")
@@ -96,7 +96,9 @@ class WebSocketClient(WebSocketBase):
     def stop_ws(self):
         """stop websocket"""
         if not self.is_alive():  # 检查线程是否已经开始
-            qt_logger.debug(f"WebSocket thread:{self.ws_type}has not been started or already stopped.")
+            qt_logger.debug(
+                f"WebSocket thread:{self.ws_type}has not been started or already stopped."
+            )
             return
         self._is_running = False
         self.sender_queue.put_nowait("STOP")
@@ -112,8 +114,7 @@ class WebSocketClient(WebSocketBase):
             qt_logger.warning(f"{self.base_url} : sender queue is full")
 
     @error_handler
-    def receive(
-            self) -> dict | str | Mat | ndarray[Any, dtype] | ndarray | None:
+    def receive(self) -> dict | str | Mat | ndarray[Any, dtype] | ndarray | None:
         """receive data from websocket"""
         try:
             return self.receiver_queue.get_nowait()
@@ -123,7 +124,7 @@ class WebSocketClient(WebSocketBase):
 
     @error_handler
     def run(self):
-        """ run websocket"""
+        """run websocket"""
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(self._connect_websocket())
@@ -132,12 +133,11 @@ class WebSocketClient(WebSocketBase):
     async def _connect_websocket(self):
         """connect websocket"""
         time_now = datetime.datetime.now()
-        client_id: str = client.user['id'] + time_now.strftime('%Y%m%d%H%M%S')
+        client_id: str = client.user["id"] + time_now.strftime("%Y%m%d%H%M%S")
         uri = self.base_url + client_id
         qt_logger.debug(f"{self.base_url} : websocket connecting")
         async with websockets.connect(uri, extra_headers=self.auth_header) as websocket:
-            consumer_task = asyncio.create_task(
-                self._receive_messages(websocket))
+            consumer_task = asyncio.create_task(self._receive_messages(websocket))
             producer_task = asyncio.create_task(self._send_messages(websocket))
             qt_logger.debug(f"{self.base_url} : websocket connected")
             done, pending = await asyncio.wait(
@@ -152,7 +152,6 @@ class WebSocketClient(WebSocketBase):
     async def _receive_messages(self, websocket: WebSocketClientProtocol):
         qt_logger.debug(f"{self.base_url} : start receive messages")
         while self._is_running:
-
             try:
                 with time_tracker.track(f"{self.base_url} : receive messages"):
                     message = await asyncio.wait_for(websocket.recv(), timeout=1.0)
@@ -162,10 +161,12 @@ class WebSocketClient(WebSocketBase):
                 qt_logger.debug(f"{self.base_url} : receive timeout")
                 continue
             except websockets.exceptions.ConnectionClosedError:
-                qt_logger.info(f'{self.base_url} : Connection closed')
+                qt_logger.info(f"{self.base_url} : Connection closed")
                 break
             except Exception as e:
-                qt_logger.error(f"WebSocket error occurred: {e.__class__.__name__} - {e}")
+                qt_logger.error(
+                    f"WebSocket error occurred: {e.__class__.__name__} - {e}"
+                )
 
     @error_handler
     async def _send_messages(self, websocket: WebSocketClientProtocol):
@@ -180,14 +181,17 @@ class WebSocketClient(WebSocketBase):
                     await websocket.send(encoded)
                     self.sender_queue.task_done()
             except websockets.exceptions.ConnectionClosedError:
-                qt_logger.info(f'{self.base_url} : Connection closed')
+                qt_logger.info(f"{self.base_url} : Connection closed")
                 break
             except Exception as e:
-                qt_logger.error(f"WebSocket error occurred: {e.__class__.__name__} - {e}")
+                qt_logger.error(
+                    f"WebSocket error occurred: {e.__class__.__name__} - {e}"
+                )
 
     @error_handler
-    def _decode(self, data: str |
-                bytes) -> dict | str | Mat | ndarray[Any, dtype] | ndarray:
+    def _decode(
+        self, data: str | bytes
+    ) -> dict | str | Mat | ndarray[Any, dtype] | ndarray:
         if isinstance(data, bytes):
             # image
             nd_arr = np.frombuffer(data, np.uint8)
@@ -211,8 +215,7 @@ class WebSocketClient(WebSocketBase):
             raise TypeError(f"can not decode data:{data}")
 
     @error_handler
-    def _encode(self, data: dict | WebsocketRSData |
-                str | bytes) -> str | bytes:
+    def _encode(self, data: dict | WebsocketRSData | str | bytes) -> str | bytes:
         if isinstance(data, WebsocketRSData):
             if data is None:
                 qt_logger.error(f"can not encode data:{data}")

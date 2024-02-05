@@ -1,9 +1,9 @@
 import subprocess
 
 import uvicorn
+from app.core import lifespan
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.core import lifespan
 
 
 def create_app() -> FastAPI:
@@ -20,6 +20,7 @@ def create_app() -> FastAPI:
 
     # Include the routers
     from app.api import auth_router, identify_router
+
     app.include_router(auth_router)
     app.include_router(identify_router)
 
@@ -35,14 +36,12 @@ def server_run(debug: bool = False, port: int = 5000):
     if not debug:
         # Run FastAPI with reload
 
-        subprocess.Popen(["uvicorn", "app:app", "--host",
-                          "0.0.0.0", "--port", str(port), "--reload"])
+        subprocess.Popen(
+            ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", str(port), "--reload"]
+        )
     else:
-
-        uvicorn.run(app, host='0.0.0.0', port=port)
+        uvicorn.run(app, host="0.0.0.0", port=port)
 
 
 if __name__ == "__main__":
     server_run(True)
-
-

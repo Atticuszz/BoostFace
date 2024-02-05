@@ -1,14 +1,12 @@
-# coding:utf-8
 import os
-
 import sys
+
 from PyQt6.QtCore import Qt, QTranslator
 from PyQt6.QtWidgets import QApplication
 from qfluentwidgets import FluentTranslator
 
 from src.app.config.config import cfg
 from src.app.view.main_window import MainWindow
-
 
 # enable dpi scale
 if cfg.get(cfg.dpiScale) != "Auto":

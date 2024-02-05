@@ -1,13 +1,12 @@
 import numpy as np
 
-from src.app.common import signalBus
 from src.app.common.client.web_socket import WebSocketClient
+from src.app.common.types import Bbox, IdentifyResult, Kps, MatchedResult
 from src.app.config import qt_logger
-from src.app.utils.time_tracker import time_tracker
-from src.app.common.types import Bbox, Kps, MatchedResult, IdentifyResult
 from src.app.utils.boostface.common import Face, ImageFaces
-from .sort_plus import associate_detections_to_trackers, KalmanBoxTracker
-from ...decorator import calm_down
+from src.app.utils.time_tracker import time_tracker
+
+from .sort_plus import KalmanBoxTracker, associate_detections_to_trackers
 
 
 class Target:
@@ -21,7 +20,6 @@ class Target:
     """
 
     def __init__(self, face: Face):
-
         self._hit_streak = 0  # frames of keeping existing in screen
         self._frames_since_update = 0  # frames of keeping missing in screen
         self._frames_since_identified = 0
@@ -32,7 +30,12 @@ class Target:
     def rec_satified(self) -> bool:
         if self._scale_satisfied and not self._if_matched and self.in_screen:
             return True
-        elif self._if_matched and self._scale_satisfied and self._time_satisfied and self.in_screen:
+        elif (
+            self._if_matched
+            and self._scale_satisfied
+            and self._time_satisfied
+            and self.in_screen
+        ):
             return True
         else:
             return False
@@ -86,7 +89,8 @@ class Target:
             self.face.kps,
             self.face.det_score,
             face_id=self.face.id,
-            scene_scale=self.face.scene_scale)
+            scene_scale=self.face.scene_scale,
+        )
         return predicted_face
 
     @property
@@ -94,7 +98,7 @@ class Target:
         if self._if_matched:
             return self.face.match_info.name
         else:
-            return f'target[{self.face.id}]'
+            return f"target[{self.face.id}]"
 
     @property
     def _time_satisfied(self) -> bool:
@@ -118,10 +122,12 @@ class Target:
         """
         # TODO：test to fit
         scale_threshold = 0.005
-        target_area = (self.face.bbox[2] - self.face.bbox[0]) * \
-                      (self.face.bbox[3] - self.face.bbox[1])
+        target_area = (self.face.bbox[2] - self.face.bbox[0]) * (
+            self.face.bbox[3] - self.face.bbox[1]
+        )
         screen_area = (self.face.scene_scale[3] - self.face.scene_scale[1]) * (
-            self.face.scene_scale[2] - self.face.scene_scale[0])
+            self.face.scene_scale[2] - self.face.scene_scale[0]
+        )
         return (target_area / screen_area) > scale_threshold
 
     @property
@@ -136,11 +142,7 @@ class Tracker:
     :param iou_threshold: for Hungarian algorithm
     """
 
-    def __init__(
-            self,
-            max_age=10,
-            iou_threshold=0.3
-    ):
+    def __init__(self, max_age=10, iou_threshold=0.3):
         super().__init__()
 
         self._targets: dict[str, Target] = {}
@@ -159,13 +161,19 @@ class Tracker:
         if self._targets:
             predicted_tars: list[Face] = self._clean_dying()
             # match predicted and detected
-            matched, unmatched_det_tars, unmatched_pred_tars = associate_detections_to_trackers(
-                detected_tars, predicted_tars, self.iou_threshold)
+            (
+                matched,
+                unmatched_det_tars,
+                unmatched_pred_tars,
+            ) = associate_detections_to_trackers(
+                detected_tars, predicted_tars, self.iou_threshold
+            )
 
             # update pred_tar with matched detected tar
             for pred_tar, detected_tar in matched:
                 self._targets[pred_tar.id].update_pos(
-                    detected_tar.bbox, detected_tar.kps, detected_tar.det_score)
+                    detected_tar.bbox, detected_tar.kps, detected_tar.det_score
+                )
 
                 self._targets[pred_tar.id].update_tracker(detected_tar.bbox)
 
@@ -235,8 +243,9 @@ class Identifier(Tracker):
         # f"identifier identify {len(image2identify.faces)} faces")
         # qt_logger.debug(f"identifier identify {len(self._targets)} targets")
         return ImageFaces(
-            image2identify.nd_arr, [
-                tar.face for tar in self._targets.values() if tar.in_screen])
+            image2identify.nd_arr,
+            [tar.face for tar in self._targets.values() if tar.in_screen],
+        )
 
     def stop_ws_client(self):
         self.indentify_client.stop_ws()
@@ -255,15 +264,18 @@ class Identifier(Tracker):
                     for tar in self._targets.values():
                         if tar.face.id == result.uid:
                             tar.face.match_info = MatchedResult.from_IdentifyResult(
-                                result)
+                                result
+                            )
                             break
                 else:
                     break
 
     @time_tracker.track_func
     def _search(self, image2identify: ImageFaces):
-        """ send data to search"""
+        """send data to search"""
         for tar in self._targets.values():
-            if tar.rec_satified:  # FIXME: seems like send data under wrong condition，send too much
+            if (
+                tar.rec_satified
+            ):  # FIXME: seems like send data under wrong condition，send too much
                 data_2_send = tar.face.face_image(image2identify.nd_arr)
                 self.indentify_client.send(data_2_send)

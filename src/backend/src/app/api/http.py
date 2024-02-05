@@ -1,16 +1,11 @@
-# coding=utf-8
-import logging
-from asyncio import sleep
-from queue import Full
-
-from fastapi import APIRouter, HTTPException,Body
-from gotrue import Session, AuthResponse
+from fastapi import APIRouter, Body, HTTPException
+from gotrue import AuthResponse, Session
 from gotrue.errors import AuthApiError
 
-from ..common import task_queue, registered_queue
+from ..common import task_queue
 from ..core.config import logger
 from ..core.supabase_client import supabase_client
-from ..schemas import UserLogin, Face2SearchSchema, Face2Search, UserRegister
+from ..schemas import Face2Search, Face2SearchSchema, UserLogin, UserRegister
 from ..services.inference.common import TaskType
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
@@ -20,12 +15,12 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 async def login(user: UserLogin) -> Session:
     """sign in with email and password"""
     try:
-        response: AuthResponse = await supabase_client.sign_in(user.email, user.password)
+        response: AuthResponse = await supabase_client.sign_in(
+            user.email, user.password
+        )
         logger.info(f"User {user.email} logged in")
     except AuthApiError:
-        raise HTTPException(
-            status_code=400,
-            detail="Invalid email or password")
+        raise HTTPException(status_code=400, detail="Invalid email or password")
     return response.session
 
 
@@ -42,6 +37,7 @@ async def refresh_token(refresh_token: str) -> Session:
 
 # TODO: how to register user with email and password
 # TODO: add face passport register
+
 
 # TODO: how to solve distribute results?
 @auth_router.post("/face-register/{id}/{name}")
@@ -60,11 +56,10 @@ async def face_register(id: str, name: str, face: Face2SearchSchema = Body(...))
 async def register(user: UserRegister) -> Session:
     """sign up with email and password"""
     try:
-        response: AuthResponse = await supabase_client.sign_up(user.email, user.password, user.username)
+        response: AuthResponse = await supabase_client.sign_up(
+            user.email, user.password, user.username
+        )
         logger.info(f"User {user.email} signed up")
     except AuthApiError:
-        raise HTTPException(
-            status_code=400,
-            detail="Invalid email or password")
+        raise HTTPException(status_code=400, detail="Invalid email or password")
     return response.session
-

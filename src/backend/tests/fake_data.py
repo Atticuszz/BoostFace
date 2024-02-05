@@ -22,6 +22,8 @@ def data_generator(num_items, dim=512):
         id = f"id_{i}"
         name = f"name_{i}"
         yield embedding, id, name
+
+
 # def generate_face2search(pixels=None, size=None) -> Face2Search:
 #     """
 #     Generate a LightImage object with either the specified number of pixels or the specified size.

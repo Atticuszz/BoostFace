@@ -3,8 +3,9 @@ import time
 
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtGui import QTextCursor
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout
-from qfluentwidgets import FluentIcon as FIF, TextEdit
+from PyQt6.QtWidgets import QApplication, QHBoxLayout, QVBoxLayout, QWidget
+from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import TextEdit
 
 from src.app.utils.decorator import error_handler
 from src.app.view.component.expand_info_card import ExpandInfoCard
@@ -13,6 +14,7 @@ from src.app.view.component.system_monitor import SystemMonitor
 
 class ConsoleSimulator(QThread):
     newText = pyqtSignal(str)
+
     @error_handler
     def run(self):
         count = 0
@@ -44,22 +46,20 @@ class LocalDevInterface(QWidget):
         self.bc_layout.addWidget(self.resource_monitor, 2)
 
         # init window
-        self.setWindowTitle('Local Development Interface')
+        self.setWindowTitle("Local Development Interface")
         self.resize(1000, 800)
 
     def _init_camera_card(self):
         # B区域：摄像头信息，这里假设您的ExpandInfoCard已经创建好了
         self.camera_info_card = ExpandInfoCard(
-            FIF.CAMERA,
-            self.tr('Camera information'),
-            parent=self
+            FIF.CAMERA, self.tr("Camera information"), parent=self
         )
         self.camera_info_card.add_info(
             {
-                'Camera name': 'USB2.0 Camera',
-                'Camera type': 'USB',
-                'Camera resolution': '1920x1080',
-                'Camera FPS': '30',
+                "Camera name": "USB2.0 Camera",
+                "Camera type": "USB",
+                "Camera resolution": "1920x1080",
+                "Camera FPS": "30",
             }
         )
 
@@ -92,7 +92,7 @@ class LocalDevInterface(QWidget):
         self.console_log.setTextCursor(cursor)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = LocalDevInterface()
     window.show()

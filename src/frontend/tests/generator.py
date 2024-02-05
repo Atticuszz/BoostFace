@@ -3,7 +3,9 @@ from pathlib import Path
 from PIL import Image, ImageFilter
 
 
-def create_image_with_center_icon(icon_path, output_path, image_size=(960, 440), icon_size=(256, 256)):
+def create_image_with_center_icon(
+    icon_path, output_path, image_size=(960, 440), icon_size=(256, 256)
+):
     """
     创建一个带有中心图标的透明背景图像。
 
@@ -31,7 +33,9 @@ def create_image_with_center_icon(icon_path, output_path, image_size=(960, 440),
     image.save(output_path, "PNG")
 
 
-def add_acrylic_effect(image_path, output_path, blur_radius=8, tint_color=(105, 114, 168, 102)):
+def add_acrylic_effect(
+    image_path, output_path, blur_radius=8, tint_color=(105, 114, 168, 102)
+):
     """
     对图像添加亚克力效果。
 
@@ -57,7 +61,7 @@ def add_acrylic_effect(image_path, output_path, blur_radius=8, tint_color=(105, 
     acrylic.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     src_dir = Path(r"C:\Users\18317\python\BoostFace_pyqt6\src\app\resource\images")
     placeholder = src_dir / "background.jpg"
     output = src_dir / "Acrylic_background.png"

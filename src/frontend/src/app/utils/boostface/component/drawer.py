@@ -6,10 +6,9 @@ from collections import deque
 from timeit import default_timer as current_time
 
 import cv2
-
 from numpy import ndarray
 
-from src.app.common.types import Color, Image, Bbox
+from src.app.common.types import Bbox, Color, Image
 from src.app.config import qt_logger
 from src.app.utils.boostface.common import ImageFaces
 from src.app.utils.time_tracker import time_tracker
@@ -26,8 +25,15 @@ class Drawer:
         self.ave_fps = 0
         self._pre = 0
         self._cur = 0
-        self._colors: list[Color] = [(200, 150, 255), (255, 255, 153), (
-            144, 238, 144), (173, 216, 230), (255, 182, 193), (255, 165, 0)]
+        self._colors: list[Color] = [
+            (200, 150, 255),
+            (255, 255, 153),
+            (144, 238, 144),
+            (173, 216, 230),
+            (255, 182, 193),
+            (255, 165, 0),
+        ]
+
     @time_tracker.track_func
     def show(self, image2show: ImageFaces) -> ImageFaces:
         self._frame_cnt += 1
@@ -80,14 +86,16 @@ class Drawer:
         #             line_type=cv2.LINE_AA,
         #             bottomLeftOrigin=True)
         # 添加文本  中文问题还没有解决
-        cv2.putText(img=dimg,
-                    text=name,
-                    org=text_position,
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=self.font_scale,
-                    color=color,
-                    thickness=3,
-                    lineType=cv2.LINE_AA)
+        cv2.putText(
+            img=dimg,
+            text=name,
+            org=text_position,
+            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+            fontScale=self.font_scale,
+            color=color,
+            thickness=3,
+            lineType=cv2.LINE_AA,
+        )
 
     def _draw_fps(self, image2draw_fps: ndarray):
         """

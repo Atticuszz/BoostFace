@@ -1,16 +1,21 @@
 import pprint
 from typing import NamedTuple
 
-from pymilvus import DataType, CollectionSchema, FieldSchema
+from pymilvus import CollectionSchema, DataType, FieldSchema
 
-from .base_model import SimilarityMetric, DistanceMetric, FloatingPointIndexType, BinaryIndexType
+from .base_model import (
+    BinaryIndexType,
+    DistanceMetric,
+    FloatingPointIndexType,
+    SimilarityMetric,
+)
 
 
 def recursive_as_dict(obj):
-    if hasattr(obj, 'as_dict') and callable(getattr(obj, 'as_dict')):
+    if hasattr(obj, "as_dict") and callable(getattr(obj, "as_dict")):
         # 如果对象有 as_dict 方法，使用它
         return obj.as_dict()
-    elif hasattr(obj, '_asdict') and callable(getattr(obj, '_asdict')):
+    elif hasattr(obj, "_asdict") and callable(getattr(obj, "_asdict")):
         # 对于 NamedTuple，使用 _asdict 方法
         return {k: recursive_as_dict(v) for k, v in obj._asdict().items()}
     elif isinstance(obj, dict):
@@ -28,7 +33,7 @@ def recursive_as_dict(obj):
 class Field(NamedTuple):
     name: str
     dtype: DataType
-    description: str = ''
+    description: str = ""
     is_primary: bool = False
     max_length: int | None = None
     dim: int | None = None
@@ -78,7 +83,9 @@ class PreparedSearchParam(NamedTuple):
 
 
 class IndexParam(NamedTuple):
-    index_type: FloatingPointIndexType | BinaryIndexType = FloatingPointIndexType.IVF_FLAT
+    index_type: FloatingPointIndexType | BinaryIndexType = (
+        FloatingPointIndexType.IVF_FLAT
+    )
     metric_type: SimilarityMetric | DistanceMetric = SimilarityMetric.INNER_PRODUCT
     params: dict[str, int] = {"nlist:": 1024, "nprobe": 10}
 
@@ -88,6 +95,7 @@ class searchParam(NamedTuple):
     _async，_callback异步编程相关
     search doesn't support vector field as output_fields
     """
+
     param: PreparedSearchParam
     anns_field: CollectionConfig.name
     limit: int  # number of returned results
@@ -126,45 +134,44 @@ id_field = Field(
     dtype=DataType.VARCHAR,
     max_length=40,
     description="primary key",
-    is_primary=True)
+    is_primary=True,
+)
 name_field = Field(
-    name="name",
-    dtype=DataType.VARCHAR,
-    max_length=20,
-    description="name of the person")
+    name="name", dtype=DataType.VARCHAR, max_length=20, description="name of the person"
+)
 embedding_field = Field(
     name="embedding",
     dtype=DataType.FLOAT_VECTOR,
     description="embedding of the face",
-    dim=512)
+    dim=512,
+)
 
-fields = [FieldSchema(**field.as_dict())
-          for field in [id_field, name_field, embedding_field]]
+fields = [
+    FieldSchema(**field.as_dict()) for field in [id_field, name_field, embedding_field]
+]
 
 basic_config = ClientConfig(
     collection=CollectionConfig(
         name="Faces",
         schema=CollectionSchema(
-            fields=fields,
-            description="Faces collection",
-            enable_dynamic_field=True
+            fields=fields, description="Faces collection", enable_dynamic_field=True
         ),
         shards_num=6,
     ),
     index=IndexParam(
         index_type=FloatingPointIndexType.IVF_FLAT,
         metric_type=SimilarityMetric.INNER_PRODUCT,
-        params={"nlist": 1024, "nprobe": 10}  # 定义了搜索时候的 聚类数量
+        params={"nlist": 1024, "nprobe": 10},  # 定义了搜索时候的 聚类数量
     ),
     search=searchParam(
         param=PreparedSearchParam(
             metric_type=SimilarityMetric.INNER_PRODUCT,
-            params={"nlist": 1024, "nprobe": 10}
+            params={"nlist": 1024, "nprobe": 10},
         ),
         anns_field="embedding",
         limit=1,
-        output_fields=["id", "embedding"]
-    )
+        output_fields=["id", "embedding"],
+    ),
 )
 if __name__ == "__main__":
     # 务必确保对外只呈现字典或者枚举类型，这样才能作为配置参数

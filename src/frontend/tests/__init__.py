@@ -1,4 +1,3 @@
-# coding=utf-8
 # TODO: add test to basic ui , boostface, client to backend
 """
     paper:

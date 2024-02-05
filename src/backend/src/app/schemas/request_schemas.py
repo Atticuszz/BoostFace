@@ -1,14 +1,10 @@
-# coding=utf-8
-import base64
 from dataclasses import dataclass
-from typing import Any
 
 import cv2
 import numpy as np
-from pydantic import BaseModel, Field
-
-from app.services.inference.common import Face, Kps, Bbox, Image
+from app.services.inference.common import Face, Image, Kps
 from app.utils.base64_decode import decode_base64
+from pydantic import BaseModel, Field
 
 
 class UserLogin(BaseModel):
@@ -24,6 +20,7 @@ class UserRegister(BaseModel):
 
 class Face2SearchSchema(BaseModel):
     """Face2Search schema"""
+
     face_img: str = Field(..., description="Base64 encoded image data")
     kps: list[list[float]] = Field(..., description="Keypoints")
     det_score: float = Field(..., description="Detection score")
@@ -44,21 +41,14 @@ class Face2Search:
         # 将 base64 编码的图像转换为 Image 类型 (NumPy ndarray)
         image_data = decode_base64(schema.face_img)
         image = cv2.imdecode(
-            np.frombuffer(
-                image_data,
-                dtype=np.uint8),
-            cv2.IMREAD_COLOR)
+            np.frombuffer(image_data, dtype=np.uint8), cv2.IMREAD_COLOR
+        )
         if image is None:
             raise ValueError("Failed to decode image")
 
         kps = np.array(schema.kps, dtype=np.float64)
 
-        return cls(
-            face_img=image,
-            kps=kps,
-            det_score=schema.det_score,
-            uid=schema.uid
-        )
+        return cls(face_img=image, kps=kps, det_score=schema.det_score, uid=schema.uid)
 
     def to_face(self) -> Face:
         """turn into face"""

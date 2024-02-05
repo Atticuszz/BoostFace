@@ -14,4 +14,3 @@ QLabel#settingLabel {
     background-color: transparent;
     color: white;
 }
-

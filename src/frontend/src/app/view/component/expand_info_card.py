@@ -1,10 +1,9 @@
+import sys
 from typing import Union
 
-import sys
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QPalette, QIcon
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
-from PyQt6.QtWidgets import QGridLayout
+from PyQt6.QtGui import QColor, QIcon, QPalette
+from PyQt6.QtWidgets import QApplication, QGridLayout, QLabel, QVBoxLayout, QWidget
 from qfluentwidgets import ExpandGroupSettingCard
 from qfluentwidgets import FluentIcon as FIF
 
@@ -22,21 +21,22 @@ class KeyValueWidget(QWidget):
             # 创建键标签
             key_label = QLabel(str(key))
             key_label.setAlignment(
-                Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+                Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+            )
             key_label.setFixedWidth(
-                key_label.fontMetrics().boundingRect(
-                    key_label.text()).width() + key_padding)
+                key_label.fontMetrics().boundingRect(key_label.text()).width()
+                + key_padding
+            )
 
             # 创建值标签
             value_label = QLabel(str(value))
             value_label.setAlignment(
-                Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+                Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+            )
 
             # 为浅色和深色主题设置不同的颜色
             palette = value_label.palette()
-            palette.setColor(
-                QPalette.ColorRole.WindowText,
-                QColor('#6c757d'))  # 浅黑色
+            palette.setColor(QPalette.ColorRole.WindowText, QColor("#6c757d"))  # 浅黑色
             value_label.setPalette(palette)
 
             # 将键和值标签添加到网格布局中
@@ -53,7 +53,9 @@ class KeyValueWidget(QWidget):
 
 
 class ExpandInfoCard(ExpandGroupSettingCard):
-    def __init__(self, icon: Union[str, QIcon, FIF], title: str, content: str = None, parent=None):
+    def __init__(
+        self, icon: str | QIcon | FIF, title: str, content: str = None, parent=None
+    ):
         super().__init__(icon, title, content, parent)
         self.key_value_widget = None
 
@@ -81,7 +83,8 @@ class MainWindow(QWidget):
     def initUI(self):
         # 创建 ExpandGroupSettingCard 实例
         self.expand_group_card = ExpandInfoCard(
-            icon=FIF.SETTING, title="Device Info", parent=self)
+            icon=FIF.SETTING, title="Device Info", parent=self
+        )
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.expand_group_card)
 
@@ -93,17 +96,18 @@ class MainWindow(QWidget):
             "Device ID": "AFE29FB7-1431-4669-843C-D863AED27529",
             "Product ID": "00330-80000-00000-AA521",
             "System type": "64-bit operating system, x64-based processor",
-            "Pen and touch": "No pen or touch input is available for this display"}
+            "Pen and touch": "No pen or touch input is available for this display",
+        }
 
         # 添加信息到卡片
         # 在主窗口中
         self.expand_group_card.add_info(device_info)
         self.setGeometry(300, 300, 600, 400)
-        self.setWindowTitle('Expandable Group Setting Card')
+        self.setWindowTitle("Expandable Group Setting Card")
 
 
 # 运行应用
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     mainWin = MainWindow()
     mainWin.show()

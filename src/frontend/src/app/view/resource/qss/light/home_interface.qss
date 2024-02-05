@@ -15,5 +15,3 @@ BannerWidget > #galleryLabel {
     color: black;
     padding-left: 28px;
 }
-
-

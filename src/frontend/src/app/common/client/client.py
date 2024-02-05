@@ -1,15 +1,13 @@
-# coding=utf-8
 import json
 from base64 import urlsafe_b64decode
 from pathlib import Path
+from time import time
 
 import requests
 from cryptography.fernet import Fernet
-from time import time
 
 from src.app.common.types import Face2SearchSchema
 from src.app.utils.decorator import error_handler
-from src.app.config.logging_config import qt_logger
 
 
 class TokenEncryptor:
@@ -20,7 +18,7 @@ class TokenEncryptor:
 
     def load_or_create_key(self):
         """Load or create encryption key"""
-        key_path = Path(__file__).parent / 'secret.key'
+        key_path = Path(__file__).parent / "secret.key"
         if key_path.exists():
             return key_path.read_bytes()
         else:
@@ -70,33 +68,25 @@ class TokenManager(TokenEncryptor):
         # Addding padding otherwise the following error happens:
         # binascii.Error: Incorrect padding
         base64UrlWithPadding = base64Url + "=" * (-len(base64Url) % 4)
-        return json.loads(urlsafe_b64decode(
-            base64UrlWithPadding).decode("utf-8"))
+        return json.loads(urlsafe_b64decode(base64UrlWithPadding).decode("utf-8"))
 
     def save_tokens(self, access_token: str, refresh_token: str):
         """Save tokens to file"""
         self.refresh_token = refresh_token
         self.access_token = access_token
-        encrypted_access_token = self.encrypt_data(
-            access_token)
-        encrypted_refresh_token = self.encrypt_data(
-            refresh_token)
-        token_path = Path(__file__).parent / 'tokens.enc'
-        token_path.write_bytes(
-            encrypted_access_token +
-            b'\n' +
-            encrypted_refresh_token)
+        encrypted_access_token = self.encrypt_data(access_token)
+        encrypted_refresh_token = self.encrypt_data(refresh_token)
+        token_path = Path(__file__).parent / "tokens.enc"
+        token_path.write_bytes(encrypted_access_token + b"\n" + encrypted_refresh_token)
 
     def _load_tokens(self):
         """Load tokens from file"""
-        token_path = Path(__file__).parent / 'tokens.enc'
+        token_path = Path(__file__).parent / "tokens.enc"
         if token_path.exists():
-            encrypted_tokens = token_path.read_bytes().split(b'\n')
+            encrypted_tokens = token_path.read_bytes().split(b"\n")
             if len(encrypted_tokens) == 2:
-                self.access_token = self.decrypt_data(
-                    encrypted_tokens[0])
-                self.refresh_token = self.decrypt_data(
-                    encrypted_tokens[1])
+                self.access_token = self.decrypt_data(encrypted_tokens[0])
+                self.refresh_token = self.decrypt_data(encrypted_tokens[1])
 
 
 class AuthClient:
@@ -109,15 +99,11 @@ class AuthClient:
         self.user: dict | None = None
 
     def sign_up(self, face2register: Face2SearchSchema, id: str, name: str):
-        url = f'{self.base_url}/auth/face-register/{id}/{name}'
-        headers = {'Content-Type': 'application/json'}
+        url = f"{self.base_url}/auth/face-register/{id}/{name}"
+        headers = {"Content-Type": "application/json"}
         data = face2register.model_dump()
         # qt_logger.debug(f"send data:{data}")
-        response = requests.post(
-            url,
-            json=data,
-            headers=headers
-        )
+        response = requests.post(url, json=data, headers=headers)
 
         return response
 
@@ -125,18 +111,14 @@ class AuthClient:
     def login(self, email: str, password: str) -> dict | None:
         """Login with email and password"""
         url = f"{self.base_url}/auth/login"
-        response = requests.post(
-            url,
-            json={
-                "email": email,
-                "password": password})
+        response = requests.post(url, json={"email": email, "password": password})
 
         if response.status_code == 200:
             data = response.json()
             self.user = data.get("user")
             self.token_manager.save_tokens(
-                data.get("access_token"),
-                data.get("refresh_token"))
+                data.get("access_token"), data.get("refresh_token")
+            )
             return data
         else:
             return None
@@ -154,13 +136,12 @@ class AuthClient:
         """refresh token"""
         url = f"{self.base_url}/auth/refresh-token"
         params = {"refresh_token": self.token_manager.refresh_token}
-        refresh_response = requests.post(
-            url, params=params)
+        refresh_response = requests.post(url, params=params)
         if refresh_response.status_code == 200:
             data = refresh_response.json()
             self.token_manager.save_tokens(
-                data.get("access_token"),
-                data.get("refresh_token"))
+                data.get("access_token"), data.get("refresh_token")
+            )
         else:
             print("failed to refresh token")
 
@@ -170,7 +151,8 @@ class AuthClient:
             return {}
         headers = {
             "Authorization": f"Bearer {self.token_manager.access_token}",
-            "Refresh-Token": self.token_manager.refresh_token}
+            "Refresh-Token": self.token_manager.refresh_token,
+        }
         return headers
 
 

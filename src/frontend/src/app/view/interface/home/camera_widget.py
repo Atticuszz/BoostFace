@@ -1,31 +1,37 @@
-from dataclasses import asdict
-
 from time import sleep
 
 import cv2
-from PyQt6.QtCore import Qt, QRectF, QThread, pyqtSignal
-from PyQt6.QtGui import QPixmap, QPainter, QPainterPath, QLinearGradient, QColor, QBrush, QImage
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PyQt6.QtCore import QRectF, Qt, QThread, pyqtSignal
+from PyQt6.QtGui import (
+    QBrush,
+    QColor,
+    QImage,
+    QLinearGradient,
+    QPainter,
+    QPainterPath,
+    QPixmap,
+)
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
+from qfluentwidgets import FluentIcon
 from qfluentwidgets import FluentIcon as FIF
-from qfluentwidgets import TogglePushButton
-from qfluentwidgets import isDarkTheme, FluentIcon
+from qfluentwidgets import TogglePushButton, isDarkTheme
 
 from src.app.common import signalBus
-from src.app.common.types import Image
 from src.app.config import qt_logger
-from src.app.config.config import HELP_URL, REPO_URL, EXAMPLE_URL, FEEDBACK_URL
+from src.app.config.config import EXAMPLE_URL, FEEDBACK_URL, HELP_URL, REPO_URL
 from src.app.utils.boostface import BoostFace
-from src.app.utils.boostface.common import ImageFaces, Face
+from src.app.utils.boostface.common import ImageFaces
 from src.app.utils.boostface.component.camera import CameraOpenError
-from src.app.utils.decorator import error_handler, calm_down
+from src.app.utils.decorator import calm_down, error_handler
 from src.app.utils.time_tracker import time_tracker
 from src.app.view.component.link_card import LinkCardView
 
-__all__ = ['create_camera_widget', 'create_state_widget']
+__all__ = ["create_camera_widget", "create_state_widget"]
 
 
 class CameraModel(QThread):
-    """ Camera model """
+    """Camera model"""
+
     change_pixmap_signal = pyqtSignal(QImage)
 
     def __init__(self):
@@ -67,7 +73,6 @@ class CameraModel(QThread):
         self.ai_camera = BoostFace()
 
         while self._t_running:
-
             if self._c_sleeping:
                 self.change_pixmap_signal.emit(self.default_pixmap.toImage())
                 # qt_logger.debug("ai_camera is sleeping")
@@ -75,7 +80,6 @@ class CameraModel(QThread):
                 continue
 
             with time_tracker.track("CameraModel.run"):
-
                 with calm_down(0.03):
                     try:
                         # frame = self.capture.read()
@@ -87,9 +91,13 @@ class CameraModel(QThread):
                     h, w, ch = rgb_image.shape
                     bytes_per_line = ch * w
                     convert_to_Qt_format = QImage(
-                        rgb_image.data, w, h, bytes_per_line, QImage.Format.Format_RGB888)
+                        rgb_image.data,
+                        w,
+                        h,
+                        bytes_per_line,
+                        QImage.Format.Format_RGB888,
+                    )
                     self.change_pixmap_signal.emit(convert_to_Qt_format)
-
 
     def _wake_up(self):
         self.ai_camera.wake_up()
@@ -103,7 +111,7 @@ class CameraModel(QThread):
 
 
 class VideoStreamWidget(QWidget):
-    """ Widget to display video stream from camera"""
+    """Widget to display video stream from camera"""
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -120,7 +128,8 @@ class VideoStreamWidget(QWidget):
             self.img_size[0],
             self.img_size[1],
             Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation)
+            Qt.TransformationMode.SmoothTransformation,
+        )
         self.image_label.setPixmap(scaled_image)
 
     def reset_image(self):
@@ -141,8 +150,7 @@ class CameraWidget(VideoStreamWidget):
         super().__init__(parent=parent)
         self.layout = QVBoxLayout(self)
         # need to connect in controller
-        self.toggle_switch = TogglePushButton(
-            FIF.PLAY_SOLID, "start camera", self)
+        self.toggle_switch = TogglePushButton(FIF.PLAY_SOLID, "start camera", self)
         self.layout.addWidget(self.image_label)
         self.layout.addWidget(self.toggle_switch)
 
@@ -165,58 +173,59 @@ class StateWidget(QWidget):
         self.vBoxLayout = QVBoxLayout(self)
 
         # label
-        self.galleryLabel = QLabel('BoostFace System', self)
+        self.galleryLabel = QLabel("BoostFace System", self)
 
         # banner image
-        self.banner = QPixmap(':/gallery/images/header1.png')
+        self.banner = QPixmap(":/gallery/images/header1.png")
 
         self.linkCardView = LinkCardView(self)
 
-        self.galleryLabel.setObjectName('galleryLabel')
+        self.galleryLabel.setObjectName("galleryLabel")
 
         self.vBoxLayout.setSpacing(0)
         self.vBoxLayout.setContentsMargins(0, 20, 0, 0)
         self.vBoxLayout.addWidget(self.galleryLabel)
-        self.vBoxLayout.addWidget(
-            self.linkCardView, 1, Qt.AlignmentFlag.AlignBottom)
+        self.vBoxLayout.addWidget(self.linkCardView, 1, Qt.AlignmentFlag.AlignBottom)
         self.vBoxLayout.setAlignment(
-            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop
+        )
 
         self.linkCardView.addCard(
-            ':/gallery/images/logo.png',
-            self.tr('Getting started'),
-            self.tr('An overview of app development options and samples.'),
-            HELP_URL
+            ":/gallery/images/logo.png",
+            self.tr("Getting started"),
+            self.tr("An overview of app development options and samples."),
+            HELP_URL,
         )
 
         self.linkCardView.addCard(
             FluentIcon.GITHUB,
-            self.tr('GitHub repo'),
+            self.tr("GitHub repo"),
             self.tr(
-                'The latest fluent design controls and styles for your applications.'),
-            REPO_URL
+                "The latest fluent design controls and styles for your applications."
+            ),
+            REPO_URL,
         )
 
         self.linkCardView.addCard(
             FluentIcon.CODE,
-            self.tr('Code samples'),
-            self.tr(
-                'Find samples that demonstrate specific tasks, features and APIs.'),
-            EXAMPLE_URL
+            self.tr("Code samples"),
+            self.tr("Find samples that demonstrate specific tasks, features and APIs."),
+            EXAMPLE_URL,
         )
 
         self.linkCardView.addCard(
             FluentIcon.FEEDBACK,
-            self.tr('Send feedback'),
-            self.tr('Help us improve PyQt-Fluent-Widgets by providing feedback.'),
-            FEEDBACK_URL
+            self.tr("Send feedback"),
+            self.tr("Help us improve PyQt-Fluent-Widgets by providing feedback."),
+            FEEDBACK_URL,
         )
 
     def paintEvent(self, e):
         super().paintEvent(e)
         painter = QPainter(self)
         painter.setRenderHints(
-            QPainter.RenderHint.SmoothPixmapTransform | QPainter.RenderHint.Antialiasing)
+            QPainter.RenderHint.SmoothPixmapTransform | QPainter.RenderHint.Antialiasing
+        )
         painter.setPen(Qt.PenStyle.NoPen)
 
         path = QPainterPath()
@@ -245,7 +254,8 @@ class StateWidget(QWidget):
         pixmap = self.banner.scaled(
             self.size(),
             Qt.AspectRatioMode.IgnoreAspectRatio,
-            Qt.TransformationMode.SmoothTransformation)
+            Qt.TransformationMode.SmoothTransformation,
+        )
         painter.fillPath(path, QBrush(pixmap))
 
 
@@ -260,8 +270,7 @@ class CameraWidgetC:
         self.view = view
 
         # update image
-        self.model.change_pixmap_signal.connect(
-            self.view.update_image)
+        self.model.change_pixmap_signal.connect(self.view.update_image)
         # toggle camera
         self.view.toggle_switch.toggled.connect(self.toggle_camera)
         # bind close event
@@ -281,7 +290,7 @@ class CameraWidgetC:
 
 
 def create_camera_widget(parent=None) -> CameraWidgetC:
-    """ create camera widget"""
+    """create camera widget"""
     created_model = CameraModel()
     created_view = CameraWidget(parent=parent)
     created_controller = CameraWidgetC(created_model, created_view)
@@ -290,12 +299,12 @@ def create_camera_widget(parent=None) -> CameraWidgetC:
 
 
 def create_state_widget(parent=None) -> StateWidgetC:
-    """ create state widget"""
+    """create state widget"""
     created_view = StateWidget(parent=parent)
     created_controller = StateWidgetC(created_view)
 
     return created_controller
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

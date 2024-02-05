@@ -5,9 +5,7 @@
 @Date Created : 14/12/2023
 @Description  :
 """
-from time import sleep
 
-from src.app.common.types import Image
 from src.app.utils.boostface.common import ImageFaces
 from src.app.utils.boostface.component.camera import Camera
 from src.app.utils.boostface.component.detector import Detector

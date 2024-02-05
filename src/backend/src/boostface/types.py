@@ -9,4 +9,3 @@ Bbox = NDArray[np.float64]  # shape: (4, 2)
 Embedding = NDArray[np.float64]  # shape: (512, )
 Image = NDArray[np.uint8]  # shape: (height, width, 3)
 Color = tuple[int, int, int]
-

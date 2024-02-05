@@ -3,11 +3,9 @@ from dataclasses import dataclass
 from enum import Enum, auto
 
 import numpy as np
+from app.services.db.base_model import MatchedResult
 from numpy._typing import NDArray
 from numpy.linalg import norm as l2norm
-
-from app.services.db.base_model import MatchedResult
-
 
 Kps = NDArray[np.float64]  # shape: (5, 2)
 Bbox = NDArray[np.float64]  # shape: (4, 2)
@@ -17,7 +15,6 @@ Image = NDArray[np.uint8]  # shape: (height, width, 3)
 
 @dataclass
 class SignUpInfo:
-
     id: str
     name: str
 
@@ -25,11 +22,12 @@ class SignUpInfo:
 @dataclass
 class Face:
     """pure face img"""
+
     img: Image
     face_id: uuid
     kps: Kps
-    sign_up_id: str = ''
-    sign_up_name: str = ''
+    sign_up_id: str = ""
+    sign_up_name: str = ""
     det_score: float = 0.0
     embedding: Embedding | None = None
 

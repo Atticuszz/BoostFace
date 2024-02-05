@@ -3,12 +3,18 @@ import numpy as np
 from skimage import transform as trans
 
 arcface_dst = np.array(
-    [[38.2946, 51.6963], [73.5318, 51.5014], [56.0252, 71.7366],
-     [41.5493, 92.3655], [70.7299, 92.2041]],
-    dtype=np.float32)
+    [
+        [38.2946, 51.6963],
+        [73.5318, 51.5014],
+        [56.0252, 71.7366],
+        [41.5493, 92.3655],
+        [70.7299, 92.2041],
+    ],
+    dtype=np.float32,
+)
 
 
-def estimate_norm(lmk, image_size=112, mode='arcface'):
+def estimate_norm(lmk, image_size=112, mode="arcface"):
     assert lmk.shape == (5, 2)
     assert image_size % 112 == 0 or image_size % 128 == 0
     if image_size % 112 == 0:
@@ -25,13 +31,13 @@ def estimate_norm(lmk, image_size=112, mode='arcface'):
     return M
 
 
-def norm_crop(img, landmark, image_size=112, mode='arcface'):
+def norm_crop(img, landmark, image_size=112, mode="arcface"):
     M = estimate_norm(landmark, image_size, mode)
     warped = cv2.warpAffine(img, M, (image_size, image_size), borderValue=0.0)
     return warped
 
 
-def norm_crop2(img, landmark, image_size=112, mode='arcface'):
+def norm_crop2(img, landmark, image_size=112, mode="arcface"):
     M = estimate_norm(landmark, image_size, mode)
     warped = cv2.warpAffine(img, M, (image_size, image_size), borderValue=0.0)
     return warped, M
@@ -48,7 +54,7 @@ def square_crop(im, S):
         scale = float(S) / im.shape[1]
     resized_im = cv2.resize(im, (width, height))
     det_im = np.zeros((S, S, 3), dtype=np.uint8)
-    det_im[:resized_im.shape[0], :resized_im.shape[1], :] = resized_im
+    det_im[: resized_im.shape[0], : resized_im.shape[1], :] = resized_im
     return det_im, scale
 
 
@@ -61,13 +67,10 @@ def transform(data, center, output_size, scale, rotation):
     cy = center[1] * scale_ratio
     t2 = trans.SimilarityTransform(translation=(-1 * cx, -1 * cy))
     t3 = trans.SimilarityTransform(rotation=rot)
-    t4 = trans.SimilarityTransform(translation=(output_size / 2,
-                                                output_size / 2))
+    t4 = trans.SimilarityTransform(translation=(output_size / 2, output_size / 2))
     t = t1 + t2 + t3 + t4
     M = t.params[0:2]
-    cropped = cv2.warpAffine(data,
-                             M, (output_size, output_size),
-                             borderValue=0.0)
+    cropped = cv2.warpAffine(data, M, (output_size, output_size), borderValue=0.0)
     return cropped, M
 
 
@@ -75,7 +78,7 @@ def trans_points2d(pts, M):
     new_pts = np.zeros(shape=pts.shape, dtype=np.float32)
     for i in range(pts.shape[0]):
         pt = pts[i]
-        new_pt = np.array([pt[0], pt[1], 1.], dtype=np.float32)
+        new_pt = np.array([pt[0], pt[1], 1.0], dtype=np.float32)
         new_pt = np.dot(M, new_pt)
         # print('new_pt', new_pt.shape, new_pt)
         new_pts[i] = new_pt[0:2]
@@ -89,7 +92,7 @@ def trans_points3d(pts, M):
     new_pts = np.zeros(shape=pts.shape, dtype=np.float32)
     for i in range(pts.shape[0]):
         pt = pts[i]
-        new_pt = np.array([pt[0], pt[1], 1.], dtype=np.float32)
+        new_pt = np.array([pt[0], pt[1], 1.0], dtype=np.float32)
         new_pt = np.dot(M, new_pt)
         # print('new_pt', new_pt.shape, new_pt)
         new_pts[i][0:2] = new_pt[0:2]

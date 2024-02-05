@@ -1,22 +1,13 @@
-# coding=utf-8
-import dataclasses
 import logging
-import traceback
-import warnings
 from datetime import datetime
-from pathlib import Path
-from timeit import default_timer
 
-import cv2
 import numpy as np
-from numpy import ndarray
-from numpy.linalg import norm
-from pymilvus.orm import utility
-
 from app.core.config import logger
 from app.services.db.base_model import MatchedResult
 from app.services.inference.common import Embedding
-
+from numpy import ndarray
+from numpy.linalg import norm
+from pymilvus.orm import utility
 
 __all__ = ["Registrar", "Matcher"]
 
@@ -34,8 +25,7 @@ class Matcher:
         if self._client.get_entity_num > 0:
             logger.debug("Loading collection to RAM")
             self._client.collection.load(timeout=10)
-            utility.wait_for_loading_complete(
-                self._client.collection.name, timeout=10)
+            utility.wait_for_loading_complete(self._client.collection.name, timeout=10)
 
     def search(self, embedding: Embedding) -> MatchedResult:
         """
@@ -50,13 +40,16 @@ class Matcher:
             # if result['score'] > self._threshold:
             time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             logging.debug(f"matched {result['id']} with score {result['score']}")
-            return MatchedResult(id=str(result['id']),
-                                 name=result['name'],
-                                 score=result['score'],
-                                 time=time_now)
+            return MatchedResult(
+                id=str(result["id"]),
+                name=result["name"],
+                score=result["score"],
+                time=time_now,
+            )
 
     def stop_client(self):
         self._client.shut_down()
+
 
 # TODO: register if the operation is registered instead of identify
 
@@ -66,11 +59,9 @@ class Registrar:
         self._client = milvus_client
 
     def sign_up(self, embedding: Embedding, id: str, name: str):
-
         assert np.isclose(norm(embedding), 1), "embedding must be normed"
         logging.debug(f"registering {id} {name}")
-        self._client.insert(
-            [np.array([id]), np.array([name]), np.array([embedding])])
+        self._client.insert([np.array([id]), np.array([name]), np.array([embedding])])
 
     # 批量插入
     def insert_batch(self, faces: list[list[ndarray[512], str, str]]):
@@ -82,24 +73,22 @@ class Registrar:
             ids.append(id)
             embeddings.append(embedding)
             names.append(name)
-        self._client.insert(
-            [np.array(ids), np.array(names), np.array(embeddings)])
+        self._client.insert([np.array(ids), np.array(names), np.array(embeddings)])
 
     def insert_fake_face(self, num: int):
         faces_g = data_generator(num_items=100000)
         i = 0
         for embedding, id, name in faces_g:
             i += 1
-            logger.debug(f'inserting {i}th/{num} face')
+            logger.debug(f"inserting {i}th/{num} face")
             self._client.insert(
-                [np.array([id]), np.array([name]), np.array([embedding])])
-
-
+                [np.array([id]), np.array([name]), np.array([embedding])]
+            )
 
 
 # register = Register(client)
 # matcher = Matcher(client)
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass
     # client = MilvusClient()
     # register = Registrar(client)

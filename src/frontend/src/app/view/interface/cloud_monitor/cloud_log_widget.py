@@ -1,7 +1,6 @@
-# coding=utf-8
 import time
 
-from PyQt6.QtCore import pyqtSignal, QThread
+from PyQt6.QtCore import QThread, pyqtSignal
 
 from src.app.common import signalBus
 from src.app.common.client.web_socket import WebSocketClient
@@ -9,13 +8,15 @@ from src.app.config import qt_logger
 from src.app.utils.decorator import error_handler
 from src.app.view.component.console_log_widget import ConsoleLogWidget
 
-__all__ = ['create_cloud_log']
+__all__ = ["create_cloud_log"]
+
 
 # FIXME: get empty
 class CloudLogM(QThread):
     """
     Cloud log model
     """
+
     cloud_log_data = pyqtSignal(str)  # Signal to emit new data
 
     def __init__(self, parent=None):

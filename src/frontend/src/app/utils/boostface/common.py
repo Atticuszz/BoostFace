@@ -2,21 +2,20 @@ import queue
 import uuid
 from collections import deque
 from dataclasses import dataclass
-from threading import Thread, Event
+from threading import Event, Thread
 from typing import Any
 
 import numpy as np
 from PyQt6.QtCore import QThread, pyqtSlot
 
 from src.app.common import signalBus
+from src.app.common.types import Bbox, Embedding, Face2Search, Image, Kps, MatchedResult
 from src.app.config import qt_logger
 from src.app.utils.time_tracker import time_tracker
-from src.app.common.types import Image, Bbox, Kps, Embedding, MatchedResult, Face2Search
 
 
 @dataclass
 class SignUpInfo:
-
     id: str
     name: str
 
@@ -25,12 +24,12 @@ class Face:
     """face"""
 
     def __init__(
-            self,
-            bbox: Bbox,
-            kps: Kps,
-            det_score: float,
-            scene_scale: tuple[int, int, int, int],
-            face_id: str | None = None
+        self,
+        bbox: Bbox,
+        kps: Kps,
+        det_score: float,
+        scene_scale: tuple[int, int, int, int],
+        face_id: str | None = None,
     ):
         """
         init a face
@@ -46,7 +45,7 @@ class Face:
         self.embedding: Embedding = np.zeros(512)
         self.id = face_id if face_id else str(uuid.uuid4())
         self.match_info = MatchedResult(uid=self.id)
-        self.sign_up_info = SignUpInfo(id=face_id,name='')
+        self.sign_up_info = SignUpInfo(id=face_id, name="")
 
     def face_image(self, scene: Image) -> Face2Search:
         """
@@ -56,7 +55,8 @@ class Face:
         """
         # 确保 bbox 中的值是整数
         x1, y1, x2, y2 = map(
-            int, [self.bbox[0], self.bbox[1], self.bbox[2], self.bbox[3]])
+            int, [self.bbox[0], self.bbox[1], self.bbox[2], self.bbox[3]]
+        )
 
         # 避免超出图像边界
         x1 = max(0, x1)
@@ -71,11 +71,7 @@ class Face:
         # 调整关键点位置
         kps = self.kps - np.array([x1, y1])
 
-        return Face2Search(
-            face_img,
-            kps,
-            self.det_score,
-            self.match_info.uid)
+        return Face2Search(face_img, kps, self.det_score, self.match_info.uid)
 
 
 class ImageFaces:
@@ -111,11 +107,9 @@ class ThreadBase(Thread):
 
     def run(self):
         """long time thread works"""
-        pass
 
     def produce(self) -> ImageFaces:
         """read from result_queue"""
-        pass
 
     @property
     def result_queue(self):
@@ -135,7 +129,7 @@ class ThreadBase(Thread):
         self._is_sleeping.clear()
 
     def stop(self):
-        """release camera and kill thread """
+        """release camera and kill thread"""
         self._is_sleeping.set()
         self._is_running.clear()
 
@@ -175,12 +169,14 @@ class ClosableQueue(queue.Queue):
                     yield item
                 except queue.Empty:
                     qt_logger.warn(
-                        f"{self._task_name} queue: Waiting for {self._wait_time} sec, no item received. Closing.")
+                        f"{self._task_name} queue: Waiting for {self._wait_time} sec, no item received. Closing."
+                    )
                     self.close()
                     break
                 except Exception as e:
                     qt_logger.error(
-                        f"{self._task_name} queue: Error while getting item from queue: {e}")
+                        f"{self._task_name} queue: Error while getting item from queue: {e}"
+                    )
                     break
 
 
@@ -188,11 +184,12 @@ class WorkingThread(QThread):
     """long time prod_cons task in a thread and auto get queues
     running by  signalBus.is_identify_running
     """
+
     threads = 0
     prod_cons_queues = [
-        ClosableQueue(task_name='read_2_detect'),
-        ClosableQueue(task_name='detected_2_identify'),
-        ClosableQueue(task_name='identified_2_draw'),
+        ClosableQueue(task_name="read_2_detect"),
+        ClosableQueue(task_name="detected_2_identify"),
+        ClosableQueue(task_name="identified_2_draw"),
     ]
 
     def __init__(self, works_name: str, is_consumer=True):

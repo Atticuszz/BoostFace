@@ -4,11 +4,11 @@ from PyQt6.QtCore import QTimer
 from src.app.utils.decorator import error_handler
 from src.app.view.component.system_monitor import SystemMonitor
 
-__all__ = ['create_local_system_monitor']
+__all__ = ["create_local_system_monitor"]
 
 
 class LocalSystemStats:
-    """ Local system stats"""
+    """Local system stats"""
 
     def __init__(self):
         self.last_net_io = psutil.net_io_counters()
@@ -28,7 +28,7 @@ class LocalSystemStats:
 
 
 class LocalSystemMonitorC:
-    """ Controller for local system monitor"""
+    """Controller for local system monitor"""
 
     def __init__(self, view: SystemMonitor, model: LocalSystemStats):
         self.view = view

@@ -1,26 +1,29 @@
-# coding: utf-8
-
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import (
+    FluentWindow,
     NavigationAvatarWidget,
     NavigationItemPosition,
-    FluentWindow,
-    SplashScreen)
+    SplashScreen,
+)
 
 from src.app.common.signal_bus import signalBus
 from src.app.common.translator import Translator
 from src.app.config.config import cfg
-from src.app.view.interface import CloudMonitorInterface, HomeInterface, LocalMonitorInterface, SettingInterface
+from src.app.view.interface import (
+    CloudMonitorInterface,
+    HomeInterface,
+    LocalMonitorInterface,
+    SettingInterface,
+)
+
 from .component.auth_dialog import create_login_dialog
-from .resource import compiled_resources
 
 
 # FIXME: move window lead to crash
 class MainWindow(FluentWindow):
-
     def __init__(self):
         super().__init__()
 
@@ -49,34 +52,30 @@ class MainWindow(FluentWindow):
     def initNavigation(self):
         # add navigation items
         t = Translator()
-        self.addSubInterface(self.homeInterface, FIF.HOME, self.tr('Home'))
+        self.addSubInterface(self.homeInterface, FIF.HOME, self.tr("Home"))
         self.navigationInterface.addSeparator()
-        self.addSubInterface(
-            self.cloudInterface,
-            FIF.CLOUD,
-            self.tr('Cloud Dev'))
+        self.addSubInterface(self.cloudInterface, FIF.CLOUD, self.tr("Cloud Dev"))
 
         self.addSubInterface(
-            self.local_console_interface,
-            FIF.COMMAND_PROMPT,
-            self.tr('Local Console'))
+            self.local_console_interface, FIF.COMMAND_PROMPT, self.tr("Local Console")
+        )
 
         # add login widget to bottom
 
         self.navigationInterface.addWidget(
-            routeKey='avatar',
-            widget=NavigationAvatarWidget(
-                'zhiyiYo', ':/gallery/images/shoko.png'),
+            routeKey="avatar",
+            widget=NavigationAvatarWidget("zhiyiYo", ":/gallery/images/shoko.png"),
             onClick=self.login,  # FIXME: bug here click ,failed program
-            position=NavigationItemPosition.BOTTOM
+            position=NavigationItemPosition.BOTTOM,
         )
 
         # setting interface
         self.addSubInterface(
             self.settingInterface,
             FIF.SETTING,
-            self.tr('Settings'),
-            NavigationItemPosition.BOTTOM)
+            self.tr("Settings"),
+            NavigationItemPosition.BOTTOM,
+        )
 
     def initWindow(self):
         """
@@ -90,8 +89,8 @@ class MainWindow(FluentWindow):
         self.setMinimumWidth(760)
 
         # set window icon and title
-        self.setWindowIcon(QIcon(':/gallery/images/logo.png'))
-        self.setWindowTitle('基于云计算+深度学习的高负荷多终端人脸识别微服务架构系统 桌面端')
+        self.setWindowIcon(QIcon(":/gallery/images/logo.png"))
+        self.setWindowTitle("基于云计算+深度学习的高负荷多终端人脸识别微服务架构系统 桌面端")
 
         self.setMicaEffectEnabled(cfg.get(cfg.micaEnabled))
 
@@ -104,13 +103,14 @@ class MainWindow(FluentWindow):
         self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
         self.show()
         QApplication.processEvents()
+
     def login(self):
         self.login_dialog_c = create_login_dialog(self)
         self.login_dialog = self.login_dialog_c.view
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
-        if hasattr(self, 'splashScreen'):
+        if hasattr(self, "splashScreen"):
             self.splashScreen.resize(self.size())
 
     # def switchToSample(self, routeKey, index):

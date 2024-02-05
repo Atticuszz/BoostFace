@@ -1,10 +1,10 @@
 import logging
 import re
+from collections import defaultdict
 
 from src.app.common import signalBus
-from collections import defaultdict
-log_format = logging.Formatter(
-    "%(asctime)s - %(levelname)s - %(message)s\n")
+
+log_format = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s\n")
 
 
 class DeduplicationHandler(logging.Handler):
@@ -38,9 +38,9 @@ class DeduplicationHandler(logging.Handler):
     def filter_dynamic_content(self, log_entry):
         # 假设日志格式的时间戳是以 'YYYY-MM-DD HH:MM:SS,mmm' 格式开头的
         # 此正则表达式将匹配大多数标准ISO格式日期时间
-        timestamp_pattern = r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3} - '
+        timestamp_pattern = r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3} - "
         # 使用正则表达式移除日志条目中的时间戳
-        return re.sub(timestamp_pattern, '', log_entry)
+        return re.sub(timestamp_pattern, "", log_entry)
 
     def deduplicated_emit(self, log_entry):
         raise NotImplementedError("Subclasses must implement this method")
@@ -63,9 +63,5 @@ stream_handler = StreamDeduplicationHandler()
 stream_handler.setFormatter(log_format)
 
 # 设置日志格式和处理器
-logging.basicConfig(
-    handlers=[
-        qt_logging_handler,
-        stream_handler],
-    level=logging.DEBUG)
+logging.basicConfig(handlers=[qt_logging_handler, stream_handler], level=logging.DEBUG)
 qt_logger = logging.getLogger()

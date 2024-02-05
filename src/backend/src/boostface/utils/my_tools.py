@@ -1,5 +1,6 @@
 def detect_cameras():
     import cv2
+
     max_to_check = 10
     available_cameras = []
 
@@ -13,4 +14,3 @@ def detect_cameras():
             print(f"Camera index {i} is not available.")
     print("Available cameras are:", available_cameras)
     return available_cameras
-

@@ -1,4 +1,3 @@
-# coding=utf-8
 from functools import wraps
 
 
@@ -15,6 +14,8 @@ def thread_error_catcher(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            print(f"An error occurred while processing the {getattr(func, '__name__', 'unknown')} task: {e}")
+            print(
+                f"An error occurred while processing the {getattr(func, '__name__', 'unknown')} task: {e}"
+            )
 
     return wrapper

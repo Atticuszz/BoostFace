@@ -11,7 +11,6 @@ from line_profiler_pycharm import profile
 from src.boostface.app.common import LightImage
 from src.boostface.app.detector import Detector
 
-
 # Define the function to generate a single image
 
 
@@ -23,48 +22,47 @@ def generate_light_image(pixels=5000000):
     # Assuming a square image for simplicity: sqrt(5000000) is approximately 2236.07
     # So we use 2236 for both width and height to approximate 5000000 pixels for the 3 channels
     side_length = int(np.sqrt(pixels / 3))
-    image_array = np.random.randint(0, 256, (side_length, side_length, 3), dtype=np.uint8)
+    image_array = np.random.randint(
+        0, 256, (side_length, side_length, 3), dtype=np.uint8
+    )
     return LightImage(nd_arr=image_array)
 
 
 @profile
-def sender(imgs: list[np.ndarray],
-           task_queue: multiprocessing.Queue,
-           result_dict: dict,
-           cost_time: dict):
+def sender(
+    imgs: list[np.ndarray],
+    task_queue: multiprocessing.Queue,
+    result_dict: dict,
+    cost_time: dict,
+):
     def add_task(
-            task: Any,
-            task_queue: multiprocessing.Queue,
-            cost_time: dict,
-            timeout: int = 5):
+        task: Any, task_queue: multiprocessing.Queue, cost_time: dict, timeout: int = 5
+    ):
         try:
             start_time = default_timer()
             task_id = uuid.uuid4()
             task_queue.put((task_id, task), timeout=timeout)
             elapsed_time = default_timer() - start_time
-            cost_time['add_task'].append(default_timer() - start_time)
+            cost_time["add_task"].append(default_timer() - start_time)
             print(f"Task added: ID={task_id}, Time={elapsed_time}")
             return task_id
         except queue.Full:
             raise queue.Full("The task queue is full. Try again later.")
 
-    def get_result(
-            task_id: uuid.UUID,
-            result_dict: dict,
-            cost_time: dict,
-            timeout=10):
+    def get_result(task_id: uuid.UUID, result_dict: dict, cost_time: dict, timeout=10):
         # Function to get the result of a task with timing
         start_time = default_timer()
         while True:
             if task_id in result_dict:
                 result = result_dict.pop(task_id)
                 elapsed_time = default_timer() - start_time
-                cost_time['get_result'].append(elapsed_time)
+                cost_time["get_result"].append(elapsed_time)
                 print(f"Task completed: ID={task_id}, Time={elapsed_time}")
                 return task_id, result
             elif default_timer() - start_time > timeout:
                 raise queue.Empty(
-                    f"Timeout while waiting for the result of task {task_id}")
+                    f"Timeout while waiting for the result of task {task_id}"
+                )
             sleep(0.01)
 
     print("add_task process")
@@ -79,8 +77,7 @@ def sender(imgs: list[np.ndarray],
 
 @profile
 # Function to be run by worker processes
-def worker(task_queue: multiprocessing.Queue,
-           result_dict: dict):
+def worker(task_queue: multiprocessing.Queue, result_dict: dict):
     print("worker process")
     detector = Detector()
     while True:
@@ -99,7 +96,7 @@ def worker(task_queue: multiprocessing.Queue,
             break
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # 创建一个管理器
     with multiprocessing.Manager() as manager:
         task_queue = manager.Queue()
@@ -112,11 +109,21 @@ if __name__ == '__main__':
         print(f"Generated {num_images} images.")
         # 开启两个进程，一个发送任务，一个接收结果
         user = multiprocessing.Process(
-            target=sender, args=(
-                imgs, task_queue, result_dict, cost_time,))
+            target=sender,
+            args=(
+                imgs,
+                task_queue,
+                result_dict,
+                cost_time,
+            ),
+        )
         receiver = multiprocessing.Process(
-            target=worker, args=(
-                task_queue, result_dict,))
+            target=worker,
+            args=(
+                task_queue,
+                result_dict,
+            ),
+        )
         receiver.start()
         user.start()
 

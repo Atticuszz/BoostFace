@@ -1,5 +1,3 @@
-# coding=utf-8
-
 from PyQt6.QtGui import QTextCursor
 from qfluentwidgets import TextEdit
 

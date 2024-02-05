@@ -3,8 +3,8 @@ import multiprocessing
 from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
+from app.services.inference.common import Face2Search, IdentifyManager
 
-from app.services.inference.common import IdentifyManager, Face2Search
 from src.boostface.component.identifier import IdentifyWorker
 from tests import generate_face2search
 
@@ -28,7 +28,8 @@ def register_face():
         identifier_task_queue = manager.Queue(maxsize=100)
         identifier_result_dict = manager.dict()
         identifier_manager = IdentifyManager(
-            identifier_task_queue, identifier_result_dict)
+            identifier_task_queue, identifier_result_dict
+        )
         print("created identifier_manager")
 
         worker = IdentifyWorker(identifier_task_queue, identifier_result_dict)
@@ -47,7 +48,10 @@ def register_face():
                 elapsed_time = []
                 # 模拟5个线程同时喂给处理进程
                 with ThreadPoolExecutor(max_workers=num_threads) as executor:
-                    futures = [executor.submit(process_image, fake_img, identifier_manager) for _ in range(num_threads)]
+                    futures = [
+                        executor.submit(process_image, fake_img, identifier_manager)
+                        for _ in range(num_threads)
+                    ]
                     for future in concurrent.futures.as_completed(futures):
                         elapsed = future.result()
                         elapsed_time.append(np.mean(elapsed))
@@ -61,6 +65,6 @@ def register_face():
             plot_mean_times_with_trend(mean_elapsed_times)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # pass
     test_IdentifyWorker()

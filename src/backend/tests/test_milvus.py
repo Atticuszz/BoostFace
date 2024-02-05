@@ -12,16 +12,12 @@ def test_matcher():
     ins_1 = Matcher()
 
 
-
-
-
 def test_registrar():
     ins_2 = Registrar()
 
     ins_2.insert_fake_face(10000)
 
 
-
-if __name__=="__main__":
+if __name__ == "__main__":
     test_matcher()
     test_registrar()

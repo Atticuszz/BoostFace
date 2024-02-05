@@ -2,7 +2,7 @@ import cv2
 
 # from ..app.common import Face
 
-__all__ = ['flatten_list', 'get_digits', 'get_nodigits']
+__all__ = ["flatten_list", "get_digits", "get_nodigits"]
 
 
 # # 展开嵌套列表,最底层元素是Face或者Image对象
@@ -18,15 +18,16 @@ __all__ = ['flatten_list', 'get_digits', 'get_nodigits']
 
 
 def get_digits(s: str) -> str:
-    return ''.join(c for c in s if c.isdigit())
+    return "".join(c for c in s if c.isdigit())
 
 
 def get_nodigits(s: str) -> str:
-    return ''.join(c for c in s if not c.isdigit())
+    return "".join(c for c in s if not c.isdigit())
 
 
 def detect_cameras():
     import cv2
+
     max_to_check = 10
     available_cameras = []
 

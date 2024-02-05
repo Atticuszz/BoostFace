@@ -1,11 +1,11 @@
-import numpy as np
 import cv2
 import onnx
 import onnxruntime
+
 from ..utils import face_align
 
 __all__ = [
-    'ArcFaceONNX',
+    "ArcFaceONNX",
 ]
 
 
@@ -14,16 +14,16 @@ class ArcFaceONNX:
         assert model_file is not None
         self.model_file = model_file
         self.session = session
-        self.taskname = 'recognition'
+        self.taskname = "recognition"
         find_sub = False
         find_mul = False
         model = onnx.load(self.model_file)
         graph = model.graph
         for nid, node in enumerate(graph.node[:8]):
             # print(nid, node.name)
-            if node.name.startswith('Sub') or node.name.startswith('_minus'):
+            if node.name.startswith("Sub") or node.name.startswith("_minus"):
                 find_sub = True
-            if node.name.startswith('Mul') or node.name.startswith('_mul'):
+            if node.name.startswith("Mul") or node.name.startswith("_mul"):
                 find_mul = True
         if find_sub and find_mul:
             # mxnet arcface model
@@ -53,12 +53,13 @@ class ArcFaceONNX:
 
     def prepare(self, ctx_id, **kwargs):
         if ctx_id < 0:
-            self.session.set_providers(['CPUExecutionProvider'])
+            self.session.set_providers(["CPUExecutionProvider"])
 
     def get(self, img, face):
         # FIXME:input size maybe wrong
         aimg = face_align.norm_crop(
-            img, landmark=face.kps, image_size=self.input_size[0])
+            img, landmark=face.kps, image_size=self.input_size[0]
+        )
         face.embedding = self.get_feat(aimg).flatten()
         return face.embedding
 
@@ -71,18 +72,13 @@ class ArcFaceONNX:
             imgs,
             1.0 / self.input_std,
             input_size,
-            (self.input_mean,
-             self.input_mean,
-             self.input_mean),
-            swapRB=True)
-        net_out = self.session.run(
-            self.output_names, {
-                self.input_name: blob})[0]
+            (self.input_mean, self.input_mean, self.input_mean),
+            swapRB=True,
+        )
+        net_out = self.session.run(self.output_names, {self.input_name: blob})[0]
         return net_out
 
     def forward(self, batch_data):
         blob = (batch_data - self.input_mean) / self.input_std
-        net_out = self.session.run(
-            self.output_names, {
-                self.input_name: blob})[0]
+        net_out = self.session.run(self.output_names, {self.input_name: blob})[0]
         return net_out

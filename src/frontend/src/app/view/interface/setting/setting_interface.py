@@ -1,20 +1,18 @@
-# coding:utf-8
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QLabel
-from qfluentwidgets import InfoBar
-from qfluentwidgets import (
-    ScrollArea,
-    ExpandLayout)
+from PyQt6.QtWidgets import QLabel, QWidget
+from qfluentwidgets import ExpandLayout, InfoBar, ScrollArea
 
 from src.app.config.config import cfg, isWin11
 from src.app.view.interface.setting.about_settings import create_about_setting_group
 from src.app.view.interface.setting.camera_settings import create_camera_setting_group
-from src.app.view.interface.setting.personalization_settings import create_personalization_setting_group
+from src.app.view.interface.setting.personalization_settings import (
+    create_personalization_setting_group,
+)
 from src.app.view.style_sheet import StyleSheet
 
 
 class SettingInterface(ScrollArea):
-    """ Setting interface """
+    """Setting interface"""
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -30,8 +28,7 @@ class SettingInterface(ScrollArea):
         self.cameraGroup = self.cameraGroup_c.view
 
         # personalization
-        self.personalGroup_c = create_personalization_setting_group(
-            self.scrollWidget)
+        self.personalGroup_c = create_personalization_setting_group(self.scrollWidget)
         self.personalGroup = self.personalGroup_c.view
 
         # application
@@ -45,16 +42,15 @@ class SettingInterface(ScrollArea):
     def _initWidget(self):
         # init window
         self.resize(1000, 800)
-        self.setHorizontalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setViewportMargins(0, 80, 0, 20)
         self.setWidget(self.scrollWidget)
         self.setWidgetResizable(True)
-        self.setObjectName('settingInterface')
+        self.setObjectName("settingInterface")
 
         # initialize style sheet
-        self.scrollWidget.setObjectName('scrollWidget')
-        self.settingLabel.setObjectName('settingLabel')
+        self.scrollWidget.setObjectName("scrollWidget")
+        self.settingLabel.setObjectName("settingLabel")
         StyleSheet.SETTING_INTERFACE.apply(self)
 
         self.personalGroup.micaCard.setEnabled(isWin11())
@@ -75,18 +71,20 @@ class SettingInterface(ScrollArea):
         self.expandLayout.addWidget(self.aboutGroup)
 
     def _showRestartTooltip(self):
-        """ show restart tooltip """
+        """show restart tooltip"""
         InfoBar.success(
-            self.tr('Updated successfully'),
-            self.tr('Configuration takes effect after restart'),
+            self.tr("Updated successfully"),
+            self.tr("Configuration takes effect after restart"),
             duration=1500,
-            parent=self
+            parent=self,
         )
 
 
-if __name__ == '__main__':
-    from PyQt6.QtWidgets import QApplication
+if __name__ == "__main__":
     import sys
+
+    from PyQt6.QtWidgets import QApplication
+
     from src.app.config.logging_config import QLoggingHandler
 
     app = QApplication(sys.argv)

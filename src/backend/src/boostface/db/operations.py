@@ -1,4 +1,3 @@
-# coding=utf-8
 import traceback
 import warnings
 from pathlib import Path
@@ -6,12 +5,12 @@ from timeit import default_timer
 
 import cv2
 import numpy as np
+from app.services.inference.common import Embedding, Image2Detect
+from boostface.types import Image, MatchInfo
 from numpy import ndarray
 from numpy.linalg import norm
 from pymilvus.orm import utility
 
-from boostface.types import MatchInfo, Image
-from app.services.inference.common import Embedding, Image2Detect
 from src.boostface.db.milvus_client import MilvusClient
 
 __all__ = ["Register", "Matcher"]
@@ -27,12 +26,10 @@ class Matcher:
         self._threshold = threshold
         print("Loading collection to RAM")
         self._client.collection.load(timeout=10)
-        utility.wait_for_loading_complete(
-            self._client.collection.name, timeout=10)
+        utility.wait_for_loading_complete(self._client.collection.name, timeout=10)
 
     def __enter__(self):
-        """:
-        """
+        """:"""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -58,11 +55,11 @@ class Matcher:
         """
         assert np.isclose(norm(embedding), 1), "embedding must be normed"
         results: list[list[dict]] = self._client.search([embedding])
-        ret = MatchInfo(uid='', score=0.0)
+        ret = MatchInfo(uid="", score=0.0)
         for i, result in enumerate(results):
             result = result[0]  # top_k=1
             # if result['score'] > self._threshold:
-            ret = MatchInfo(uid=str(result['id']), score=result['score'])
+            ret = MatchInfo(uid=str(result["id"]), score=result["score"])
         return ret
 
 
@@ -70,6 +67,7 @@ class Register:
     def __init__(self, client: MilvusClient):
         from src.boostface.component.detector import Detector
         from src.boostface.component.identifier import Extractor
+
         self._client = client
         self._detector = Detector()
         self._extractor = Extractor()
@@ -85,13 +83,13 @@ class Register:
             image2detect.nd_arr,
             res_det.faces[0].bbox,
             res_det.faces[0].kps,
-            res_det.faces[0].det_score)
+            res_det.faces[0].det_score,
+        )
         self._insert(embedding, id)
 
     def _insert(self, embedding: ndarray[512], id: str):
         assert np.isclose(norm(embedding), 1), "embedding must be normed"
-        self._client.insert(
-            [np.array([id]), np.array(['name']), np.array([embedding])])
+        self._client.insert([np.array([id]), np.array(["name"]), np.array([embedding])])
 
     # 批量插入
     def _insert_batch(self, faces: list[list[ndarray[512], str, str]]):
@@ -103,14 +101,12 @@ class Register:
             ids.append(id)
             embeddings.append(embedding)
             names.append(name)
-        self._client.insert(
-            [np.array(ids), np.array(names), np.array(embeddings)])
+        self._client.insert([np.array(ids), np.array(names), np.array(embeddings)])
 
 
 # register = Register(client)
 # matcher = Matcher(client)
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     client = MilvusClient()
     register = Register(client)
     image_dir: Path = Path(__file__).parent / "data\\test_01\\known"
@@ -125,4 +121,5 @@ if __name__ == '__main__':
             continue
         register.sign_up(img, image_path.name)
         print(
-            f"registered {i}/13261 image:{image_path.name} cost:{default_timer() - start}")
+            f"registered {i}/13261 image:{image_path.name} cost:{default_timer() - start}"
+        )

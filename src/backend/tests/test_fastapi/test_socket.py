@@ -5,11 +5,11 @@
 @Date Created : 16/12/2023
 @Description  :
 """
+
 # test_app.py
 from fastapi.testclient import TestClient
-from src.app.main import app
-import asyncio
 
+from src.app.main import app
 
 client = TestClient(app)
 

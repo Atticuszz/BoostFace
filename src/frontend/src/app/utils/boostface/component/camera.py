@@ -5,18 +5,14 @@
 @Date Created : 14/12/2023
 @Description  :
 """
-from collections import deque
-from threading import Thread, Event
 
 import cv2
-from time import sleep
 
-from src.app.config import cfg
-from src.app.config import qt_logger
-from src.app.config.config import CameraUrl, CameraConfig
-from src.app.utils.decorator import error_handler, calm_down
-from src.app.utils.time_tracker import time_tracker
+from src.app.config import cfg, qt_logger
+from src.app.config.config import CameraConfig, CameraUrl
 from src.app.utils.boostface.common import ImageFaces, ThreadBase
+from src.app.utils.decorator import calm_down, error_handler
+from src.app.utils.time_tracker import time_tracker
 
 
 class CameraOpenError(Exception):
@@ -32,8 +28,12 @@ class CameraOpenError(Exception):
 class CameraBase:
     """config for camera"""
 
-    def __init__(self, config: CameraConfig = CameraConfig(
-            fps=cfg.cameraFps.value, url=cfg.cameraDevice.value)):
+    def __init__(
+        self,
+        config: CameraConfig = CameraConfig(
+            fps=cfg.cameraFps.value, url=cfg.cameraDevice.value
+        ),
+    ):
         """
         cmd 运行setx OPENCV_VIDEOIO_PRIORITY_MSMF 0后重启，可以加快摄像头打开的速度
         :param config: CameraOptions()
@@ -52,12 +52,8 @@ class CameraBase:
         #  设置帧数
         self.videoCapture.set(cv2.CAP_PROP_FPS, self.config.fps)
         # 设置分辨率
-        self.videoCapture.set(
-            cv2.CAP_PROP_FRAME_WIDTH,
-            self.config.resolution[0])
-        self.videoCapture.set(
-            cv2.CAP_PROP_FRAME_HEIGHT,
-            self.config.resolution[1])
+        self.videoCapture.set(cv2.CAP_PROP_FRAME_WIDTH, self.config.resolution[0])
+        self.videoCapture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.config.resolution[1])
 
         # 设置视频编解码格式 note: 务必在set分辨率之后设置，否则不知道为什么又会回到默认的YUY2
         self.videoCapture.set(
@@ -74,8 +70,7 @@ class CameraBase:
         fourcc = self.videoCapture.get(cv2.CAP_PROP_FOURCC)
         # 因为FOURCC编码是一个32位的值，我们需要将它转换为字符来理解它
         # 将整数编码值转换为FOURCC编码的字符串表示形式
-        codec_format = "".join(
-            [chr((int(fourcc) >> 8 * i) & 0xFF) for i in range(4)])
+        codec_format = "".join([chr((int(fourcc) >> 8 * i) & 0xFF) for i in range(4)])
         return codec_format
 
     def __repr__(self):
@@ -83,14 +78,14 @@ class CameraBase:
         print camera info
         """
         self.real_resolution = int(
-            self.videoCapture.get(
-                cv2.CAP_PROP_FRAME_WIDTH)), int(
-            self.videoCapture.get(
-                cv2.CAP_PROP_FRAME_HEIGHT))
+            self.videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH)
+        ), int(self.videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         # 获取帧数
         self.real_fps = int(self.videoCapture.get(cv2.CAP_PROP_FPS))
-        repr_string = (f"The video  codec  is {self.cap_codec_format}\n"
-                       f"camera params = {self.config}")
+        repr_string = (
+            f"The video  codec  is {self.cap_codec_format}\n"
+            f"camera params = {self.config}"
+        )
         return repr_string
 
 
@@ -135,7 +130,6 @@ class Camera(ThreadBase):
             qt_logger.error(f"camera._read with CameraOpenError{error_msg}")
             raise CameraOpenError(error_msg)
         return ImageFaces(image=frame, faces=[])
-
 
 
 if __name__ == "__main__":

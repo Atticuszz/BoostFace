@@ -12,7 +12,5 @@ def test_init_instance():
     e = Extractor()
 
 
-
-
-if __name__=="__main__":
+if __name__ == "__main__":
     test_init_instance()

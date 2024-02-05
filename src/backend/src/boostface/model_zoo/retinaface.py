@@ -1,18 +1,14 @@
-# -*- coding: utf-8 -*-
 # @Organization  : insightface.ai
 # @Author        : Jia Guo
 # @Time          : 2021-09-18
 # @Function      :
 
-from __future__ import division
-import datetime
-import numpy as np
-import onnx
-import onnxruntime
+
 import os
 import os.path as osp
+
 import cv2
-import sys
+import numpy as np
 
 
 def softmax(z):
@@ -76,9 +72,10 @@ def distance2kps(points, distance, max_shape=None):
 class RetinaFace:
     def __init__(self, model_file=None, session=None):
         import onnxruntime
+
         self.model_file = model_file
         self.session = session
-        self.taskname = 'detection'
+        self.taskname = "detection"
         if self.session is None:
             assert self.model_file is not None
             assert osp.exists(self.model_file)
@@ -133,17 +130,17 @@ class RetinaFace:
 
     def prepare(self, ctx_id, **kwargs):
         if ctx_id < 0:
-            self.session.set_providers(['CPUExecutionProvider'])
-        nms_thresh = kwargs.get('nms_thresh', None)
+            self.session.set_providers(["CPUExecutionProvider"])
+        nms_thresh = kwargs.get("nms_thresh", None)
         if nms_thresh is not None:
             self.nms_thresh = nms_thresh
-        det_thresh = kwargs.get('det_thresh', None)
+        det_thresh = kwargs.get("det_thresh", None)
         if det_thresh is not None:
             self.det_thresh = det_thresh
-        input_size = kwargs.get('input_size', None)
+        input_size = kwargs.get("input_size", None)
         if input_size is not None:
             if self.input_size is not None:
-                print('warning: det_size is already set in detection model, ignore')
+                print("warning: det_size is already set in detection model, ignore")
             else:
                 self.input_size = input_size
 
@@ -152,8 +149,13 @@ class RetinaFace:
         bboxes_list = []
         kpss_list = []
         input_size = tuple(img.shape[0:2][::-1])
-        blob = cv2.dnn.blobFromImage(img, 1.0 / self.input_std, input_size,
-                                     (self.input_mean, self.input_mean, self.input_mean), swapRB=True)
+        blob = cv2.dnn.blobFromImage(
+            img,
+            1.0 / self.input_std,
+            input_size,
+            (self.input_mean, self.input_mean, self.input_mean),
+            swapRB=True,
+        )
         net_outs = self.session.run(self.output_names, {self.input_name: blob})
 
         input_height = blob.shape[2]
@@ -186,12 +188,16 @@ class RetinaFace:
                 # anchor_centers = np.stack([xv, yv], axis=-1).astype(np.float32)
 
                 # solution-3:
-                anchor_centers = np.stack(np.mgrid[:height, :width][::-1], axis=-1).astype(np.float32)
+                anchor_centers = np.stack(
+                    np.mgrid[:height, :width][::-1], axis=-1
+                ).astype(np.float32)
                 # print(anchor_centers.shape)
 
                 anchor_centers = (anchor_centers * stride).reshape((-1, 2))
                 if self._num_anchors > 1:
-                    anchor_centers = np.stack([anchor_centers] * self._num_anchors, axis=1).reshape((-1, 2))
+                    anchor_centers = np.stack(
+                        [anchor_centers] * self._num_anchors, axis=1
+                    ).reshape((-1, 2))
                 if len(self.center_cache) < 100:
                     self.center_cache[key] = anchor_centers
 
@@ -209,7 +215,7 @@ class RetinaFace:
                 kpss_list.append(pos_kpss)
         return scores_list, bboxes_list, kpss_list
 
-    def detect(self, img, input_size=None, max_num=0, metric='default'):
+    def detect(self, img, input_size=None, max_num=0, metric="default"):
         assert input_size is not None or self.input_size is not None
         input_size = self.input_size if input_size is None else input_size
 
@@ -244,20 +250,22 @@ class RetinaFace:
         else:
             kpss = None
         if max_num > 0 and det.shape[0] > max_num:
-            area = (det[:, 2] - det[:, 0]) * (det[:, 3] -
-                                              det[:, 1])
+            area = (det[:, 2] - det[:, 0]) * (det[:, 3] - det[:, 1])
             img_center = img.shape[0] // 2, img.shape[1] // 2
-            offsets = np.vstack([
-                (det[:, 0] + det[:, 2]) / 2 - img_center[1],
-                (det[:, 1] + det[:, 3]) / 2 - img_center[0]
-            ])
+            offsets = np.vstack(
+                [
+                    (det[:, 0] + det[:, 2]) / 2 - img_center[1],
+                    (det[:, 1] + det[:, 3]) / 2 - img_center[0],
+                ]
+            )
             offset_dist_squared = np.sum(np.power(offsets, 2.0), 0)
-            if metric == 'max':
+            if metric == "max":
                 values = area
             else:
-                values = area - offset_dist_squared * 2.0  # some extra weight on the centering
-            bindex = np.argsort(
-                values)[::-1]  # some extra weight on the centering
+                values = (
+                    area - offset_dist_squared * 2.0
+                )  # some extra weight on the centering
+            bindex = np.argsort(values)[::-1]  # some extra weight on the centering
             bindex = bindex[0:max_num]
             det = det[bindex, :]
             if kpss is not None:
@@ -295,11 +303,12 @@ class RetinaFace:
         return keep
 
 
-def get_retinaface(name, download=False, root='~/.insightface/models', **kwargs):
+def get_retinaface(name, download=False, root="~/.insightface/models", **kwargs):
     if not download:
         assert os.path.exists(name)
         return RetinaFace(name)
     else:
         from .model_store import get_model_file
+
         _file = get_model_file("retinaface_%s" % name, root=root)
         return retinaface(_file)

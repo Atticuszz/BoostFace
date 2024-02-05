@@ -1,18 +1,20 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
+from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import FluentIcon as FIF
 
 from src.app.config.logging_config import QLoggingHandler
 from src.app.view.component.expand_info_card import ExpandInfoCard
 from src.app.view.interface.local_monitor.local_log_widget import create_local_log
-from src.app.view.interface.local_monitor.local_sm_widget import create_local_system_monitor
+from src.app.view.interface.local_monitor.local_sm_widget import (
+    create_local_system_monitor,
+)
 
 
 class LocalMonitorInterface(QWidget):
-    """ Local development interface"""
+    """Local development interface"""
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.setObjectName('localDevInterface')
+        self.setObjectName("localDevInterface")
         # init layout
         self.main_layout = QHBoxLayout(self)
         self.bc_layout = QVBoxLayout()
@@ -32,22 +34,20 @@ class LocalMonitorInterface(QWidget):
         self.bc_layout.addWidget(self.system_monitor, 2)
 
         # init window
-        self.setWindowTitle('Local Development Interface')
+        self.setWindowTitle("Local Development Interface")
         self.resize(1000, 800)
 
     def _init_camera_card(self):
         # B区域：摄像头信息，这里假设您的ExpandInfoCard已经创建好了
         self.camera_info_card = ExpandInfoCard(
-            FIF.CAMERA,
-            self.tr('Camera Info'),
-            parent=self
+            FIF.CAMERA, self.tr("Camera Info"), parent=self
         )
         self.camera_info_card.add_info(
             {
-                'Device name': 'USB2.0 Camera',
-                'Connection type': 'USB',
-                'Image resolution': '1920x1080',
-                'Capture FPS': '30',
+                "Device name": "USB2.0 Camera",
+                "Connection type": "USB",
+                "Image resolution": "1920x1080",
+                "Capture FPS": "30",
             }
         )
 
@@ -64,9 +64,10 @@ class LocalMonitorInterface(QWidget):
         self.console_log = self.console_log_c.view
 
 
-if __name__ == '__main__':
-    from PyQt6.QtWidgets import QApplication
+if __name__ == "__main__":
     import sys
+
+    from PyQt6.QtWidgets import QApplication
 
     app = QApplication(sys.argv)
     view = LocalMonitorInterface()

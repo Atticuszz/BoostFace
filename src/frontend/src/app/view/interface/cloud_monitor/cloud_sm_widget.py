@@ -1,11 +1,10 @@
-# coding=utf-8
 from src.app.common import signalBus
 from src.app.common.client.web_socket import WebSocketClient
 from src.app.config import qt_logger
 from src.app.utils.decorator import error_handler
 from src.app.view.component.system_monitor import SystemMonitor
 
-__all__ = ['create_cloud_system_monitor']
+__all__ = ["create_cloud_system_monitor"]
 
 
 from PyQt6.QtCore import QTimer
@@ -36,9 +35,9 @@ class CloudSystemStats:
     def process_data(self, data: dict):
         if not isinstance(data, dict):
             raise TypeError("data must be dict")
-        self.cpu_percent = float(data.get('cpu_percent', 0))
-        self.ram_percent = float(data.get('ram_percent', 0))
-        self.net_throughput = float(data.get('net_throughput', 0))
+        self.cpu_percent = float(data.get("cpu_percent", 0))
+        self.ram_percent = float(data.get("ram_percent", 0))
+        self.net_throughput = float(data.get("net_throughput", 0))
 
     def stop_ws(self):
         self.ws_client.stop_ws()
@@ -60,13 +59,11 @@ class CloudSystemMonitorC:
 
     @error_handler
     def update_system_stats(self):
-        """ Fetch new data from the model and update the view. """
+        """Fetch new data from the model and update the view."""
         self.model.update_stats()  # Ask the model to fetch new data
         # Update the view with new data
         self.view.update_stats(
-            self.model.cpu_percent,
-            self.model.ram_percent,
-            self.model.net_throughput
+            self.model.cpu_percent, self.model.ram_percent, self.model.net_throughput
         )
 
     def stop(self):
@@ -75,7 +72,7 @@ class CloudSystemMonitorC:
 
 
 def create_cloud_system_monitor(parent=None) -> CloudSystemMonitorC:
-    """ Factory function to create the monitor components. """
+    """Factory function to create the monitor components."""
     model = CloudSystemStats()
     # Assume SystemMonitor is a QWidget or similar
     view = SystemMonitor(parent=parent)

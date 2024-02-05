@@ -1,4 +1,3 @@
-# coding=utf-8
 """
 life span events
 """
@@ -7,26 +6,31 @@ from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
-
 from supabase_py_async import create_client
 from supabase_py_async.lib.client_options import ClientOptions
-from .config.logging_config import sub_process_msg_queue, queue_listener
-from .supabase_client import supabase_client
-from ..common import task_queue, registered_queue, result_queue
+
+from ..common import registered_queue, result_queue, task_queue
 from ..services.inference.identifier import IdentifyWorker
+from .config.logging_config import queue_listener, sub_process_msg_queue
+from .supabase_client import supabase_client
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """ life span events"""
+    """life span events"""
     identify_worker = None
     try:
         # start client
         load_dotenv()
         url: str = os.getenv("SUPABASE_URL")
         key: str = os.getenv("SUPABASE_KEY")
-        supabase_client.client = await create_client(url, key, options=ClientOptions(
-            postgrest_client_timeout=10, storage_client_timeout=10))
+        supabase_client.client = await create_client(
+            url,
+            key,
+            options=ClientOptions(
+                postgrest_client_timeout=10, storage_client_timeout=10
+            ),
+        )
         assert supabase_client.client is not None
 
         # start identify worker
@@ -34,7 +38,7 @@ async def lifespan(app: FastAPI):
             task_queue=task_queue,
             registered_queue=registered_queue,
             result_queue=result_queue,
-            sub_process_msg_queue=sub_process_msg_queue
+            sub_process_msg_queue=sub_process_msg_queue,
         )
         identify_worker.start()
 

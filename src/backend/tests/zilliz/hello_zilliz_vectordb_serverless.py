@@ -1,35 +1,42 @@
-import asyncio
 import configparser
-import time
 import random
-from pymilvus import connections, utility
-from pymilvus import Collection, DataType, FieldSchema, CollectionSchema
+import time
+
+from pymilvus import (
+    Collection,
+    CollectionSchema,
+    DataType,
+    FieldSchema,
+    connections,
+    utility,
+)
 
 
-async def async_search(collection: Collection, search_vec, search_params, topk, book_intro_field):
+async def async_search(
+    collection: Collection, search_vec, search_params, topk, book_intro_field
+):
     # 使用异步搜索
-    future = collection.search(search_vec,
-                               anns_field=book_intro_field.name,
-                               param=search_params,
-                               limit=topk,
-                               guarantee_timestamp=1,
-                               _async=True)
+    future = collection.search(
+        search_vec,
+        anns_field=book_intro_field.name,
+        param=search_params,
+        limit=topk,
+        guarantee_timestamp=1,
+        _async=True,
+    )
     # 等待搜索完成
     results = await future
     return results
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # connect to milvus
     cfp = configparser.RawConfigParser()
-    cfp.read('config_serverless.ini')
-    milvus_uri = cfp.get('example', 'uri')
-    token = cfp.get('example', 'token')
+    cfp.read("config_serverless.ini")
+    milvus_uri = cfp.get("example", "uri")
+    token = cfp.get("example", "token")
 
-    connections.connect("default",
-                        uri=milvus_uri,
-                        token=token,
-                        timeout=30)
+    connections.connect("default", uri=milvus_uri, token=token, timeout=30)
     print(f"Connecting to DB: {milvus_uri}")
 
     # Check if the collection exists
@@ -44,22 +51,19 @@ if __name__ == '__main__':
         name="book_id",
         dtype=DataType.INT64,
         is_primary=True,
-        description="customized primary id")
+        description="customized primary id",
+    )
     word_count_field = FieldSchema(
-        name="word_count",
-        dtype=DataType.INT64,
-        description="word count")
+        name="word_count", dtype=DataType.INT64, description="word count"
+    )
     book_intro_field = FieldSchema(
-        name="book_intro",
-        dtype=DataType.FLOAT_VECTOR,
-        dim=dim)
+        name="book_intro", dtype=DataType.FLOAT_VECTOR, dim=dim
+    )
     schema = CollectionSchema(
-        fields=[
-            book_id_field,
-            word_count_field,
-            book_intro_field],
+        fields=[book_id_field, word_count_field, book_intro_field],
         auto_id=False,
-        description="my first collection")
+        description="my first collection",
+    )
     print(f"Creating example collection: {collection_name}")
     collection = Collection(name=collection_name, schema=schema)
     print(f"Schema: {schema}")
@@ -74,8 +78,7 @@ if __name__ == '__main__':
     for i in range(insert_rounds):
         book_ids = [i for i in range(start, start + nb)]
         word_counts = [random.randint(1, 100) for i in range(nb)]
-        book_intros = [[random.random() for _ in range(dim)]
-                       for _ in range(nb)]
+        book_intros = [[random.random() for _ in range(dim)] for _ in range(nb)]
         entities = [book_ids, word_counts, book_intros]
         t0 = time.time()
         ins_resp = collection.insert(entities)
@@ -92,15 +95,10 @@ if __name__ == '__main__':
     end_flush = time.time()
     print(f"Succeed in {round(end_flush - start_flush, 4)} seconds!")
     # build index
-    index_params = {
-        "index_type": "AUTOINDEX",
-        "metric_type": "L2",
-        "params": {}}
+    index_params = {"index_type": "AUTOINDEX", "metric_type": "L2", "params": {}}
     t0 = time.time()
     print("Building AutoIndex...")
-    collection.create_index(
-        field_name=book_intro_field.name,
-        index_params=index_params)
+    collection.create_index(field_name=book_intro_field.name, index_params=index_params)
     t1 = time.time()
     print(f"Succeed in {round(t1 - t0, 4)} seconds!")
 
@@ -110,7 +108,6 @@ if __name__ == '__main__':
     collection.load()
     t1 = time.time()
     print(f"Succeed in {round(t1 - t0, 4)} seconds!")
-
 
     # 定义异步执行搜索的任务
 
@@ -124,19 +121,20 @@ if __name__ == '__main__':
         # 创建 1000 个搜索任务
         for i in range(10000):
             print(f"Creating search task {i}...")
-            search_vec = [[random.random() for _ in range(dim)]
-                          for _ in range(nq)]
+            search_vec = [[random.random() for _ in range(dim)] for _ in range(nq)]
             tasks.append(
-                collection.search(search_vec,
-                                  anns_field=book_intro_field.name,
-                                  param=search_params,
-                                  limit=topk,
-                                  guarantee_timestamp=1,
-                                  _async=True))
+                collection.search(
+                    search_vec,
+                    anns_field=book_intro_field.name,
+                    param=search_params,
+                    limit=topk,
+                    guarantee_timestamp=1,
+                    _async=True,
+                )
+            )
         results = [task.result() for task in tasks]
         # 等待所有搜索任务完成
         return results
-
 
     # 运行异步搜索任务
     start_time = time.time()

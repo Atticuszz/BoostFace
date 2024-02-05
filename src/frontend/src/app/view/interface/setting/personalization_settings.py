@@ -1,15 +1,14 @@
-# coding=utf-8
+from qfluentwidgets import ComboBoxSettingCard, CustomColorSettingCard
 from qfluentwidgets import FluentIcon as FIF
-from qfluentwidgets import SettingCardGroup, OptionsSettingCard, SwitchSettingCard, CustomColorSettingCard, \
-    ComboBoxSettingCard
+from qfluentwidgets import OptionsSettingCard, SettingCardGroup, SwitchSettingCard
 
 from src.app.config.config import cfg
 
-__all__ = ['create_personalization_setting_group']
+__all__ = ["create_personalization_setting_group"]
 
 
 class PersonalizationSettingM:
-    """ Personlization setting model"""
+    """Personlization setting model"""
 
     def __init__(self):
         # theme
@@ -24,36 +23,33 @@ class PersonalizationSettingM:
 
 
 class PersonalizationSettingGroup(SettingCardGroup):
-    """ Personalization setting group"""
+    """Personalization setting group"""
 
     def __init__(self, model: PersonalizationSettingM, parent=None):
-        super().__init__(title='Personalization', parent=parent)
+        super().__init__(title="Personalization", parent=parent)
         self.model = model
         self.micaCard = SwitchSettingCard(
             FIF.TRANSPARENT,
-            self.tr('Mica effect'),
-            self.tr('Apply semi transparent to windows and surfaces'),
+            self.tr("Mica effect"),
+            self.tr("Apply semi transparent to windows and surfaces"),
             cfg.micaEnabled,
-            self
+            self,
         )
 
         self.themeCard = OptionsSettingCard(
             self.model.theme_mode,
             FIF.BRUSH,
-            self.tr('Application theme'),
+            self.tr("Application theme"),
             self.tr("Change the appearance of your application"),
-            texts=[
-                self.tr('Light'), self.tr('Dark'),
-                self.tr('Use system setting')
-            ],
-            parent=self
+            texts=[self.tr("Light"), self.tr("Dark"), self.tr("Use system setting")],
+            parent=self,
         )
         self.themeColorCard = CustomColorSettingCard(
             self.model.theme_color,
             FIF.PALETTE,
-            self.tr('Theme color'),
-            self.tr('Change the theme color of you application'),
-            parent=self
+            self.tr("Theme color"),
+            self.tr("Change the theme color of you application"),
+            parent=self,
         )
         self.zoomCard = OptionsSettingCard(
             self.model.dpi_scale,
@@ -61,18 +57,22 @@ class PersonalizationSettingGroup(SettingCardGroup):
             self.tr("Interface zoom"),
             self.tr("Change the size of widgets and fonts"),
             texts=[
-                "100%", "125%", "150%", "175%", "200%",
-                self.tr("Use system setting")
+                "100%",
+                "125%",
+                "150%",
+                "175%",
+                "200%",
+                self.tr("Use system setting"),
             ],
-            parent=self
+            parent=self,
         )
         self.languageCard = ComboBoxSettingCard(
             self.model.language,
             FIF.LANGUAGE,
-            self.tr('Language'),
-            self.tr('Set your preferred language for UI'),
-            texts=['简体中文', '繁體中文', 'English', self.tr('Use system setting')],
-            parent=self
+            self.tr("Language"),
+            self.tr("Set your preferred language for UI"),
+            texts=["简体中文", "繁體中文", "English", self.tr("Use system setting")],
+            parent=self,
         )
 
         self.addSettingCard(self.micaCard)
@@ -83,10 +83,11 @@ class PersonalizationSettingGroup(SettingCardGroup):
 
 
 class PersonalizationSettingC:
-    """ Personalization setting controller"""
+    """Personalization setting controller"""
 
-    def __init__(self, model: PersonalizationSettingM,
-                 view: PersonalizationSettingGroup):
+    def __init__(
+        self, model: PersonalizationSettingM, view: PersonalizationSettingGroup
+    ):
         self.model = model
         self.view = view
         self._init_signal_binding()
@@ -115,7 +116,7 @@ class PersonalizationSettingC:
 
 
 def create_personalization_setting_group(parent=None) -> PersonalizationSettingC:
-    """ create personalization setting group"""
+    """create personalization setting group"""
     created_model = PersonalizationSettingM()
     created_view = PersonalizationSettingGroup(created_model, parent=parent)
     created_controller = PersonalizationSettingC(created_model, created_view)

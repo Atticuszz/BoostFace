@@ -1,7 +1,5 @@
-# coding=utf-8
-from pydantic import BaseModel
-
 from app.utils.system_stats import CloudSystemStats
+from pydantic import BaseModel
 
 
 class IdentifyResult(BaseModel):
@@ -18,7 +16,7 @@ class IdentifyResult(BaseModel):
             uid=matched_result.face_id,
             name=matched_result.name,
             time=matched_result.time,
-            score=matched_result.score
+            score=matched_result.score,
         )
 
 
@@ -31,7 +29,5 @@ class SystemStats(BaseModel):
         super().__init__(
             cpu_percent=cloud_system_stats.get_cpu_usage(),
             ram_percent=cloud_system_stats.get_ram_usage(),
-            net_throughput=cloud_system_stats.get_network_throughput()
+            net_throughput=cloud_system_stats.get_network_throughput(),
         )
-
-

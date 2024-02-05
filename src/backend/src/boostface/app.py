@@ -1,12 +1,11 @@
-# coding=utf-8
 from concurrent.futures import ThreadPoolExecutor
 from threading import Event
 
 import cv2
 import numpy as np
+from app.services.inference.common import ClosableQueue, IdentifyManager
 
 from .component.camera import CameraTask
-from app.services.inference.common import ClosableQueue, IdentifyManager
 from .component.detector import DetectorTask
 from .component.identifier import IdentifierTask
 from .utils.decorator import thread_error_catcher
@@ -28,8 +27,9 @@ def read_video(res_queue: ClosableQueue):
             cv2.imshow("video", imgshow)
         else:
             print("read_video None")
-        if cv2.waitKey(1) == ord('q'):
+        if cv2.waitKey(1) == ord("q"):
             break
+
 
 # TODO: reduce to adapt the cloud fun for fastapi
 def boostface(identifier_manager: IdentifyManager, if_done: Event):
@@ -42,8 +42,7 @@ def boostface(identifier_manager: IdentifyManager, if_done: Event):
         detected = ClosableQueue("detected", maxsize=200)
         identified = ClosableQueue("identified", maxsize=200)
 
-        identify_task = IdentifierTask(
-            detected, identified, identifier_manager)
+        identify_task = IdentifierTask(detected, identified, identifier_manager)
         executor.submit(identify_task.run_identify)
 
         my_camera = CameraTask(src, if_done)

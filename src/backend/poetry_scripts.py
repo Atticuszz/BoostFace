@@ -16,6 +16,5 @@ def run_tests():
     run_cmd("poetry run pytest")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_tests()
-

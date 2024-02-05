@@ -1,17 +1,13 @@
-# coding=utf-8
-
 import numpy as np
-from numpy import ndarray
-from pymilvus import (
-    connections,
-    Collection,
-    utility,
-)
 from app.core.config import logger
-from .configs import ClientConfig, basic_config, embedding_field, id_field
+from numpy import ndarray
+from pymilvus import Collection, connections, utility
+
 from ..utils.checker import insert_data_check
+from .configs import ClientConfig, basic_config, embedding_field, id_field
 
 __all__ = ["milvus_client"]
+
 
 class MilvusClient:
     """
@@ -19,10 +15,10 @@ class MilvusClient:
     """
 
     def __init__(
-            self,
-            flush_threshold: int = 1000,
-            refresh: bool = False,
-            config: ClientConfig | None = None,
+        self,
+        flush_threshold: int = 1000,
+        refresh: bool = False,
+        config: ClientConfig | None = None,
     ):
         if config:
             self._config: ClientConfig = config
@@ -31,7 +27,7 @@ class MilvusClient:
         logger.dubug(f"\nMilvusClient init under config: {self._config}")
         self._flush_threshold = flush_threshold
         self._new_added = 0
-        self._kwargs = {"refresh": refresh, 'flush_threshold': flush_threshold}
+        self._kwargs = {"refresh": refresh, "flush_threshold": flush_threshold}
         self._connect_to_milvus()
         self.collection = self._create_collection()
         logger.dubug("\nlist collections:")
@@ -40,30 +36,30 @@ class MilvusClient:
 
     def _connect_to_milvus(self):
         logger.dubug(f"\nCreate connection...")
-        connections.connect(
-            host=self._config.host,
-            port=self._config.port,
-            timeout=120)
+        connections.connect(host=self._config.host, port=self._config.port, timeout=120)
         logger.dubug(f"\nList connections:")
         logger.dubug(connections.list_connections())
 
     # 创建一个的集合
     def _create_collection(self) -> Collection:
         if (
-                utility.has_collection(self._config.collection.name)
-                and not self._kwargs["refresh"]
+            utility.has_collection(self._config.collection.name)
+            and not self._kwargs["refresh"]
         ):
             logger.dubug(f"\nFound collection: {self._config.collection.name}")
             # 2023-7-31 new: 如果存在直接返回 collection
             return Collection(self._config.collection.name)
-        elif utility.has_collection(self._config.collection.name) and self._kwargs["refresh"]:
+        elif (
+            utility.has_collection(self._config.collection.name)
+            and self._kwargs["refresh"]
+        ):
             logger.dubug(
-                f"\nFound collection: {self._config.collection.name}, deleting...")
+                f"\nFound collection: {self._config.collection.name}, deleting..."
+            )
             utility.drop_collection(self._config.collection.name)
             logger.dubug(f"Collection {self._config.collection.name} deleted.")
 
-        logger.dubug(
-            f"\nCollection {self._config.collection.name} is creating...")
+        logger.dubug(f"\nCollection {self._config.collection.name} is creating...")
         collection = Collection(**self._config.collection.as_dict())
         logger.dubug("collection created:", self._config.collection.name)
         return collection
@@ -94,8 +90,7 @@ class MilvusClient:
             # 将collection 加载到到内存中
             logger.dubug("\nLoad collection to memory...")
             self.collection.load()
-            utility.wait_for_loading_complete(
-                self._config.collection.name, timeout=10)
+            utility.wait_for_loading_complete(self._config.collection.name, timeout=10)
         else:
             # 由于没有主动调用flush, 只有达到一定阈值才会持久化 新插入的数据
             # 达到阈值后，会自动构建index，持久化，持久化后的新数据，才能正常的被加载到内存中，可以查找
@@ -112,6 +107,7 @@ class MilvusClient:
         logger.dubug(
             f"after_inserting,Collection:[{self._config.collection.name}] has {self.collection.num_entities} entities."
         )
+
     # FIXME: failed
     # 向集合中插入实体
 
@@ -156,10 +152,9 @@ class MilvusClient:
         )
         # 检查索引是否创建完成
         utility.wait_for_index_building_complete(
-            self._config.collection.name, timeout=60)
-        logger.dubug(
-            "\nCreated index:\n{}".format(
-                self.collection.index().params))
+            self._config.collection.name, timeout=60
+        )
+        logger.dubug("\nCreated index:\n{}".format(self.collection.index().params))
 
     # 搜索集合
     # noinspection PyTypeChecker
@@ -193,7 +188,8 @@ class MilvusClient:
         # 释放内存
         self.collection.release()
         logger.dubug(
-            f"\nReleased collection : {self._config.collection.name} successfully !")
+            f"\nReleased collection : {self._config.collection.name} successfully !"
+        )
         # self.collection.drop_index()
         # logger.dubug(f"Drop index: {self._collection_name} successfully !")
         # self.collection.drop()
@@ -208,7 +204,6 @@ class MilvusClient:
 
 
 milvus_client = MilvusClient()
-
 
 
 if __name__ == "__main__":

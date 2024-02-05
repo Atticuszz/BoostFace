@@ -2,7 +2,7 @@ import psutil
 
 
 class CloudSystemStats:
-    """ Local system stats"""
+    """Local system stats"""
 
     def __init__(self):
         self.last_net_io = psutil.net_io_counters()

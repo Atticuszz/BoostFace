@@ -1,18 +1,18 @@
-# -*- coding: utf-8 -*-
 # @Organization  : insightface.ai
 # @Author        : Jia Guo
 # @Time          : 2021-05-04
 # @Function      :
 
-from __future__ import division
-import numpy as np
+
 import cv2
+import numpy as np
 import onnx
 import onnxruntime
+
 from ..utils import face_align
 
 __all__ = [
-    'ArcFaceONNX',
+    "ArcFaceONNX",
 ]
 
 
@@ -21,16 +21,16 @@ class ArcFaceONNX:
         assert model_file is not None
         self.model_file = model_file
         self.session = session
-        self.taskname = 'recognition'
+        self.taskname = "recognition"
         find_sub = False
         find_mul = False
         model = onnx.load(self.model_file)
         graph = model.graph
         for nid, node in enumerate(graph.node[:8]):
             # print(nid, node.name)
-            if node.name.startswith('Sub') or node.name.startswith('_minus'):
+            if node.name.startswith("Sub") or node.name.startswith("_minus"):
                 find_sub = True
-            if node.name.startswith('Mul') or node.name.startswith('_mul'):
+            if node.name.startswith("Mul") or node.name.startswith("_mul"):
                 find_mul = True
         if find_sub and find_mul:
             # mxnet arcface model
@@ -60,15 +60,18 @@ class ArcFaceONNX:
 
     def prepare(self, ctx_id, **kwargs):
         if ctx_id < 0:
-            self.session.set_providers(['CPUExecutionProvider'])
+            self.session.set_providers(["CPUExecutionProvider"])
 
     def get(self, img, face):
-        aimg = face_align.norm_crop(img, landmark=face.kps, image_size=self.input_size[0])
+        aimg = face_align.norm_crop(
+            img, landmark=face.kps, image_size=self.input_size[0]
+        )
         face.embedding = self.get_feat(aimg).flatten()
         return face.embedding
 
     def compute_sin(self, feat1: np.ndarray, feat2: np.ndarray):
         from numpy.linalg import norm
+
         # print(feat1,feat2)
         feat1 = feat1.ravel()
         feat2 = feat2.ravel()
@@ -80,8 +83,13 @@ class ArcFaceONNX:
             imgs = [imgs]
         input_size = self.input_size
 
-        blob = cv2.dnn.blobFromImages(imgs, 1.0 / self.input_std, input_size,
-                                      (self.input_mean, self.input_mean, self.input_mean), swapRB=True)
+        blob = cv2.dnn.blobFromImages(
+            imgs,
+            1.0 / self.input_std,
+            input_size,
+            (self.input_mean, self.input_mean, self.input_mean),
+            swapRB=True,
+        )
         net_out = self.session.run(self.output_names, {self.input_name: blob})[0]
         return net_out
 

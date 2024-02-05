@@ -8,7 +8,6 @@ import numpy as np
 from src.boostface.app.common import LightImage
 from src.boostface.app.detector import Detector
 
-
 # Let's assume LightImage and Detector are defined in the provided paths.
 # Since I can't import your custom modules, I'll use placeholder implementations.
 
@@ -16,7 +15,9 @@ from src.boostface.app.detector import Detector
 class ImageGenerator:
     def generate_light_image(self, pixels=5000000):
         side_length = int(np.sqrt(pixels / 3))
-        image_array = np.random.randint(0, 256, (side_length, side_length, 3), dtype=np.uint8)
+        image_array = np.random.randint(
+            0, 256, (side_length, side_length, 3), dtype=np.uint8
+        )
         return LightImage(nd_arr=image_array), uuid.uuid4()
 
 
@@ -39,7 +40,9 @@ class Producer(threading.Thread):
                     if img_id in self.results:
                         result_received = True
                         print(f"Result received for image {img_id}")
-                        self.results.pop(img_id)  # Remove the result from the dictionary
+                        self.results.pop(
+                            img_id
+                        )  # Remove the result from the dictionary
         self.task_queue.put(None)  # Signal the consumer to exit
 
 
@@ -62,7 +65,7 @@ class Consumer(threading.Thread):
                 self.results[img_id] = result  # Store the result with the UUID as key
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     task_queue = queue.Queue()
     results = {}
     results_lock = threading.Lock()

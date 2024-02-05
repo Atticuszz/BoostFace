@@ -13,5 +13,5 @@ def main():
         face_client.shut_down()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

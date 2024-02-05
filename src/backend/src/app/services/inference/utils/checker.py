@@ -9,11 +9,7 @@ def insert_data_check(data: list[ndarray, ndarray, ndarray]) -> list:
     """
     ids, names, normed_embeddings = data
     # 不可以有缺失值
-    if (
-            (ids == "").any()
-            or (names == "").any()
-            or (normed_embeddings == np.NAN).any()
-    ):
+    if (ids == "").any() or (names == "").any() or (normed_embeddings == np.NAN).any():
         raise ValueError('data cannot be ""or NAN')
     # 条目数必须相同
     if not (ids.shape[0]) == names.shape[0] == normed_embeddings.shape[0]:

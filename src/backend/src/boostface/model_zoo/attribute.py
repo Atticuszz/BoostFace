@@ -1,18 +1,18 @@
-# -*- coding: utf-8 -*-
 # @Organization  : insightface.ai
 # @Author        : Jia Guo
 # @Time          : 2021-06-19
 # @Function      :
 
-from __future__ import division
-import numpy as np
+
 import cv2
+import numpy as np
 import onnx
 import onnxruntime
+
 from ..utils import face_align
 
 __all__ = [
-    'Attribute',
+    "Attribute",
 ]
 
 
@@ -27,11 +27,11 @@ class Attribute:
         graph = model.graph
         for nid, node in enumerate(graph.node[:8]):
             # print(nid, node.name)
-            if node.name.startswith('Sub') or node.name.startswith('_minus'):
+            if node.name.startswith("Sub") or node.name.startswith("_minus"):
                 find_sub = True
-            if node.name.startswith('Mul') or node.name.startswith('_mul'):
+            if node.name.startswith("Mul") or node.name.startswith("_mul"):
                 find_mul = True
-            if nid < 3 and node.name == 'bn_data':
+            if nid < 3 and node.name == "bn_data":
                 find_sub = True
                 find_mul = True
         if find_sub and find_mul:
@@ -61,13 +61,13 @@ class Attribute:
         output_shape = outputs[0].shape
         # print('init output_shape:', output_shape)
         if output_shape[1] == 3:
-            self.taskname = 'genderage'
+            self.taskname = "genderage"
         else:
-            self.taskname = 'attribute_%d' % output_shape[1]
+            self.taskname = "attribute_%d" % output_shape[1]
 
     def prepare(self, ctx_id, **kwargs):
         if ctx_id < 0:
-            self.session.set_providers(['CPUExecutionProvider'])
+            self.session.set_providers(["CPUExecutionProvider"])
 
     def get(self, img, face):
         bbox = face.bbox
@@ -79,15 +79,20 @@ class Attribute:
         aimg, M = face_align.transform(img, center, self.input_size[0], _scale, rotate)
         input_size = tuple(aimg.shape[0:2][::-1])
         # assert input_size==self.input_size
-        blob = cv2.dnn.blobFromImage(aimg, 1.0 / self.input_std, input_size,
-                                     (self.input_mean, self.input_mean, self.input_mean), swapRB=True)
+        blob = cv2.dnn.blobFromImage(
+            aimg,
+            1.0 / self.input_std,
+            input_size,
+            (self.input_mean, self.input_mean, self.input_mean),
+            swapRB=True,
+        )
         pred = self.session.run(self.output_names, {self.input_name: blob})[0][0]
-        if self.taskname == 'genderage':
+        if self.taskname == "genderage":
             assert len(pred) == 3
             gender = np.argmax(pred[:2])
             age = int(np.round(pred[2] * 100))
-            face['gender'] = gender
-            face['age'] = age
+            face["gender"] = gender
+            face["age"] = age
             return gender, age
         else:
             return pred

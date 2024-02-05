@@ -1,1 +1,1 @@
-from .logging_config import logger, log_queue
+from .logging_config import log_queue, logger

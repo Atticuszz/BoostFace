@@ -1,5 +1,5 @@
-# coding=utf-8
 import time
+
 from PyQt6.QtCore import QThread
 
 from src.app.common import signalBus
@@ -13,6 +13,7 @@ class ConsoleSimulator(QThread):
     A console output simulator
     Signal: newText
     """
+
     @error_handler
     def run(self):
         count = 0
@@ -35,12 +36,12 @@ class LocalLogModel:
     def __init__(self):
         self.console_simulator = ConsoleSimulator()
         self.camera_info = {
-            'camera_name': 'Camera 1',
-            'camera_type': 'USB',
-            'camera_model': 'Logitech C920',
-            'camera_resolution': '1920x1080',
-            'camera_fps': '30',
-            'camera_status': 'Connected',
+            "camera_name": "Camera 1",
+            "camera_type": "USB",
+            "camera_model": "Logitech C920",
+            "camera_resolution": "1920x1080",
+            "camera_fps": "30",
+            "camera_status": "Connected",
         }
 
 

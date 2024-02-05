@@ -1,5 +1,5 @@
 import os
-from multiprocessing import Process, Queue, Event
+from multiprocessing import Event, Process, Queue
 from queue import Empty
 from time import sleep
 from timeit import default_timer as timer

@@ -1,9 +1,8 @@
-# coding: utf-8
 from PyQt6.QtCore import QObject, pyqtSignal
 
 
 class SignalBus(QObject):
-    """ pyqtSignal bus """
+    """pyqtSignal bus"""
 
     switchToSampleCard = pyqtSignal(str, int)
     micaEnableChanged = pyqtSignal(bool)
@@ -14,5 +13,6 @@ class SignalBus(QObject):
     identify_results = pyqtSignal(dict)
     log_message = pyqtSignal(str)
     quit_all = pyqtSignal()  # call close event of all sub-threads
+
 
 signalBus = SignalBus()

@@ -429,8 +429,8 @@
     </message>
     <message>
         <location filename="../../view/dialog_interface.py" line="157"/>
-        <source>Where the tennis ball will land when it touches the net, no one can predict. 
-If that moment comes, I hope the &apos;goddess&apos; exists. 
+        <source>Where the tennis ball will land when it touches the net, no one can predict.
+If that moment comes, I hope the &apos;goddess&apos; exists.
 In that case, I would accept it no matter which side the ball falls on.</source>
         <translation type="unfinished"></translation>
     </message>

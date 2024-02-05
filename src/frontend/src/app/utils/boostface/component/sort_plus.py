@@ -23,7 +23,7 @@ from filterpy.kalman import KalmanFilter
 from scipy.optimize import linear_sum_assignment
 
 np.random.seed(0)
-__all__ = ['KalmanBoxTracker', 'associate_detections_to_trackers']
+__all__ = ["KalmanBoxTracker", "associate_detections_to_trackers"]
 
 
 def linear_assignment(cost_matrix):
@@ -33,8 +33,8 @@ def linear_assignment(cost_matrix):
 
 def iou_batch(bb_test, bb_gt):
     """
-  From SORT: Computes IOU between two bboxes in the form [x1,y1,x2,y2]
-  """
+    From SORT: Computes IOU between two bboxes in the form [x1,y1,x2,y2]
+    """
     bb_gt = np.expand_dims(bb_gt, 0)
     bb_test = np.expand_dims(bb_test, 1)
 
@@ -42,31 +42,27 @@ def iou_batch(bb_test, bb_gt):
     yy1 = np.maximum(bb_test[..., 1], bb_gt[..., 1])
     xx2 = np.minimum(bb_test[..., 2], bb_gt[..., 2])
     yy2 = np.minimum(bb_test[..., 3], bb_gt[..., 3])
-    w = np.maximum(0., xx2 - xx1)
-    h = np.maximum(0., yy2 - yy1)
+    w = np.maximum(0.0, xx2 - xx1)
+    h = np.maximum(0.0, yy2 - yy1)
     wh = w * h
-    o = wh / ((bb_test[...,
-    2] - bb_test[...,
-    0]) * (bb_test[...,
-    3] - bb_test[...,
-    1]) + (bb_gt[...,
-    2] - bb_gt[...,
-    0]) * (bb_gt[...,
-    3] - bb_gt[...,
-    1]) - wh)
+    o = wh / (
+        (bb_test[..., 2] - bb_test[..., 0]) * (bb_test[..., 3] - bb_test[..., 1])
+        + (bb_gt[..., 2] - bb_gt[..., 0]) * (bb_gt[..., 3] - bb_gt[..., 1])
+        - wh
+    )
     return o
 
 
 def convert_bbox_to_z(bbox):
     """
-  Takes a bounding box in the form [x1,y1,x2,y2] and returns z in the form
-    [x,y,s,r] where x,y is the centre of the box and s is the scale/area and r is
-    the aspect ratio
-  """
+    Takes a bounding box in the form [x1,y1,x2,y2] and returns z in the form
+      [x,y,s,r] where x,y is the centre of the box and s is the scale/area and r is
+      the aspect ratio
+    """
     w = bbox[2] - bbox[0]
     h = bbox[3] - bbox[1]
-    x = bbox[0] + w / 2.
-    y = bbox[1] + h / 2.
+    x = bbox[0] + w / 2.0
+    y = bbox[1] + h / 2.0
     s = w * h  # scale is just area
     r = w / float(h)
     return np.array([x, y, s, r]).reshape((4, 1))
@@ -74,17 +70,19 @@ def convert_bbox_to_z(bbox):
 
 def convert_x_to_bbox(x, score=None):
     """
-  Takes a bounding box in the centre form [x,y,s,r] and returns it in the form
-    [x1,y1,x2,y2] where x1,y1 is the top left and x2,y2 is the bottom right
-  """
+    Takes a bounding box in the centre form [x,y,s,r] and returns it in the form
+      [x1,y1,x2,y2] where x1,y1 is the top left and x2,y2 is the bottom right
+    """
     w = np.sqrt(x[2] * x[3])
     h = x[2] / w
     if score is None:
-        return np.array([x[0] - w / 2., x[1] - h / 2., x[0] +
-                         w / 2., x[1] + h / 2.]).reshape((1, 4))
+        return np.array(
+            [x[0] - w / 2.0, x[1] - h / 2.0, x[0] + w / 2.0, x[1] + h / 2.0]
+        ).reshape((1, 4))
     else:
-        return np.array([x[0] - w / 2., x[1] - h / 2., x[0] +
-                         w / 2., x[1] + h / 2., score]).reshape((1, 5))
+        return np.array(
+            [x[0] - w / 2.0, x[1] - h / 2.0, x[0] + w / 2.0, x[1] + h / 2.0, score]
+        ).reshape((1, 5))
 
 
 class KalmanBoxTracker:
@@ -103,26 +101,32 @@ class KalmanBoxTracker:
         # The state transition matrix F. Since the model is constant velocity,
         # the lower right part is an identity matrix.
         self.kf.F = np.array(
-            [[1, 0, 0, 0, 1, 0, 0],
-             [0, 1, 0, 0, 0, 1, 0],
-             [0, 0, 1, 0, 0, 0, 1],
-             [0, 0, 0, 1, 0, 0, 0],
-             [0, 0, 0, 0, 1, 0, 0],
-             [0, 0, 0, 0, 0, 1, 0],
-             [0, 0, 0, 0, 0, 0, 1]])
+            [
+                [1, 0, 0, 0, 1, 0, 0],
+                [0, 1, 0, 0, 0, 1, 0],
+                [0, 0, 1, 0, 0, 0, 1],
+                [0, 0, 0, 1, 0, 0, 0],
+                [0, 0, 0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0, 1, 0],
+                [0, 0, 0, 0, 0, 0, 1],
+            ]
+        )
 
         # The observation matrix H.
         self.kf.H = np.array(
-            [[1, 0, 0, 0, 0, 0, 0],
-             [0, 1, 0, 0, 0, 0, 0],
-             [0, 0, 1, 0, 0, 0, 0],
-             [0, 0, 0, 1, 0, 0, 0]])
+            [
+                [1, 0, 0, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0, 0, 0],
+            ]
+        )
 
         # Here we give larger uncertainty to the velocity (the last 3 values in
         # state vector).
-        self.kf.R[2:, 2:] *= 10.
-        self.kf.P[4:, 4:] *= 1000.
-        self.kf.P *= 10.
+        self.kf.R[2:, 2:] *= 10.0
+        self.kf.P[4:, 4:] *= 1000.0
+        self.kf.P *= 10.0
         self.kf.Q[-1, -1] *= 0.01
         self.kf.Q[4:, 4:] *= 0.01
 
@@ -161,14 +165,13 @@ class KalmanBoxTracker:
 
 
 def associate_detections_to_trackers(
-        detected_tars: list,
-        predicted_tars: list,
-        iou_threshold: float = 0.3):
+    detected_tars: list, predicted_tars: list, iou_threshold: float = 0.3
+):
     """
-  Assigns detections to tracked object (both represented as bounding boxes)
+    Assigns detections to tracked object (both represented as bounding boxes)
 
-  Returns 3 lists of matches, unmatched_det_tars and unmatched_pred_tars
-  """
+    Returns 3 lists of matches, unmatched_det_tars and unmatched_pred_tars
+    """
     if len(predicted_tars) == 0:
         return [], [], predicted_tars
     if detected_tars:

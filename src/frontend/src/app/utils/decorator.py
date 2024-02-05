@@ -1,4 +1,3 @@
-import datetime
 import time
 import traceback
 from contextlib import contextmanager
@@ -11,10 +10,11 @@ from src.app.config import qt_logger
 
 
 def error_handler(f):
-    """ decorator to catch error and print error info"""
+    """decorator to catch error and print error info"""
+
     @wraps(f)
     def wrapper(*args, **kwargs):
-        """ wrapper to catch error and print error info"""
+        """wrapper to catch error and print error info"""
         try:
             return f(*args, **kwargs)
         except requests.HTTPError:

@@ -1,10 +1,10 @@
-# coding=utf-8
 import asyncio
 import logging
 import multiprocessing
 from multiprocessing.queues import Queue
-from queue import Full, Empty
-from typing import NamedTuple, Callable
+from queue import Empty, Full
+from typing import NamedTuple
+from collections.abc import Callable
 
 from fastapi import WebSocket
 
