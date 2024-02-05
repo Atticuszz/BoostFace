@@ -33,7 +33,14 @@
             1. 根据负载自动扩容
          3. nginx
 
-### 结构
+### roadmap
+1. scrfd
+2. sort
+3. tracker
+4. arcface+cuda
+5. milvus + gpu
+6. fastapi
+
 
 
 ### 人脸追踪数据集
