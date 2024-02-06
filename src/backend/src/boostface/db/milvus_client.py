@@ -154,7 +154,7 @@ class MilvusClient:
         utility.wait_for_index_building_complete(
             self._config.collection.name, timeout=60
         )
-        logger.dubug("\nCreated index:\n{}".format(self.collection.index().params))
+        logger.dubug(f"\nCreated index:\n{self.collection.index().params}")
 
     # 搜索集合
     # noinspection PyTypeChecker

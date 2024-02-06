@@ -1,3 +1,9 @@
 [submodule "src/mobiface-toolkit"]
 	path = src/mobiface-toolkit
 	url = git@github.com:Atticuszz/mobiface-toolkit.git
+[submodule "src/backend"]
+	path = src/backend
+	url = https://github.com/Atticuszz/BoostFace_fastapi.git
+[submodule "src/frontend"]
+	path = src/frontend
+	url = git@github.com:Atticuszz/BoostFace_pyqt6.git

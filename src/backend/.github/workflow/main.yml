@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # 安装 Poetry
+      - name: Install Poetry
+        run: |
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+
+      # 配置 Poetry 环境
+      - name: Configure Poetry environment
+        run: |
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+
+      # 安装项目依赖
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      # 运行测试并生成覆盖率报告
+      - name: Run tests with pytest
+        run: |
+          poetry run pytest --cov=./
+
+      # 上传覆盖率报告到 Codecov
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

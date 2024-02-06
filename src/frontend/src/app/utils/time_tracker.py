@@ -7,17 +7,16 @@
 """
 import re
 import time
+from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import datetime
 from functools import wraps
 from pathlib import Path
 from timeit import default_timer
 from types import FunctionType
-from collections.abc import Callable
 
 import matplotlib.pyplot as plt
 import numpy as np
-
 
 # TODO: add decorator func
 # TODO: add fixed time test

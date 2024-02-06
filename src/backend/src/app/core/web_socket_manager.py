@@ -1,5 +1,4 @@
 from contextlib import asynccontextmanager
-from typing import Type
 
 from fastapi import Depends, WebSocket
 from pydantic import BaseModel
