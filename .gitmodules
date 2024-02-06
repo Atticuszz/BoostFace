@@ -7,3 +7,6 @@
 [submodule "src/frontend"]
 	path = src/frontend
 	url = git@github.com:Atticuszz/BoostFace_pyqt6.git
+[submodule "src/mobiface-toolkit_old"]
+	path = src/mobiface-toolkit_old
+	url = https://github.com/luanps/mobiface-toolkit.git
