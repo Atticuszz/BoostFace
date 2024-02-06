@@ -1,0 +1,3 @@
+[submodule "src/mobiface-toolkit"]
+	path = src/mobiface-toolkit
+	url = git@github.com:Atticuszz/mobiface-toolkit.git
