@@ -1,4 +1,5 @@
 import subprocess
+from pathlib import Path
 
 
 def run_cmd(cmd: str, cwd: str = None) -> None:
@@ -13,7 +14,11 @@ def get_submodule_paths() -> list[str]:
     result = subprocess.run(
         cmd, shell=True, check=True, stdout=subprocess.PIPE, text=True
     )
-    paths = [line.split()[-1] for line in result.stdout.split("\n") if line]
+    paths = [
+        line.split()[-1]
+        for line in result.stdout.split("\n")
+        if line and Path(line).exists()
+    ]
     return paths
 
 

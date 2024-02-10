@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/BoostFace.iml" filepath="$PROJECT_DIR$/.idea/BoostFace.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../PyGizmoKit/.idea/PyGizmoKit.iml" filepath="$PROJECT_DIR$/../PyGizmoKit/.idea/PyGizmoKit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../fastapi_supabase_template/.idea/fastapi_supabase_template.iml" filepath="$PROJECT_DIR$/../fastapi_supabase_template/.idea/fastapi_supabase_template.iml" />
     </modules>
   </component>
 </project>

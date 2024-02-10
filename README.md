@@ -34,13 +34,9 @@
          3. nginx
 
 ### roadmap
-1. scrfd
-2. sort
-3. tracker
-   1. [mobiface-toolkit](src%2Fmobiface-toolkit) update to 3.11
-4. arcface+cuda
-5. milvus + gpu
-6. fastapi
+1. arcface+cuda
+2. milvus + gpu
+3. fastapi
 
 
 

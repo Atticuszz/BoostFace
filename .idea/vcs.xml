@@ -4,7 +4,7 @@
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/backend" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/frontend" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/mobiface-toolkit" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/mobiface-toolkit_old" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../PyGizmoKit" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../fastapi_supabase_template" vcs="Git" />
   </component>
 </project>

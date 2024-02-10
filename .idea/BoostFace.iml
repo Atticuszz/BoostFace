@@ -6,5 +6,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="fastapi_supabase_template" />
+    <orderEntry type="module" module-name="PyGizmoKit" />
   </component>
 </module>
