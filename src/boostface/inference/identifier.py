@@ -1,8 +1,9 @@
 import logging
 from pathlib import Path
 
+from src.boostface.utils.download import download_onnx
 # from boostface.types import Embedding
-from useful_scripts import download_files
+# from useful_scripts import download_files
 
 #
 from .common import Face
@@ -23,7 +24,8 @@ class Extractor:
             Path(__file__).parent / "model_zoo" / "models" / "irn50_glint360k_r50.onnx"
         )
         if not root.exists():
-            download_files([ONNXURL], root.parent)
+            root.parent.mkdir(exist_ok=True, parents=True)
+            download_onnx(output_dir=root)
         self.rec_model: ArcFaceONNX = get_model(
             root, providers=("CUDAExecutionProvider", "CPUExecutionProvider")
         )
@@ -109,8 +111,4 @@ class Extractor:
 #         logger.setLevel(logging.DEBUG)
 #         logger.addHandler(queue_handler)
 
-if __name__ == "__main__":
-    # test = Extractor()
-    root = Path(__file__).parent / "model_zoo" / "models" / "irn50_glint360k_r50.onnx"
-    if not root.exists():
-        download_files([ONNXURL], root.parent)
+

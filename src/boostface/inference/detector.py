@@ -18,7 +18,7 @@ class DetectorBase:
     """
 
     def __init__(self):
-        root = Path(__file__).parents[1] / "model_zoo" / "models" / "det_2.5g.onnx"
+        root = Path(__file__).parent / "model_zoo" / "models" / "det_2.5g.onnx"
         if not root.exists():
             root.parent.mkdir(exist_ok=True, parents=True)
             download_scrfd(output_dir=root.parent)
