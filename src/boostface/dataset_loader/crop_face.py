@@ -6,9 +6,12 @@
 @Description  :
 """
 import logging
+import sys
+from collections.abc import Generator
 from pathlib import Path
 
 import cv2
+import numpy as np
 
 from src.boostface.base import Image
 from src.boostface.utils.download import download_lfw
@@ -19,24 +22,42 @@ from src.boostface.utils.download import download_lfw
 # TODO: test together with the face extract and search in milvus to see the performance
 
 
-# TODO: pack image to npz,instead of read image every time
 class LFW:
     def __init__(self):
         self.root = (
             Path(__file__).parent / "data" / "lfw-deepfunneled" / "lfw-deepfunneled"
         )
+        self.npz_path = self.root.parent / "lfw_images.npz"
         if not self.root.exists():
             download_lfw()
-        self._num_of_image = 0
+
+        if self.npz_path.exists():
+            logging.info("Loading images from npz file...")
+            data = np.load(self.npz_path)
+            self.images = data["images"]
+            self.names = data["names"]
+        else:
+            logging.info("Loading and saving images to npz file...")
+            self.image_paths = list(self.root.rglob("*.jpg"))
+            self.images = []
+            self.names = []
+            for i, path in enumerate(self.image_paths):
+                sys.stdout.write(f"\rLoading {i + 1}/{len(self.image_paths)} images")
+                sys.stdout.flush()
+                self.images.append(cv2.imread(path.as_posix()))
+                self.names.append(path.stem)
+            sys.stdout.write("\n")
+            logging.info("compressing images to npz file ...")
+            np.savez_compressed(
+                self.npz_path, images=np.array(self.images), names=np.array(self.names)
+            )
+            logging.info(f"Saved images to {self.npz_path}")
 
     def __len__(self):
-        if self._num_of_image == 0:
-            self._num_of_image = len(list(self.root.rglob("*.jpg")))
-        return self._num_of_image
+        return len(self.images)
 
-    def __iter__(self) -> Image:
-        for image in self.root.rglob("*.jpg"):
-            yield cv2.imread(image.as_posix())
+    def __iter__(self) -> Generator[tuple[str, Image], None, None]:
+        yield from zip(self.names, self.images)
 
 
 lfw = LFW()

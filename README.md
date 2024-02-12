@@ -34,39 +34,9 @@
          3. nginx
 
 ### roadmap
-1. arcface+cuda
-2. milvus + gpu
-3. fastapi
+- 2024年2月12日
+  - [X] pack image to npz,instead of read image every time
 
-
-
-### 人脸追踪数据集
-MobiFace Benchmark Request Form
-Hi, 
-Please find the MobiFace dataset on https://drive.google.com/open?id=1LrVrx_InOo3og9RfCynQkMkfaVydn7ra 
-
-Please note due to regulations in Europe, we are not allowed to distribute videos directly. Please find the original videos with the provided IDs on YouTube. If some videos have been taken down, we are unfortunately unable to provide the videos.
-
-Please consider citing the following papers if you find the dataset useful:
-
-@inproceedings{FT-RCNN,
-    author = {Yiming Lin and Jie Shen and Shiyang Cheng and Maja Pantic},
-    booktitle = {The IEEE International Conference on Automatic Face and Gesture Recognition (FG)},
-    title = {FT-RCNN: Real-time Visual Face Tracking with Region-based Convolutional Neural Networks},
-    year = {2020},
-}
-
-@inproceedings{mobiface_fg2019,
-    author={Yiming Lin and Shiyang Cheng and Jie Shen and Maja Pantic},
-    booktitle = {The IEEE International Conference on Automatic Face and Gesture Recognition (FG)},
-    title={MobiFace: A Novel Dataset for Mobile Face Tracking in the Wild},
-    year={2019},
-    url={https://arxiv.org/abs/1805.09749v2}
-}
-
-Best,
-MobiFace Team
-Edit your response
 # draft
 我们个项目的主要使用场景研究，是针对于多人脸的实时的人脸识别情况，这个多人的实时你人脸识别的情况，他的研究的主题是前端使用更优化的人脸检测算法，以及选择了一个比较合适的追踪方法，多目标追踪算法。他们分别在现有的数据集上面表现的非常的优秀，以及我人脸检测算法，他在现有的数据集上面表现仅仅只是针对于多人脸检测的效果非常好。然后是多目标追踪，我们选由于我们的上下文是人脸识别，因此不太可能出现人脸被遮挡的情况，因为人们会刻意的在识别的场景下露出人脸，即使是多人同时识别的环境下。因此我们在这种非遮蔽的情况下，选择了一个性能比较优异的，清亮的，以及能很好的和人脸追踪算法，和人脸检测算法结合在一起的多目标追踪算法。以及我们给他取了个新的名字，并且我们在人脸追踪数据集上面表现性，表现准确率，儿子追踪性能，追踪的性能优异，这是人脸追踪的部分。之所以使用这种方式是为了他可以大大的减少后端的负载，因为我们对人脸进行赋予语义进行追踪，判断前后针之间的人脸的关系，我们可以在此基础上加一些额外的可以选择的条件，比如说人脸满足什么大小，以及后端的准确率是多少。如果检测精度识别的精度较低，我们可以对对这个结果进行再次检测，错误的结果进行再次检测等，这种就是说我们可以加入额外的人为的选择性条件来时，检测识别更加的灵活，以及可以减少后端的负载。这是前端人脸追踪算法部分相关的研究
 
