@@ -51,13 +51,13 @@ class ModelRouter:
         if len(outputs) > 5:
             return SCRFD(model_file=self.onnx_file, session=session)
         elif (
-                input_shape[2] == input_shape[3]
-                and input_shape[2] >= 112
-                and input_shape[2] % 16 == 0
+            input_shape[2] == input_shape[3]
+            and input_shape[2] >= 112
+            and input_shape[2] % 16 == 0
         ):
             return ArcFaceONNX(model_file=self.onnx_file, session=session)
         else:
-            raise RuntimeError('error on model routing')
+            raise RuntimeError("error on model routing")
 
 
 def find_onnx_file(dir_path: Path):

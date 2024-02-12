@@ -65,7 +65,7 @@ class TokenManager(TokenEncryptor):
         if len(parts) != 3:
             raise ValueError("JWT is not valid: not a JWT structure")
         base64Url = parts[1]
-        # Addding padding otherwise the following error happens:
+        # Adding padding otherwise the following error happens:
         # binascii.Error: Incorrect padding
         base64UrlWithPadding = base64Url + "=" * (-len(base64Url) % 4)
         return json.loads(urlsafe_b64decode(base64UrlWithPadding).decode("utf-8"))

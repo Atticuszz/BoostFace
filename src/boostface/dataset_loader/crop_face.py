@@ -13,16 +13,18 @@ import cv2
 from src.boostface.base import Image
 from src.boostface.utils.download import download_lfw
 
-
 # TODO: use the face detection model to crop the face from the image
 # TODO: test arcface accuracy with the cropped face **test_result** by cuda or not
 # TODO: test milvus search performance with the cropped face **test_result** by cuda or not
 # TODO: test together with the face extract and search in milvus to see the performance
 
 
+# TODO: pack image to npz,instead of read image every time
 class LFW:
     def __init__(self):
-        self.root = Path(__file__).parent / "data" / "lfw-deepfunneled" / "lfw-deepfunneled"
+        self.root = (
+            Path(__file__).parent / "data" / "lfw-deepfunneled" / "lfw-deepfunneled"
+        )
         if not self.root.exists():
             download_lfw()
         self._num_of_image = 0
@@ -37,8 +39,6 @@ class LFW:
             yield cv2.imread(image.as_posix())
 
 
-
-
 lfw = LFW()
 
 if __name__ == "__main__":
@@ -49,4 +49,3 @@ if __name__ == "__main__":
         cv2.waitKey(0)
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
-

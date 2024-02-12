@@ -111,7 +111,7 @@ def create_index(collection, filed_name):
 
 def drop_index(collection):
     collection.drop_index()
-    print("\nDrop index sucessfully")
+    print("\nDrop index successfully")
 
 
 def load_collection(collection):

@@ -2,12 +2,14 @@ import logging
 from pathlib import Path
 
 from src.boostface.utils.download import download_onnx
-# from boostface.types import Embedding
-# from useful_scripts import download_files
 
 #
 from .common import Face
 from .model_zoo import ArcFaceONNX, get_model
+
+# from boostface.types import Embedding
+# from useful_scripts import download_files
+
 
 #
 # matched_and_in_screen_deque = collections.deque(maxlen=1)
@@ -110,5 +112,3 @@ class Extractor:
 #         logger = logging.getLogger()
 #         logger.setLevel(logging.DEBUG)
 #         logger.addHandler(queue_handler)
-
-

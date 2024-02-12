@@ -16,8 +16,9 @@ from app.services.inference.common import (
     Image2Detect,
     Target,
 )
-from boostface.types import Bbox, Embedding, Image, Kps, MatchInfo
 from line_profiler_pycharm import profile
+
+from boostface.types import Bbox, Embedding, Image, Kps, MatchInfo
 
 from ..db.operations import Matcher
 from ..model_zoo import ArcFaceONNX, get_model
@@ -75,7 +76,7 @@ def identify_works(
     :param task_queue:
     :return:
     """
-    with Matcher() as mathcer:
+    with Matcher() as matcher:
         extractor = Extractor()
         while not stop_event.is_set():
             try:
@@ -88,7 +89,7 @@ def identify_works(
                 )
                 # print(f'extractor cost time: {default_timer() - start}')
                 # start = default_timer()
-                result_dict[task_id] = mathcer.search(emmbedding)
+                result_dict[task_id] = matcher.search(emmbedding)
             except queue.Empty:
                 continue
             except Exception as e:

@@ -7,9 +7,9 @@
 """
 from pathlib import Path
 
+from ..base import DetectedResult, Face, Image
 from ..utils.download import download_scrfd
 from .model_zoo.model_router import get_model
-from ..base import Face, Image, DetectedResult
 
 
 class DetectorBase:
@@ -24,7 +24,9 @@ class DetectorBase:
             download_scrfd(output_dir=root.parent)
 
         if not root.exists():
-            raise FileNotFoundError(f"can't find {root} after download from github release")
+            raise FileNotFoundError(
+                f"can't find {root} after download from github release"
+            )
 
         self.detector_model = get_model(
             root, providers=("CUDAExecutionProvider", "CPUExecutionProvider")
@@ -33,7 +35,7 @@ class DetectorBase:
         self.detector_model.prepare(**prepare_params)
 
     def detect_faces(self, img2detect: Image) -> Face | None:
-        """ detect faces from given image"""
+        """detect faces from given image"""
         detect_params = {"max_num": 0, "metric": "default"}
         bboxes, kpss = self.detector_model.detect(img2detect, **detect_params)
         face: Face | None = None
@@ -42,10 +44,7 @@ class DetectorBase:
             bbox = bboxes[i, 0:4]
             det_score = bboxes[i, 4]
             detected = DetectedResult(bbox, kps, det_score)
-            face = Face(
-                detected,
-                img2detect
-            )
+            face = Face(detected, img2detect)
         return face
 
 

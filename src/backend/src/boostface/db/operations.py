@@ -6,11 +6,11 @@ from timeit import default_timer
 import cv2
 import numpy as np
 from app.services.inference.common import Embedding, Image2Detect
-from boostface.types import Image, MatchInfo
 from numpy import ndarray
 from numpy.linalg import norm
 from pymilvus.orm import utility
 
+from boostface.types import Image, MatchInfo
 from src.boostface.db.milvus_client import MilvusClient
 
 __all__ = ["Register", "Matcher"]

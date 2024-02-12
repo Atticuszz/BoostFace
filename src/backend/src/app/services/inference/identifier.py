@@ -5,6 +5,7 @@ from multiprocessing import Event, Process, Queue
 from pathlib import Path
 
 from app.services.inference.common import Face, TaskType
+
 from boostface.types import Embedding
 
 from ..db.operations import Matcher, Registrar

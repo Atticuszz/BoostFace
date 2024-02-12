@@ -57,7 +57,7 @@ class WebSocketManager:
 
 
 class WebSocketConnection:
-    """auto handel data send and receive"""
+    """auto handle data send and receive"""
 
     def __init__(self, typed_websocket: TypedWebSocket):
         self.typed_websocket = typed_websocket

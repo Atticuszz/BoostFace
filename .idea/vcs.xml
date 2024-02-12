@@ -2,7 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../PyGizmoKit" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../fastapi_supabase_template" vcs="Git" />
   </component>
 </project>

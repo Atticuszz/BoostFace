@@ -62,9 +62,9 @@ class Face:
     """face"""
 
     def __init__(
-            self,
-            detectedResult: DetectedResult,
-            scene_image: Image,
+        self,
+        detectedResult: DetectedResult,
+        scene_image: Image,
     ):
         self.bbox = detectedResult.bbox
         self.kps = detectedResult.kps

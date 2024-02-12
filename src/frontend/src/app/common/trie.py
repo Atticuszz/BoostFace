@@ -38,7 +38,7 @@ class Trie:
         return node.value
 
     def searchPrefix(self, prefix):
-        """search node matchs the prefix"""
+        """search node matches the prefix"""
         prefix = prefix.lower()
         node = self
         for c in prefix:
