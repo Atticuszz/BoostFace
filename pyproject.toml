@@ -7,8 +7,10 @@ readme = "README.md"
 packages = [{include = "src", from = "." },{include = "tests", from = "."}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.10,<3.13"
 onnxruntime-gpu = "^1.17.0"
+mpld3 = "^0.5.10"
+pygizmokit = "^0.4.32"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
