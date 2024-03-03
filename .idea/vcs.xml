@@ -2,7 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/BoostFace_react_native" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../fastapi_supabase_template" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../PyQt-Fluent-Widgets" vcs="Git" />
   </component>
 </project>
