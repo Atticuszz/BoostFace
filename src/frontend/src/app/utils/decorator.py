@@ -6,7 +6,7 @@ from timeit import default_timer
 
 import requests
 
-from src.app.config import qt_logger
+from ..config import qt_logger
 
 
 def error_handler(f):

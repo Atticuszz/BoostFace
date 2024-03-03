@@ -8,10 +8,10 @@ from typing import Any
 import numpy as np
 from PyQt6.QtCore import QThread, pyqtSlot
 
-from src.app.common import signalBus
-from src.app.common.types import Bbox, Embedding, Face2Search, Image, Kps, MatchedResult
-from src.app.config import qt_logger
-from src.app.utils.time_tracker import time_tracker
+from ...common import signalBus
+from ...common.types import Bbox, Embedding, Face2Search, Image, Kps, MatchedResult
+from ...config import qt_logger
+from ...utils.time_tracker import time_tracker
 
 
 @dataclass

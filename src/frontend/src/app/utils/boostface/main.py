@@ -6,13 +6,13 @@
 @Description  :
 """
 
-from src.app.utils.boostface.common import ImageFaces
-from src.app.utils.boostface.component.camera import Camera
-from src.app.utils.boostface.component.detector import Detector
-from src.app.utils.boostface.component.drawer import Drawer
-from src.app.utils.boostface.component.identifier import Identifier
-from src.app.utils.decorator import error_handler
-from src.app.utils.time_tracker import time_tracker
+from ...utils.boostface.common import ImageFaces
+from ...utils.boostface.component.camera import Camera
+from ...utils.boostface.component.detector import Detector
+from ...utils.boostface.component.drawer import Drawer
+from ...utils.boostface.component.identifier import Identifier
+from ...utils.decorator import error_handler
+from ...utils.time_tracker import time_tracker
 
 
 class BoostFace:

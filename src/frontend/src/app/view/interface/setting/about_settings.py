@@ -3,7 +3,7 @@ from PyQt6.QtGui import QDesktopServices
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import HyperlinkCard, PrimaryPushSettingCard, SettingCardGroup
 
-from src.app.config.config import AUTHOR, FEEDBACK_URL, HELP_URL, VERSION, YEAR
+from ....config.config import AUTHOR, FEEDBACK_URL, HELP_URL, VERSION, YEAR
 
 
 class AboutSettingsM:

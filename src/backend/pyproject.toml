@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Atticuszz <1831768457@qq.com>"]
 readme = "README.md"
-
+packages = [{include = "src", from = "." },{include = "tests", from = "."}]
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
 fastapi = "^0.109.1"

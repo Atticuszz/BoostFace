@@ -5,7 +5,7 @@ description = ""
 authors = ["atticuszz <1831768457@qq.com>"]
 license = "MIT"
 readme = "README.md"
-
+packages = [{include = "src", from = "." },{include = "tests", from = "."}]
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
 annotated-types = "0.6.0"

@@ -11,6 +11,7 @@ python = ">=3.10,<3.13"
 onnxruntime-gpu = "^1.17.0"
 mpld3 = "^0.5.10"
 pygizmokit = "^0.4.32"
+pyqt6 = "^6.6.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"

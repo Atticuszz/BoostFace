@@ -9,10 +9,10 @@ from qfluentwidgets import (
     SplashScreen,
 )
 
-from src.app.common.signal_bus import signalBus
-from src.app.common.translator import Translator
-from src.app.config.config import cfg
-from src.app.view.interface import (
+from ..common.signal_bus import signalBus
+from ..common.translator import Translator
+from ..config.config import cfg
+from ..view.interface import (
     CloudMonitorInterface,
     HomeInterface,
     LocalMonitorInterface,

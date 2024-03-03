@@ -1,10 +1,10 @@
 import numpy as np
 
-from src.app.common.client.web_socket import WebSocketClient
-from src.app.common.types import Bbox, IdentifyResult, Kps, MatchedResult
-from src.app.config import qt_logger
-from src.app.utils.boostface.common import Face, ImageFaces
-from src.app.utils.time_tracker import time_tracker
+from ....common.client.web_socket import WebSocketClient
+from ....common.types import Bbox, IdentifyResult, Kps, MatchedResult
+from ....config import qt_logger
+from ....utils.boostface.common import Face, ImageFaces
+from ....utils.time_tracker import time_tracker
 
 from .sort_plus import KalmanBoxTracker, associate_detections_to_trackers
 

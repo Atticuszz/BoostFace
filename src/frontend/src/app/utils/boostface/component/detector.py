@@ -8,8 +8,8 @@
 from pathlib import Path
 from time import sleep
 
-from src.app.config import qt_logger
-from src.app.utils.boostface.common import Face, ImageFaces, ThreadBase
+from ....config import qt_logger
+from ....utils.boostface.common import Face, ImageFaces, ThreadBase
 
 from ...decorator import error_handler
 from ...time_tracker import time_tracker

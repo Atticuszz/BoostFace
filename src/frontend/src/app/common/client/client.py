@@ -6,8 +6,8 @@ from time import time
 import requests
 from cryptography.fernet import Fernet
 
-from src.app.common.types import Face2SearchSchema
-from src.app.utils.decorator import error_handler
+from ...common.types import Face2SearchSchema
+from ...utils.decorator import error_handler
 
 
 class TokenEncryptor:
@@ -156,7 +156,7 @@ class AuthClient:
         return headers
 
 
-client = AuthClient("http://192.168.137.1:5000")
+client = AuthClient("http://localhost:5000")
 client.login(email="zhouge1831@gmail.com", password="Zz030327#")
 if __name__ == "__main__":
     # 使用示例

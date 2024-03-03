@@ -2,13 +2,13 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLabel, QWidget
 from qfluentwidgets import ExpandLayout, InfoBar, ScrollArea
 
-from src.app.config.config import cfg, isWin11
-from src.app.view.interface.setting.about_settings import create_about_setting_group
-from src.app.view.interface.setting.camera_settings import create_camera_setting_group
-from src.app.view.interface.setting.personalization_settings import (
+from ....config.config import cfg, isWin11
+from ....view.interface.setting.about_settings import create_about_setting_group
+from ....view.interface.setting.camera_settings import create_camera_setting_group
+from ....view.interface.setting.personalization_settings import (
     create_personalization_setting_group,
 )
-from src.app.view.style_sheet import StyleSheet
+from ....view.style_sheet import StyleSheet
 
 
 class SettingInterface(ScrollArea):

@@ -5,12 +5,12 @@ import re
 
 from qfluentwidgets import LineEdit, MessageBoxBase, PasswordLineEdit, SubtitleLabel
 
-from src.app.common import signalBus
-from src.app.common.client import client
+from ...common import signalBus
+from ...common.client import client
 
 __all__ = ["create_login_dialog"]
 
-from src.app.utils.decorator import error_handler
+from ...utils.decorator import error_handler
 
 
 class AuthDialog(MessageBoxBase):

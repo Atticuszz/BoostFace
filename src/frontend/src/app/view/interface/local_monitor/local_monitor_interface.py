@@ -1,10 +1,10 @@
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import FluentIcon as FIF
 
-from src.app.config.logging_config import QLoggingHandler
-from src.app.view.component.expand_info_card import ExpandInfoCard
-from src.app.view.interface.local_monitor.local_log_widget import create_local_log
-from src.app.view.interface.local_monitor.local_sm_widget import (
+from ....config.logging_config import QLoggingHandler
+from ....view.component.expand_info_card import ExpandInfoCard
+from ....view.interface.local_monitor.local_log_widget import create_local_log
+from ....view.interface.local_monitor.local_sm_widget import (
     create_local_system_monitor,
 )
 

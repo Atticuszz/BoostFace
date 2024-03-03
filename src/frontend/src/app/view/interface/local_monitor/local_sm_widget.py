@@ -1,8 +1,8 @@
 import psutil
 from PyQt6.QtCore import QTimer
 
-from src.app.utils.decorator import error_handler
-from src.app.view.component.system_monitor import SystemMonitor
+from ....utils.decorator import error_handler
+from ....view.component.system_monitor import SystemMonitor
 
 __all__ = ["create_local_system_monitor"]
 

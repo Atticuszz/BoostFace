@@ -11,7 +11,7 @@ from cv2 import Mat
 from numpy import dtype, ndarray
 from websockets import WebSocketClientProtocol
 
-from src.app.common.types import WebsocketRSData
+from ...common.types import WebsocketRSData
 
 from ...config import qt_logger
 from ...utils.decorator import error_handler

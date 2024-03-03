@@ -8,11 +8,11 @@
 
 import cv2
 
-from src.app.config import cfg, qt_logger
-from src.app.config.config import CameraConfig, CameraUrl
-from src.app.utils.boostface.common import ImageFaces, ThreadBase
-from src.app.utils.decorator import calm_down, error_handler
-from src.app.utils.time_tracker import time_tracker
+from ....config import cfg, qt_logger
+from ....config.config import CameraConfig, CameraUrl
+from ....utils.boostface.common import ImageFaces, ThreadBase
+from ....utils.decorator import calm_down, error_handler
+from ....utils.time_tracker import time_tracker
 
 
 class CameraOpenError(Exception):

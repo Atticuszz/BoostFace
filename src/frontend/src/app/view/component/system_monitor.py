@@ -7,8 +7,8 @@ from PyQt6.QtGui import QBrush, QColor, QLinearGradient, QPainter
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 from qfluentwidgets import Theme
 
-from src.app.config.config import cfg
-from src.app.utils.decorator import error_handler
+from ...config.config import cfg
+from ...utils.decorator import error_handler
 
 
 class ResourceGraph(pg.PlotWidget):

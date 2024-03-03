@@ -2,11 +2,11 @@ import time
 
 from PyQt6.QtCore import QThread, pyqtSignal
 
-from src.app.common import signalBus
-from src.app.common.client.web_socket import WebSocketClient
-from src.app.config import qt_logger
-from src.app.utils.decorator import error_handler
-from src.app.view.component.console_log_widget import ConsoleLogWidget
+from ....common import signalBus
+from ....common.client.web_socket import WebSocketClient
+from ....config import qt_logger
+from ....utils.decorator import error_handler
+from ....view.component.console_log_widget import ConsoleLogWidget
 
 __all__ = ["create_cloud_log"]
 

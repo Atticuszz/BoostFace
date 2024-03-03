@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
-from src.app.view.interface.home.camera_widget import (
+from ....view.interface.home.camera_widget import (
     create_camera_widget,
     create_state_widget,
 )

@@ -1,7 +1,7 @@
 from PyQt6.QtGui import QTextCursor
 from qfluentwidgets import TextEdit
 
-from src.app.utils.decorator import error_handler
+from ...utils.decorator import error_handler
 
 
 class ConsoleLogWidget(TextEdit):

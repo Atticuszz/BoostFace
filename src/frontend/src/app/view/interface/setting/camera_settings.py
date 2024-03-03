@@ -1,7 +1,7 @@
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import OptionsSettingCard, SettingCardGroup
 
-from src.app.config.config import cfg
+from ....config.config import cfg
 
 
 class CameraSettingM:

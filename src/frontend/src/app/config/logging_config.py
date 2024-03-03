@@ -2,7 +2,7 @@ import logging
 import re
 from collections import defaultdict
 
-from src.app.common import signalBus
+from ..common import signalBus
 
 log_format = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s\n")
 

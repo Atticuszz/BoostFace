@@ -2,7 +2,7 @@ from qfluentwidgets import ComboBoxSettingCard, CustomColorSettingCard
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import OptionsSettingCard, SettingCardGroup, SwitchSettingCard
 
-from src.app.config.config import cfg
+from ....config.config import cfg
 
 __all__ = ["create_personalization_setting_group"]
 

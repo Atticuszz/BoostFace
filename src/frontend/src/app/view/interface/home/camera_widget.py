@@ -16,15 +16,15 @@ from qfluentwidgets import FluentIcon
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import TogglePushButton, isDarkTheme
 
-from src.app.common import signalBus
-from src.app.config import qt_logger
-from src.app.config.config import EXAMPLE_URL, FEEDBACK_URL, HELP_URL, REPO_URL
-from src.app.utils.boostface import BoostFace
-from src.app.utils.boostface.common import ImageFaces
-from src.app.utils.boostface.component.camera import CameraOpenError
-from src.app.utils.decorator import calm_down, error_handler
-from src.app.utils.time_tracker import time_tracker
-from src.app.view.component.link_card import LinkCardView
+from ....common import signalBus
+from ....config import qt_logger
+from ....config.config import EXAMPLE_URL, FEEDBACK_URL, HELP_URL, REPO_URL
+from ....utils.boostface import BoostFace
+from ....utils.boostface.common import ImageFaces
+from ....utils.boostface.component.camera import CameraOpenError
+from ....utils.decorator import calm_down, error_handler
+from ....utils.time_tracker import time_tracker
+from ....view.component.link_card import LinkCardView
 
 __all__ = ["create_camera_widget", "create_state_widget"]
 

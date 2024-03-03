@@ -7,7 +7,7 @@ import numpy as np
 from numpy._typing import NDArray
 from pydantic import BaseModel, Field
 
-from src.app.utils.decorator import error_handler
+from ..utils.decorator import error_handler
 
 Kps = NDArray[np.float64]  # shape: (5, 2)
 Bbox = NDArray[np.float64]  # shape: (4, 2)

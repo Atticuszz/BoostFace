@@ -5,9 +5,10 @@ from PyQt6.QtCore import Qt, QTranslator
 from PyQt6.QtWidgets import QApplication
 from qfluentwidgets import FluentTranslator
 
-from src.app.config.config import cfg
-from src.app.view.main_window import MainWindow
-
+from app.config.config import cfg
+from app.view.main_window import MainWindow
+# sudo apt-get update
+# sudo apt-get install libegl1
 # enable dpi scale
 if cfg.get(cfg.dpiScale) != "Auto":
     os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"

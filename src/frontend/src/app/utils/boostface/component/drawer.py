@@ -8,10 +8,10 @@ from timeit import default_timer as current_time
 import cv2
 from numpy import ndarray
 
-from src.app.common.types import Bbox, Color, Image
-from src.app.config import qt_logger
-from src.app.utils.boostface.common import ImageFaces
-from src.app.utils.time_tracker import time_tracker
+from ....common.types import Bbox, Color, Image
+from ....config import qt_logger
+from ....utils.boostface.common import ImageFaces
+from ....utils.time_tracker import time_tracker
 
 
 class Drawer:
