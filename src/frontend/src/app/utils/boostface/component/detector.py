@@ -5,12 +5,12 @@
 @Date Created : 14/12/2023
 @Description  :
 """
+
 from pathlib import Path
 from time import sleep
 
 from ....config import qt_logger
 from ....utils.boostface.common import Face, ImageFaces, ThreadBase
-
 from ...decorator import error_handler
 from ...time_tracker import time_tracker
 from ..model_zoo.model_router import get_model

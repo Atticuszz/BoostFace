@@ -1,6 +1,7 @@
 """
 auth and curd supabase
 """
+
 import asyncio
 
 from gotrue import AuthResponse

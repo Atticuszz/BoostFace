@@ -5,6 +5,7 @@
 @Date Created : 14/12/2023
 @Description  :
 """
+
 from pathlib import Path
 
 from ..base import DetectedResult, Face, Image

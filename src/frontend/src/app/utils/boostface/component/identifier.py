@@ -5,7 +5,6 @@ from ....common.types import Bbox, IdentifyResult, Kps, MatchedResult
 from ....config import qt_logger
 from ....utils.boostface.common import Face, ImageFaces
 from ....utils.time_tracker import time_tracker
-
 from .sort_plus import KalmanBoxTracker, associate_detections_to_trackers
 
 

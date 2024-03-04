@@ -12,6 +12,7 @@ from pymilvus.orm import utility
 __all__ = ["Registrar", "Matcher"]
 
 from src.backend.tests import data_generator
+
 from ..db.milvus_client import milvus_client
 
 
@@ -40,7 +41,7 @@ class Matcher:
             time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             logging.debug(f"matched {result['id']} with score {result['score']}")
             return MatchedResult(
-                id=str(result["id"]),
+                face_id=str(result["id"]),
                 name=result["name"],
                 score=result["score"],
                 time=time_now,

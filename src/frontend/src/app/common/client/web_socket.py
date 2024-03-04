@@ -12,7 +12,6 @@ from numpy import dtype, ndarray
 from websockets import WebSocketClientProtocol
 
 from ...common.types import WebsocketRSData
-
 from ...config import qt_logger
 from ...utils.decorator import error_handler
 from ...utils.time_tracker import time_tracker

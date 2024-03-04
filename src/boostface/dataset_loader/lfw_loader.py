@@ -19,7 +19,6 @@ from src.boostface.base import Face, Image
 from src.boostface.inference import DetectorBase
 from src.boostface.utils.download import download_lfw
 
-
 # TODO: test arcface accuracy with the cropped face **test_result** by cuda or not
 # TODO: test milvus search performance with the cropped face **test_result** by cuda or not
 

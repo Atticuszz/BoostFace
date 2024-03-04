@@ -1,6 +1,7 @@
 """
 Auth dialog
 """
+
 import re
 
 from qfluentwidgets import LineEdit, MessageBoxBase, PasswordLineEdit, SubtitleLabel

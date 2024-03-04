@@ -1,6 +1,7 @@
 """
 安装前提 ： libjpeg-turbo-gcc64
 """
+
 import random
 from collections import deque
 from timeit import default_timer as current_time

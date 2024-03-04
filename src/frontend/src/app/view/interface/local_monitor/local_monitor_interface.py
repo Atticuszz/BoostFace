@@ -4,9 +4,7 @@ from qfluentwidgets import FluentIcon as FIF
 from ....config.logging_config import QLoggingHandler
 from ....view.component.expand_info_card import ExpandInfoCard
 from ....view.interface.local_monitor.local_log_widget import create_local_log
-from ....view.interface.local_monitor.local_sm_widget import (
-    create_local_system_monitor,
-)
+from ....view.interface.local_monitor.local_sm_widget import create_local_system_monitor
 
 
 class LocalMonitorInterface(QWidget):

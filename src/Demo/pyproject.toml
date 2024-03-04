@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "demo"
+version = "0.1.0"
+description = "BoostFace demo"
+authors = ["atticuszz <1831768457@qq.com>"]
+license = "MIT"
+packages = [{ include = "web", from = "." }, { include = "backend", from = "." }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+websockets = "^11.0.3"
+numpy = "^1.26.4"
+opencv-python = "^4.9.0.80"
+pydantic = "^2.6.3"
+filterpy = "^1.4.5"
+onnxruntime-gpu = "^1.17.1"
+streamlit = "^1.31.1"
+pygizmokit = "^0.4.36"
+fastapi = "^0.110.0"
+python-dotenv = "^1.0.1"
+supabase-py-async = "^2.5.4"
+pydantic-settings = "^2.2.1"
+uvicorn = "^0.27.1"
+pymilvus = "^2.3.6"
+onnx = "^1.15.0"
+scikit-image = "^0.22.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

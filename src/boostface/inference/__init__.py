@@ -5,4 +5,5 @@
 @Date Created : 20/12/2023
 @Description  :
 """
+
 from .detector import DetectorBase, detector
