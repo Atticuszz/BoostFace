@@ -36,7 +36,7 @@ def draw_text(dimg, box, name):
     # 设置文本的位置，将文本放在人脸框的下方
     text_position = tuple(map(int, (box[0], box[3] + 22)))
     # ft2 = cv2.freetype.createFreeType2()
-    # ft2.loadFontData(fontFileName='simhei.ttf', id=0)
+    # ft2.loadFontData(fontFileName='simhei.ttf', uid=0)
     # ft2.putText(img=dimg,
     #             text=name,
     #             org=text_position,

@@ -39,9 +39,9 @@ class Matcher:
             # TODO: set threshold?
             # if result['score'] > self._threshold:
             time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            logging.debug(f"matched {result['id']} with score {result['score']}")
+            logging.debug(f"matched {result['uid']} with score {result['score']}")
             return MatchedResult(
-                face_id=str(result["id"]),
+                face_id=str(result["uid"]),
                 name=result["name"],
                 score=result["score"],
                 time=time_now,

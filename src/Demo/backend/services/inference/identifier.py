@@ -4,13 +4,11 @@ from logging.handlers import QueueHandler
 from multiprocessing import Event, Process, Queue
 from pathlib import Path
 
-from ..inference.common import Face, TaskType
-
-from .types import Embedding
-
 from ..db.operations import Matcher, Registrar
+from ..inference.common import Face, TaskType
 from .model_zoo import ArcFaceONNX, get_model
-
+from .types import Embedding
+from ...core.config import logger
 matched_and_in_screen_deque = collections.deque(maxlen=1)
 
 
@@ -20,6 +18,7 @@ class Extractor:
     """
 
     def __init__(self):
+
         root = (
             Path(__file__).parent / "model_zoo" / "models" / "irn50_glint360k_r50.onnx"
         )
@@ -27,6 +26,7 @@ class Extractor:
             root, providers=("CUDAExecutionProvider", "CPUExecutionProvider")
         )
         self.rec_model.prepare(ctx_id=0)
+        logger.debug(f"extractor initialized from{root}")
 
     def run_onnx(self, face: Face) -> Embedding:
         """
@@ -90,14 +90,14 @@ class IdentifyWorker(Process):
     def _identify(self, face: Face):
         normed_embedding = self._extractor.run_onnx(face)
         match_info = self._matcher.search(normed_embedding)
-        match_info.face_id = face.face_id
+        match_info.uid = face.face_id
         assert match_info is not None, "match_info must not be None"
         self._result_queue.put(match_info)
 
     def _register(self, face: Face):
         normed_embedding = self._extractor.run_onnx(face)
         self._registrar.sign_up(normed_embedding, face.sign_up_id, face.sign_up_name)
-        # self._result_queue.put(face.face_id)
+        # self._result_queue.put(face.uid)
 
     def _configure_logging(self):
         queue_handler = QueueHandler(self._msg_queue)

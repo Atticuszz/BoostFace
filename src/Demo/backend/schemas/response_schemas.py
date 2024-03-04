@@ -1,32 +1,22 @@
-from app.utils.system_stats import CloudSystemStats
 from pydantic import BaseModel
+
+from ..core.config import logger
 
 
 class IdentifyResult(BaseModel):
-    id: str
-    uid: str
+    registered_id: str  # searched result id
+    uid: str  # searched face uid
     name: str
     time: str
     score: float
 
     @classmethod
     def from_matched_result(cls, matched_result):
+        logger.debug(f"matched_result:{matched_result}")
         return cls(
-            uid=matched_result.face_id,
+            registered_id=matched_result.registered_id,
+            uid=matched_result.uid,
             name=matched_result.name,
             time=matched_result.time,
             score=matched_result.score,
-        )
-
-
-class SystemStats(BaseModel):
-    cpu_percent: float
-    ram_percent: float
-    net_throughput: float
-
-    def __init__(self, cloud_system_stats: CloudSystemStats):
-        super().__init__(
-            cpu_percent=cloud_system_stats.get_cpu_usage(),
-            ram_percent=cloud_system_stats.get_ram_usage(),
-            net_throughput=cloud_system_stats.get_network_throughput(),
         )

@@ -24,7 +24,7 @@ class AuthDialog(MessageBoxBase):
 
         # account line edit
         self.email_line_edit = LineEdit(self)
-        self.email_line_edit.setPlaceholderText("Enter your account id")
+        self.email_line_edit.setPlaceholderText("Enter your account uid")
         self.email_line_edit.setClearButtonEnabled(True)
 
         # password line edit

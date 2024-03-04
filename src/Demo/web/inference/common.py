@@ -1,7 +1,6 @@
 import logging
 import uuid
 from collections import deque
-from dataclasses import dataclass
 from threading import Event, Thread
 
 import numpy as np
@@ -9,6 +8,7 @@ import numpy as np
 from .types import Bbox, Embedding, Face2Search, Image, Kps, MatchedResult
 
 logger = logging.getLogger(__name__)
+
 
 class Face:
     """face"""
@@ -19,7 +19,7 @@ class Face:
         kps: Kps,
         det_score: float,
         scene_scale: tuple[int, int, int, int],
-        face_id: str | None = None,
+        uid: str | None = None,
     ):
         """
         init a face
@@ -27,15 +27,15 @@ class Face:
         :param kps: shape [5,2]
         :param det_score:
         :param scene_scale: (x1,y1,x2,y2) of scene image
+        :param uid: unique uid of face instance
         """
         self.bbox: Bbox = bbox
         self.kps: Kps = kps
         self.det_score: float = det_score
         self.scene_scale: tuple[int, int, int, int] = scene_scale
         self.embedding: Embedding = np.zeros(512)
-        self.id = face_id if face_id else str(uuid.uuid4())
-        self.match_info = MatchedResult(uid=self.id)
-
+        self.uid = uid if uid else str(uuid.uuid4())
+        self.match_info = MatchedResult(uid=self.uid)
 
     def face_image(self, scene: Image) -> Face2Search:
         """
@@ -84,7 +84,7 @@ class ImageFaces:
 
 
 class ThreadBase(Thread):
-    """CameraBase thread"""
+    """Camera thread"""
 
     def __init__(self):
         super().__init__()

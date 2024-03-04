@@ -10,7 +10,7 @@ import logging
 
 import cv2
 
-from ...setttings import CameraConfig,SourceConfig
+from ...setttings import CameraConfig, SourceConfig
 from ..common import ImageFaces, ThreadBase
 from ..utils.decorator import calm_down, error_handler
 from ..utils.time_tracker import time_tracker
@@ -28,7 +28,7 @@ class CameraOpenError(Exception):
         self.message = message
 
 
-class CameraBase:
+class Camera:
     """config for camera"""
 
     def __init__(self, config=CameraConfig()):
@@ -38,10 +38,21 @@ class CameraBase:
         """
         self.config = config
         logger.debug(f"camera init with {config}")
-        self.videoCapture = cv2.VideoCapture(self.config.url.files()[0].as_posix())
+        self.videoCapture = cv2.VideoCapture(self.config.url.files()[1].as_posix())
+        # self.videoCapture = cv2.VideoCapture(self.config.url.files())
         if config.url != SourceConfig.video:
             self._prepare()
         logger.debug(f"camera init success, {self}")
+
+    def read(self) -> ImageFaces:
+        ret, frame = self.videoCapture.read()
+        if ret is None or frame is None:
+            error_msg = (
+                f"in {self.videoCapture}.read()  self.videoCapture.read() get None"
+            )
+            logger.error(f"camera._read with CameraOpenError{error_msg}")
+            raise CameraOpenError(error_msg)
+        return ImageFaces(image=frame, faces=[])
 
     def _prepare(self):
         """
@@ -86,59 +97,3 @@ class CameraBase:
             f"camera params = {self.config}"
         )
         return repr_string
-
-
-class Camera(ThreadBase):
-    """Camera component"""
-
-    def __init__(self):
-        super().__init__()
-        self._camera_base = CameraBase()
-        self._camera = self._camera_base.videoCapture
-        super().start()
-
-    @error_handler
-    def run(self):
-        while self._is_running.is_set():
-            with time_tracker.track("camera.run"):
-                try:
-                    with calm_down(0.03):
-                        self._is_sleeping.wait()
-                        img = self._read()
-                        self._result_queue.append(img)
-                except CameraOpenError:
-                    break
-
-    def stop(self):
-        super().stop()
-        self._camera.release()
-        self.join()
-        logger.debug("camera stopped")
-
-    @time_tracker.track_func
-    def _read(self) -> ImageFaces:
-        """
-        read a Image from url by opencv.VideoCapture.read()
-        :exception CameraOpenError
-        :return: ImageFaces
-        """
-
-        ret, frame = self._camera.read()
-        if ret is None or frame is None:
-            error_msg = f"in {self._camera_base}.read()  self.videoCapture.read() get None"
-            logger.error(f"camera._read with CameraOpenError{error_msg}")
-            raise CameraOpenError(error_msg)
-        return ImageFaces(image=frame, faces=[])
-
-
-if __name__ == "__main__":
-    camera = Camera()
-    i = 0
-    while i < 1000:
-        img = camera.produce()
-        if cv2.waitKey(1) == 27:
-            break
-        i += 1
-    camera.stop()
-    cv2.destroyAllWindows()
-    time_tracker.close()

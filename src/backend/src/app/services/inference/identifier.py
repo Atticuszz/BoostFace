@@ -81,6 +81,7 @@ class IdentifyWorker(Process):
                 raise TypeError("task_type must be TaskType")
 
     def stop(self):
+        logging.debug("IdentifyWorker stopping...")
         self._is_running.clear()
         if self._matcher:
             self._matcher.stop_client()
@@ -90,14 +91,14 @@ class IdentifyWorker(Process):
     def _identify(self, face: Face):
         normed_embedding = self._extractor.run_onnx(face)
         match_info = self._matcher.search(normed_embedding)
-        match_info.face_id = face.face_id
+        match_info.uid = face.face_id
         assert match_info is not None, "match_info must not be None"
         self._result_queue.put(match_info)
 
     def _register(self, face: Face):
         normed_embedding = self._extractor.run_onnx(face)
         self._registrar.sign_up(normed_embedding, face.sign_up_id, face.sign_up_name)
-        # self._result_queue.put(face.face_id)
+        # self._result_queue.put(face.uid)
 
     def _configure_logging(self):
         queue_handler = QueueHandler(self._msg_queue)

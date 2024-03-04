@@ -2,13 +2,14 @@ from dataclasses import dataclass
 
 import cv2
 import numpy as np
-from app.services.inference.common import Face, Image, Kps
-from app.utils.base64_decode import decode_base64
 from pydantic import BaseModel, Field
+
+from ..services.inference.common import Face, Image, Kps
+from ..utils.base64_decode import decode_base64
 
 
 class Face2SearchSchema(BaseModel):
-    """Face2Search schema"""
+    """Face2Search schema to transfer data"""
 
     face_img: str = Field(..., description="Base64 encoded image data")
     kps: list[list[float]] = Field(..., description="Keypoints")
@@ -16,9 +17,10 @@ class Face2SearchSchema(BaseModel):
     uid: str = Field(..., description="Face ID")
 
 
-# 定义 Face2Search
 @dataclass
 class Face2Search:
+    """date to search in milvus"""
+
     face_img: Image
     kps: Kps
     det_score: float

@@ -45,7 +45,7 @@ Image = NDArray[np.uint8]  # shape: (height, width, 3)
 #         """turn into face"""
 #         return Face(
 #             img=self.face_img,
-#             face_id=self.uid,
+#             uid=self.uid,
 #             kps=self.kps,
 #             det_score=self.det_score,
 #             embedding=None,

@@ -1,14 +1,13 @@
 import numpy as np
-from ...core.config import logger
 from numpy import ndarray
 from pymilvus import Collection, connections, utility
 
+from ...core.config import logger
 from ..inference.utils.checker import insert_data_check
 from .configs import ClientConfig, basic_config, embedding_field
-
 __all__ = ["milvus_client"]
 
-
+# TODO: register and matcher use different milvus_client to avoid conflict
 class MilvusClient:
     """
     MilvusClient to connect to Milvus server, create collection, insert entities, create index, search from docker
@@ -36,7 +35,7 @@ class MilvusClient:
 
     def _connect_to_milvus(self):
         logger.debug(f"\nCreate connection...")
-        connections.connect(host=self._config.host, port=self._config.port, timeout=20)
+        connections.connect(host=self._config.host, port=self._config.port, timeout=10)
         logger.debug(f"\nList connections:")
         logger.debug(connections.list_connections())
 
@@ -67,7 +66,7 @@ class MilvusClient:
     def insert(self, entities: list[ndarray, ndarray, ndarray]):
         """
 
-        :param entities: [[id:int64],[name:str,len<50],[normed_embedding:float32,shape(512,)]]
+        :param entities: [[uid:int64],[name:str,len<50],[normed_embedding:float32,shape(512,)]]
         :return:
         """
         # logger.debug 当前collection的数据量
@@ -172,7 +171,7 @@ class MilvusClient:
                 ret_results[i].append(
                     {
                         "score": hit.score,
-                        "id": hit.entity.get("id"),
+                        "uid": hit.entity.get("uid"),
                         "name": hit.entity.get("name"),
                     }
                 )
@@ -192,9 +191,9 @@ class MilvusClient:
             f"\nReleased collection : {self._config.collection.name} successfully !"
         )
         # self.collection.drop_index()
-        # logger.debug(f"Drop index: {self._collection_name} successfully !")
+        # logger.debug(f"Drop index: {self._config.collection.name} successfully !")
         # self.collection.drop()
-        # logger.debug(f"Drop collection: {self._collection_name} successfully !")
+        # logger.debug(f"Drop collection: {self._config.collection.name} successfully !")
         logger.debug(f"Stop MilvusClient successfully !")
 
     def has_collection(self):
@@ -204,7 +203,6 @@ class MilvusClient:
         return self.get_entity_num > 0
 
 
-milvus_client = MilvusClient()
 
 
 if __name__ == "__main__":

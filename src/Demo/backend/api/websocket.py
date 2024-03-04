@@ -1,4 +1,3 @@
-import asyncio
 from queue import Empty
 
 from fastapi import APIRouter
@@ -6,13 +5,11 @@ from gotrue import Session
 from starlette.websockets import WebSocketDisconnect
 from websockets.exceptions import ConnectionClosedError, ConnectionClosedOK
 
-from ..common import result_queue, task_queue
-from ..core import WebSocketConnection, websocket_endpoint
+from ..common import WebSocketConnection, result_queue, task_queue, websocket_endpoint
 from ..core.config import logger
-from ..schemas import Face2Search, Face2SearchSchema, IdentifyResult, SystemStats
+from ..schemas import Face2Search, Face2SearchSchema, IdentifyResult
 from ..services.db.base_model import MatchedResult
 from ..services.inference.common import TaskType
-
 
 identify_router = APIRouter(prefix="/identify", tags=["identify"])
 
@@ -39,7 +36,7 @@ async def identify_ws(connection: WebSocketConnection):
 
             # time_now = datetime.datetime.now()
             # result = IdentifyResult(
-            #     id=str(uuid.uuid4()),
+            #     uid=str(uuid.uuid4()),
             #     name=session.user.user_metadata.get("name"),
             #     time=time_now.strftime("%Y-%m-%d %H:%M:%S"),
             #     uid=search_data.uid,
@@ -48,10 +45,10 @@ async def identify_ws(connection: WebSocketConnection):
 
             # await asyncio.sleep(1)  # 示例延时
         except (
-                ConnectionClosedOK,
-                ConnectionClosedError,
-                RuntimeError,
-                WebSocketDisconnect,
+            ConnectionClosedOK,
+            ConnectionClosedError,
+            RuntimeError,
+            WebSocketDisconnect,
         ) as e:
             logger.info(f"WebSocket error occurred: {e.__class__.__name__} - {e}")
             logger.info(f"Client left the chat")
@@ -69,10 +66,10 @@ async def test_connect(connection: WebSocketConnection, session: Session):
             await connection.send_data(data)
             logger.debug(f"test websocket send data:{data}")
         except (
-                ConnectionClosedOK,
-                ConnectionClosedError,
-                RuntimeError,
-                WebSocketDisconnect,
+            ConnectionClosedOK,
+            ConnectionClosedError,
+            RuntimeError,
+            WebSocketDisconnect,
         ) as e:
             logger.info(f"occurred error {e} Client {session.user.id} left the chat")
             break

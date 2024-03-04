@@ -55,4 +55,5 @@ class MatchedResult:
     name: str
     score: float
     time: str
-    face_id: str | None = None
+    registered_id: str
+    uid: str | None = None

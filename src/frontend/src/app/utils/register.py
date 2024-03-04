@@ -54,7 +54,7 @@ class Register:
                     continue
                 for face in res.faces:
                     try:
-                        face.sign_up_info.id = face.id
+                        face.sign_up_info.uid = face.uid
                         face.sign_up_info.name = file.stem
                         face_img = face.face_image(res.nd_arr)
                         task = asyncio.ensure_future(
@@ -62,7 +62,7 @@ class Register:
                                 session,
                                 self.base_url,
                                 face_img.to_schema(),
-                                id=face.sign_up_info.id,
+                                id=face.sign_up_info.uid,
                                 name=face.sign_up_info.name,
                             )
                         )
@@ -82,7 +82,7 @@ class Register:
 #
 # class Register:
 #     def __init__(self, src_dir: Path):
-#         self.detector = DetectorBase()
+#         self.detector = Detector()
 #         self.img_path = src_dir.glob('*')
 #         self.sign_up = client.sign_up
 #
@@ -94,10 +94,10 @@ class Register:
 #             res: ImageFaces = self.detector.run_onnx(det)
 #             for face in res.faces:
 #                 try:
-#                     face.sign_up_info.id = face.id
+#                     face.sign_up_info.uid = face.uid
 #                     face.sign_up_info.name = file.stem
 #                     face_img = face.face_image(res.nd_arr)
-#                     self.sign_up(face_img.to_schema(), id=face.sign_up_info.id, name=face.sign_up_info.name)
+#                     self.sign_up(face_img.to_schema(), uid=face.sign_up_info.uid, name=face.sign_up_info.name)
 #                     i+=1
 #                     logging.debug(f"sign up {i}th")
 #                 except:

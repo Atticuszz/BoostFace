@@ -67,7 +67,7 @@ class MilvusClient:
     def insert(self, entities: list[ndarray, ndarray, ndarray]):
         """
 
-        :param entities: [[id:int64],[name:str,len<50],[normed_embedding:float32,shape(512,)]]
+        :param entities: [[uid:int64],[name:str,len<50],[normed_embedding:float32,shape(512,)]]
         :return:
         """
         # logger.debug 当前collection的数据量
@@ -172,7 +172,7 @@ class MilvusClient:
                 ret_results[i].append(
                     {
                         "score": hit.score,
-                        "id": hit.entity.get("id"),
+                        "uid": hit.entity.get("uid"),
                         "name": hit.entity.get("name"),
                     }
                 )

@@ -39,7 +39,7 @@ async def identify_ws(connection: WebSocketConnection, session: Session):
 
             # time_now = datetime.datetime.now()
             # result = IdentifyResult(
-            #     id=str(uuid.uuid4()),
+            #     uid=str(uuid.uuid4()),
             #     name=session.user.user_metadata.get("name"),
             #     time=time_now.strftime("%Y-%m-%d %H:%M:%S"),
             #     uid=search_data.uid,
@@ -65,7 +65,7 @@ async def cloud_logging_ws(connection: WebSocketConnection, session: Session):
     while True:
         # test cloud_logging
         try:
-            # logger.info(f"Client #{session.user.id} joined the chat")
+            # logger.info(f"Client #{session.user.uid} joined the chat")
 
             message: str = await log_queue.get()
             await asyncio.sleep(0.1)

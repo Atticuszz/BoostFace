@@ -59,7 +59,7 @@ class Matcher:
         for i, result in enumerate(results):
             result = result[0]  # top_k=1
             # if result['score'] > self._threshold:
-            ret = MatchInfo(uid=str(result["id"]), score=result["score"])
+            ret = MatchInfo(uid=str(result["uid"]), score=result["score"])
         return ret
 
 

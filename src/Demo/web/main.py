@@ -1,9 +1,7 @@
-from pygizmokit.rich_logger import set_up_logging
-
 import cv2
 import numpy as np
 import streamlit as st
-
+from pygizmokit.rich_logger import set_up_logging
 from setttings import ModelsConfig, SourceConfig
 from web.inference import onnx_runner
 from web.inference.utils.decorator import calm_down
@@ -28,7 +26,7 @@ def init_ui():
 
     model_type = st.sidebar.radio("Select Task", ["Detection", "Identification"])
     confidence = (
-            float(st.sidebar.slider("Select Detection Threshold", 25, 100, 40)) / 100
+        float(st.sidebar.slider("Select Detection Threshold", 25, 100, 40)) / 100
     )
 
     # 根据模型类型选择模型路径
@@ -79,9 +77,14 @@ def run_app():
         st.info("Video source is not yet supported!")
         st_frame = st.empty()
         while True:
-            with calm_down(1/30):
+            with calm_down(1 / 30):
                 img = onnx_runner.get_result()
-                st_frame.image(img.nd_arr, caption="Detected Video", channels="BGR", use_column_width=True)
+                st_frame.image(
+                    img.nd_arr,
+                    caption="Detected Video",
+                    channels="BGR",
+                    use_column_width=True,
+                )
 
     else:
         st.error("Please select a valid source type!")

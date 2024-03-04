@@ -130,7 +130,7 @@ class ClientConfig(NamedTuple):
 
 
 id_field = Field(
-    name="id",
+    name="uid",
     dtype=DataType.VARCHAR,
     max_length=40,
     description="primary key",
@@ -170,7 +170,7 @@ basic_config = ClientConfig(
         ),
         anns_field="embedding",
         limit=1,
-        output_fields=["id", "embedding"],
+        output_fields=["uid", "embedding"],
     ),
 )
 if __name__ == "__main__":

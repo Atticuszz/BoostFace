@@ -4,7 +4,7 @@ from fastapi import WebSocket
 from pydantic import BaseModel
 from starlette.websockets import WebSocketState
 
-from .config import logger
+from backend.core.config import logger
 
 
 class WebSocketManager:
@@ -14,9 +14,7 @@ class WebSocketManager:
         self.active_connections: list[WebSocket] = []
 
     @asynccontextmanager
-    async def handle_connection(
-            self, websocket: WebSocket
-    ):
+    async def handle_connection(self, websocket: WebSocket):
         """Handle connection."""
         logger.debug(f"handle_connection called...")
         await self.connect(websocket)
@@ -69,7 +67,7 @@ class WebSocketConnection:
             raise TypeError("data must be BaseModel or str")
 
     async def receive_data(
-            self, data_model: type[BaseModel] | None = None
+        self, data_model: type[BaseModel] | None = None
     ) -> BaseModel | str:
         """Receive and decode data.
         :exception TypeError，RuntimeError
@@ -86,14 +84,11 @@ class WebSocketConnection:
 
 def websocket_endpoint():
     """Decorator for websocket endpoints."""
-    logger.debug( "websocket_endpoint called...")
+    logger.debug("websocket_endpoint called...")
+
     def decorator(func):
-        async def wrapper(
-                websocket: WebSocket
-        ):
-            async with web_socket_manager.handle_connection(
-                    websocket
-            ) as ws:
+        async def wrapper(websocket: WebSocket):
+            async with web_socket_manager.handle_connection(websocket) as ws:
                 connection = WebSocketConnection(ws)
                 return await func(connection)
 

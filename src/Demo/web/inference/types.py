@@ -16,11 +16,20 @@ Image = NDArray[np.uint8]  # shape: (height, width, 3)
 Color = tuple[int, int, int]
 
 
+class Face2SearchSchema(BaseModel):
+    """Face2Search schema to transfer data"""
+
+    face_img: str = Field(..., description="Base64 encoded image data")
+    kps: list[list[float]] = Field(..., description="Keypoints")
+    det_score: float = Field(..., description="Detection score")
+    uid: str = Field(..., description="Face Instance UID")
+
+
 @dataclass
 class IdentifyResult:
     """Identify results for face from backend"""
 
-    id: str
+    registered_id: str  # uid for first time register and in the database
     uid: str
     name: str
     time: str
@@ -33,10 +42,10 @@ class IdentifyResult:
 
 @dataclass
 class MatchedResult:
-    """Match results for face"""
+    """attribute of class Face,created from backend identify result."""
 
     uid: str = str(uuid.uuid4())  # for search
-    Identity_id: str = ""  # for show
+    registered_id: str = ""  # for show
     score: float = 0.0
     name: str = "unknown"
 
@@ -44,22 +53,10 @@ class MatchedResult:
     def from_IdentifyResult(cls, identify_result: IdentifyResult) -> "MatchedResult":
         return cls(
             uid=identify_result.uid,
-            Identity_id=identify_result.id,
+            registered_id=identify_result.registered_id,
             score=identify_result.score,
             name=identify_result.name,
         )
-
-
-# 定义 Pydantic 模型
-
-
-class Face2SearchSchema(BaseModel):
-    """Face2Search schema"""
-
-    face_img: str = Field(..., description="Base64 encoded image data")
-    kps: list[list[float]] = Field(..., description="Keypoints")
-    det_score: float = Field(..., description="Detection score")
-    uid: str = Field(..., description="Face ID")
 
 
 @dataclass
@@ -75,6 +72,7 @@ class WebsocketRSData:
 class Face2Search(WebsocketRSData):
     """
     face to search, it is a image filled with face for process transfer
+    :attr uid: face instance uid
     """
 
     face_img: Image

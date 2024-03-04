@@ -2,25 +2,27 @@ import logging
 from datetime import datetime
 
 import numpy as np
-from ...core.config import logger
-from .base_model import MatchedResult
-from ..inference.common import Embedding
 from numpy import ndarray
 from numpy.linalg import norm
 from pymilvus.orm import utility
 
+from ...core.config import logger
+from ..inference.common import Embedding
+from .base_model import MatchedResult
+from .milvus_client import MilvusClient
 __all__ = ["Registrar", "Matcher"]
 
-from src.backend.tests import data_generator
+# from src.backend.tests import data_generator
 
-from ..db.milvus_client import milvus_client
+
 
 
 class Matcher:
     """wrapper of MilvusClient"""
 
     def __init__(self, threshold=0.5):
-        self._client = milvus_client
+        logger.debug("start connecting milvus_client and loading collection..")
+        self._client = MilvusClient()
         self._threshold = threshold
         if self._client.get_entity_num > 0:
             logger.debug("Loading collection to RAM")
@@ -39,9 +41,9 @@ class Matcher:
             # TODO: set threshold?
             # if result['score'] > self._threshold:
             time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            logging.debug(f"matched {result['id']} with score {result['score']}")
+            logging.debug(f"matched {result['uid']} with score {result['score']}")
             return MatchedResult(
-                face_id=str(result["id"]),
+                registered_id=str(result["uid"]),
                 name=result["name"],
                 score=result["score"],
                 time=time_now,
@@ -56,12 +58,13 @@ class Matcher:
 
 class Registrar:
     def __init__(self):
-        self._client = milvus_client
+        self._client = MilvusClient()
 
     def sign_up(self, embedding: Embedding, id: str, name: str):
         assert np.isclose(norm(embedding), 1), "embedding must be normed"
         logging.debug(f"registering {id} {name}")
         self._client.insert([np.array([id]), np.array([name]), np.array([embedding])])
+        self._client.collection.flush()
 
     # 批量插入
     def insert_batch(self, faces: list[list[ndarray[512], str, str]]):
@@ -75,15 +78,15 @@ class Registrar:
             names.append(name)
         self._client.insert([np.array(ids), np.array(names), np.array(embeddings)])
 
-    def insert_fake_face(self, num: int):
-        faces_g = data_generator(num_items=100000)
-        i = 0
-        for embedding, id, name in faces_g:
-            i += 1
-            logger.debug(f"inserting {i}th/{num} face")
-            self._client.insert(
-                [np.array([id]), np.array([name]), np.array([embedding])]
-            )
+    # def insert_fake_face(self, num: int):
+    #     faces_g = data_generator(num_items=100000)
+    #     i = 0
+    #     for embedding, uid, name in faces_g:
+    #         i += 1
+    #         logger.debug(f"inserting {i}th/{num} face")
+    #         self._client.insert(
+    #             [np.array([uid]), np.array([name]), np.array([embedding])]
+    #         )
 
 
 # register = Register(client)

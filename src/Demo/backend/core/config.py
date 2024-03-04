@@ -7,9 +7,9 @@
 """
 
 import logging
+import os
 from logging.handlers import QueueListener
 from multiprocessing import Queue
-import os
 from typing import ClassVar
 
 from dotenv import load_dotenv

@@ -51,7 +51,7 @@ if __name__ == "__main__":
         name="book_id",
         dtype=DataType.INT64,
         is_primary=True,
-        description="customized primary id",
+        description="customized primary uid",
     )
     word_count_field = FieldSchema(
         name="word_count", dtype=DataType.INT64, description="word count"
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     # insert data with customized ids
     nb = 1000
     insert_rounds = 2
-    start = 0  # first primary key id
+    start = 0  # first primary key uid
     total_rt = 0  # total response time for inert
     print(f"Inserting {nb * insert_rounds} entities... ")
     for i in range(insert_rounds):

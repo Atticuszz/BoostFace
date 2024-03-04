@@ -2,10 +2,10 @@ import logging
 
 import numpy as np
 
-from ..types import Bbox, IdentifyResult, Kps, MatchedResult
-from ..common import Face, ImageFaces
-from ..utils.time_tracker import time_tracker
 from ..client import WebSocketClient
+from ..common import Face, ImageFaces
+from ..types import Bbox, Face2Search, IdentifyResult, Kps, MatchedResult
+from ..utils.time_tracker import time_tracker
 from .sort_plus import KalmanBoxTracker, associate_detections_to_trackers
 
 logger = logging.getLogger(__name__)
@@ -33,10 +33,10 @@ class Target:
         if self._scale_satisfied and not self._if_matched and self.in_screen:
             return True
         elif (
-                self._if_matched
-                and self._scale_satisfied
-                and self._time_satisfied
-                and self.in_screen
+            self._if_matched
+            and self._scale_satisfied
+            and self._time_satisfied
+            and self.in_screen
         ):
             return True
         else:
@@ -90,7 +90,7 @@ class Target:
             bbox,
             self.face.kps,
             self.face.det_score,
-            face_id=self.face.id,
+            uid=self.face.uid,
             scene_scale=self.face.scene_scale,
         )
         return predicted_face
@@ -100,7 +100,7 @@ class Target:
         if self._if_matched:
             return self.face.match_info.name
         else:
-            return f"target[{self.face.id}]"
+            return f"target[{self.face.uid}]"
 
     @property
     def _time_satisfied(self) -> bool:
@@ -125,16 +125,16 @@ class Target:
         # TODO：test to fit
         scale_threshold = 0.005
         target_area = (self.face.bbox[2] - self.face.bbox[0]) * (
-                self.face.bbox[3] - self.face.bbox[1]
+            self.face.bbox[3] - self.face.bbox[1]
         )
         screen_area = (self.face.scene_scale[3] - self.face.scene_scale[1]) * (
-                self.face.scene_scale[2] - self.face.scene_scale[0]
+            self.face.scene_scale[2] - self.face.scene_scale[0]
         )
         return (target_area / screen_area) > scale_threshold
 
     @property
     def _if_matched(self) -> bool:
-        return self.face.match_info.Identity_id != ""
+        return self.face.match_info.registered_id != ""
 
 
 class Tracker:
@@ -158,7 +158,7 @@ class Tracker:
         according to the "memory" in Kalman tracker update former targets info by Hungarian algorithm
         :param image2update:
         """
-        logger.debug( f"tracker update {len(image2update.faces)} faces")
+        logger.debug(f"tracker update {len(image2update.faces)} faces")
         detected_tars: list[Face] = image2update.faces
 
         if self._targets:
@@ -174,22 +174,22 @@ class Tracker:
 
             # update pred_tar with matched detected tar
             for pred_tar, detected_tar in matched:
-                self._targets[pred_tar.id].update_pos(
+                self._targets[pred_tar.uid].update_pos(
                     detected_tar.bbox, detected_tar.kps, detected_tar.det_score
                 )
 
-                self._targets[pred_tar.id].update_tracker(detected_tar.bbox)
+                self._targets[pred_tar.uid].update_tracker(detected_tar.bbox)
 
             # update  state of continuation of  unmatched_pred_tars
             for unmatched_tar in unmatched_pred_tars:
-                self._targets[unmatched_tar.id].unmatched()
+                self._targets[unmatched_tar.uid].unmatched()
 
         else:
             unmatched_det_tars: list[Face] = detected_tars
 
         # add new targets
         for detected_tar in unmatched_det_tars:
-            self._targets[detected_tar.id] = Target(face=detected_tar)
+            self._targets[detected_tar.uid] = Target(face=detected_tar)
 
         self._clear_dead()
 
@@ -204,8 +204,8 @@ class Tracker:
             # store key in self.self._targets.values()
             pos = raw_tar.bbox
             if np.any(np.isnan(pos)):
-                logger.debug(f"tracker remove {tar.face.id} due to nan")
-                del self._targets[tar.face.id]
+                logger.debug(f"tracker remove {tar.face.uid} due to nan")
+                del self._targets[tar.face.uid]
             else:
                 # got new predict tars
                 predicted_tars.append(raw_tar)
@@ -219,7 +219,7 @@ class Tracker:
         for tar in self._targets.values():
             # remove dead targets
             if tar.old_enough(self.max_age):
-                keys.append(tar.face.id)
+                keys.append(tar.face.uid)
         for k in keys:
             logger.debug(f"tracker remove {k} due to old enough")
             del self._targets[k]
@@ -264,17 +264,15 @@ class Identifier(Tracker):
                 result = IdentifyResult.from_dict(result_dict)
                 logger.debug(f"Identifier receive {result}")
                 for tar in self._targets.values():
-                    if tar.face.id == result.uid:
-                        tar.face.match_info = MatchedResult.from_IdentifyResult(
-                            result
-                        )
+                    if tar.face.uid == result.uid:
+                        tar.face.match_info = MatchedResult.from_IdentifyResult(result)
 
     @time_tracker.track_func
     def _search(self, image2identify: ImageFaces):
         """send data to search"""
         for tar in self._targets.values():
             if (
-                    tar.rec_satified
+                tar.rec_satified
             ):  # FIXME: seems like send data under wrong condition，send too much
-                data_2_send = tar.face.face_image(image2identify.nd_arr)
+                data_2_send: Face2Search = tar.face.face_image(image2identify.nd_arr)
                 self.indentify_client.send(data_2_send)

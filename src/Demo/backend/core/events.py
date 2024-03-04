@@ -2,16 +2,16 @@
 life span events
 """
 
-import os
 from contextlib import asynccontextmanager
 
-from dotenv import load_dotenv
 from fastapi import FastAPI
 
-from .config import sub_process_msg_queue, queue_listener
+from ..api.deps import init_super_client
 from ..common import registered_queue, result_queue, task_queue
 from ..services.inference.identifier import IdentifyWorker
-from ..api.deps import init_super_client
+from .config import queue_listener, sub_process_msg_queue
+from ..core.config import logger
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,7 +19,7 @@ async def lifespan(app: FastAPI):
     identify_worker = None
     try:
         await init_super_client()
-
+        logger.info("starting identify worker...")
         # start identify worker
         identify_worker = IdentifyWorker(
             task_queue=task_queue,

@@ -184,15 +184,15 @@ class Tracker:
 
             # update pred_tar with matched detected tar
             for pred_tar, detected_tar in matched:
-                self._targets[pred_tar.id].update_pos(
+                self._targets[pred_tar.uid].update_pos(
                     detected_tar.bbox, detected_tar.kps, detected_tar.det_score
                 )
 
-                self._targets[pred_tar.id].update_tracker(detected_tar.bbox)
+                self._targets[pred_tar.uid].update_tracker(detected_tar.bbox)
 
             # update  state of continuation of  unmatched_pred_tars
             for unmatched_tar in unmatched_pred_tars:
-                self._targets[unmatched_tar.id].unmatched()
+                self._targets[unmatched_tar.uid].unmatched()
 
         else:
             unmatched_det_tars: list[FaceNew] = detected_tars
@@ -201,7 +201,7 @@ class Tracker:
         for detected_tar in unmatched_det_tars:
             new_id = self._generate_id()
             assert new_id not in self._targets, f"{new_id} is already in self._targets"
-            detected_tar.id = new_id
+            detected_tar.uid = new_id
             self._targets[new_id] = Target(face=detected_tar)
 
             # dev only
@@ -237,7 +237,7 @@ class Tracker:
             # store key in self.self._targets.values()
             pos = raw_tar.bbox
             if np.any(np.isnan(pos)):
-                to_del.append(raw_tar.id)
+                to_del.append(raw_tar.uid)
             # got new predict tars
             predicted_tars.append(raw_tar)
 
@@ -258,19 +258,19 @@ class Tracker:
         for tar in self._targets.values():
             # remove dead targets
             if tar.old_enough(self.max_age):
-                keys.append(tar.face.id)
+                keys.append(tar.face.uid)
         for k in keys:
             try:
                 del self._targets[k]
             except KeyError:
-                print(f"KeyError: tar.id = {k}")
+                print(f"KeyError: tar.uid = {k}")
             else:
                 heapq.heappush(self._recycled_ids, k)
 
     @thread_error_catcher
     def _generate_id(self) -> int:
         """
-        generate id as small as possible
+        generate uid as small as possible
         """
         try:
             return heapq.heappop(self._recycled_ids)

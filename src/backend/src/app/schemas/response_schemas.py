@@ -12,7 +12,7 @@ class IdentifyResult(BaseModel):
     @classmethod
     def from_matched_result(cls, matched_result):
         return cls(
-            uid=matched_result.face_id,
+            uid=matched_result.registered_id,
             name=matched_result.name,
             time=matched_result.time,
             score=matched_result.score,

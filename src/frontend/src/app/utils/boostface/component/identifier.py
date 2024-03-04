@@ -131,7 +131,7 @@ class Target:
 
     @property
     def _if_matched(self) -> bool:
-        return self.face.match_info.Identity_id != ""
+        return self.face.match_info.registered_id != ""
 
 
 class Tracker:
@@ -170,15 +170,15 @@ class Tracker:
 
             # update pred_tar with matched detected tar
             for pred_tar, detected_tar in matched:
-                self._targets[pred_tar.id].update_pos(
+                self._targets[pred_tar.uid].update_pos(
                     detected_tar.bbox, detected_tar.kps, detected_tar.det_score
                 )
 
-                self._targets[pred_tar.id].update_tracker(detected_tar.bbox)
+                self._targets[pred_tar.uid].update_tracker(detected_tar.bbox)
 
             # update  state of continuation of  unmatched_pred_tars
             for unmatched_tar in unmatched_pred_tars:
-                self._targets[unmatched_tar.id].unmatched()
+                self._targets[unmatched_tar.uid].unmatched()
 
         else:
             unmatched_det_tars: list[Face] = detected_tars

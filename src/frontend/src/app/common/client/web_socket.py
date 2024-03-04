@@ -132,7 +132,7 @@ class WebSocketClient(WebSocketBase):
     async def _connect_websocket(self):
         """connect websocket"""
         time_now = datetime.datetime.now()
-        client_id: str = client.user["id"] + time_now.strftime("%Y%m%d%H%M%S")
+        client_id: str = client.user["uid"] + time_now.strftime("%Y%m%d%H%M%S")
         uri = self.base_url + client_id
         qt_logger.debug(f"{self.base_url} : websocket connecting")
         async with websockets.connect(uri, extra_headers=self.auth_header) as websocket:

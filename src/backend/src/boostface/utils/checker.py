@@ -17,7 +17,7 @@ def insert_data_check(data: list[ndarray, ndarray, ndarray]) -> list:
     # id必须是varchar
     if ids.dtype != str:
         ids = ids.astype(str)
-    # id 必须唯一
+    # uid 必须唯一
     if np.unique(ids).shape[0] != ids.shape[0]:
         raise ShapeError("ids must be unique")
     # name必须是str

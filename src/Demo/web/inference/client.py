@@ -1,5 +1,4 @@
 import asyncio
-import datetime
 import json
 import logging
 from threading import Thread
@@ -12,10 +11,10 @@ from cv2 import Mat
 from numpy import dtype, ndarray
 from websockets import WebSocketClientProtocol
 
-from .types import WebsocketRSData
-from .utils.decorator import error_handler
-from .utils.time_tracker import time_tracker
 from ..setttings import BACKEND_URL
+from .types import WebsocketRSData
+from .utils.decorator import error_handler, calm_down, calm_down_async
+from .utils.time_tracker import time_tracker
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +23,7 @@ class WebSocketDataProcessor:
     """WebSocket data processor"""
 
     def _decode(
-            self, data: str | bytes
+        self, data: str | bytes
     ) -> dict | str | Mat | ndarray[Any, dtype] | ndarray:
         """decode data"""
         raise NotImplementedError
@@ -95,9 +94,7 @@ class WebSocketClient(WebSocketBase):
     def stop_ws(self):
         """stop websocket"""
         if not self.is_alive():  # 检查线程是否已经开始
-            logger.debug(
-                f"WebSocket thread: has not been started or already stopped."
-            )
+            logger.debug(f"WebSocket thread: has not been started or already stopped.")
             return
         self._is_running = False
         self.sender_queue.put_nowait("STOP")
@@ -118,7 +115,7 @@ class WebSocketClient(WebSocketBase):
         try:
             return self.receiver_queue.get_nowait()
         except asyncio.QueueEmpty:
-            logger.warning(f"{self.ws_url} : receiver queue is empty")
+            # logger.warning(f"{self.ws_url} : receiver queue is empty")
             return None
 
     @error_handler
@@ -150,7 +147,7 @@ class WebSocketClient(WebSocketBase):
         logger.debug(f"start receive messages")
         while self._is_running:
             try:
-                with time_tracker.track(f"{self.ws_url} : receive messages"):
+                async with calm_down_async(0.001):
                     message = await asyncio.wait_for(websocket.recv(), timeout=1.0)
                     decoded = self._decode(message)
                     await self.receiver_queue.put(decoded)
@@ -168,7 +165,7 @@ class WebSocketClient(WebSocketBase):
         logger.debug(f"start send messages")
         while self._is_running:
             try:
-                with time_tracker.track(f"{self.ws_url}send messages"):
+                async with calm_down_async(0.001):
                     data = await self.sender_queue.get()
                     if data == "STOP":
                         break
@@ -183,7 +180,7 @@ class WebSocketClient(WebSocketBase):
 
     @error_handler
     def _decode(
-            self, data: str | bytes
+        self, data: str | bytes
     ) -> dict | str | Mat | ndarray[Any, dtype] | ndarray:
         if isinstance(data, bytes):
             # image

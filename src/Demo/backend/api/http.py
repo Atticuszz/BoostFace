@@ -6,13 +6,14 @@ from ..services.inference.common import TaskType
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
+
 # TODO: add face passport register
 # TODO: how to solve distribute results?
-# TODO: register face with id and name use sessionDepend
+# TODO: register face with uid and name use sessionDepend
 @auth_router.post("/face-register/{id}/{name}")
 async def face_register(id: str, name: str, face: Face2SearchSchema = Body(...)) -> str:
     """
-    register face with id and name
+    register face with uid and name
     """
     # resp = res
     to_register = Face2Search.from_schema(face).to_face()
@@ -22,5 +23,3 @@ async def face_register(id: str, name: str, face: Face2SearchSchema = Body(...))
     await task_queue.put_async((TaskType.REGISTER, to_register))
 
     return "face_register successfully!"
-
-

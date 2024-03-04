@@ -94,7 +94,7 @@ class ImageFaces:
 
 
 class ThreadBase(Thread):
-    """CameraBase thread"""
+    """Camera thread"""
 
     def __init__(self):
         super().__init__()

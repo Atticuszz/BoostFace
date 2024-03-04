@@ -10,13 +10,11 @@ import logging
 from pathlib import Path
 
 import cv2
+from web.inference.common import ImageFaces
+from web.inference.component.detector import Detector
 
-from src.Demo.frontend.app.common.client import client
-from src.Demo.frontend.app.utils.boostface.common import ImageFaces
-from src.Demo.frontend.app.utils.boostface.component.detector import DetectorBase
-
-IMAGE_PATH = r"/home/atticuszz/DevSpace/python/BoostFace/src/boostface/dataset_loader/data/lfw-deepfunneled/lfw-deepfunneled"
-
+# IMAGE_PATH = r"/home/atticuszz/DevSpace/python/BoostFace/src/boostface/dataset_loader/data/lfw-deepfunneled/lfw-deepfunneled"
+IMAGE_PATH = "/home/atticuszz/DevSpace/python/BoostFace/src/Demo/web/data/image/Friends/simple"
 # paper: 高并发注册人脸
 
 import asyncio
@@ -34,7 +32,7 @@ async def sign_up(session, base_url, face2register, id, name):
 
 class Register:
     def __init__(self, src_dir: Path, base_url: str):
-        self.detector = DetectorBase()
+        self.detector = Detector()
         self.img_path = src_dir.rglob("*")
         self.base_url = base_url
 
@@ -52,16 +50,14 @@ class Register:
                     continue
                 for face in res.faces:
                     try:
-                        face.sign_up_info.id = face.id
-                        face.sign_up_info.name = file.stem
                         face_img = face.face_image(res.nd_arr)
                         task = asyncio.ensure_future(
                             sign_up(
                                 session,
                                 self.base_url,
                                 face_img.to_schema(),
-                                id=face.sign_up_info.id,
-                                name=face.sign_up_info.name,
+                                id=face.uid,
+                                name=file.stem,
                             )
                         )
                         tasks.append(task)
@@ -80,7 +76,7 @@ class Register:
 #
 # class Register:
 #     def __init__(self, src_dir: Path):
-#         self.detector = DetectorBase()
+#         self.detector = Detector()
 #         self.img_path = src_dir.glob('*')
 #         self.sign_up = client.sign_up
 #
@@ -92,10 +88,10 @@ class Register:
 #             res: ImageFaces = self.detector.run_onnx(det)
 #             for face in res.faces:
 #                 try:
-#                     face.sign_up_info.id = face.id
+#                     face.sign_up_info.uid = face.uid
 #                     face.sign_up_info.name = file.stem
 #                     face_img = face.face_image(res.nd_arr)
-#                     self.sign_up(face_img.to_schema(), id=face.sign_up_info.id, name=face.sign_up_info.name)
+#                     self.sign_up(face_img.to_schema(), uid=face.sign_up_info.uid, name=face.sign_up_info.name)
 #                     i+=1
 #                     logging.debug(f"sign up {i}th")
 #                 except:
@@ -104,6 +100,6 @@ class Register:
 
 if __name__ == "__main__":
     src_dir = Path(IMAGE_PATH)
-
-    register = Register(src_dir, client.base_url)
+    backend_url = "http://localhost:5000"
+    register = Register(src_dir, backend_url)
     asyncio.run(register.work())

@@ -9,17 +9,16 @@
 import logging
 from time import sleep
 
-from ..utils.decorator import error_handler
-from ..utils.time_tracker import time_tracker
 from ...setttings import ModelsConfig
-
 from ..common import Face, ImageFaces, ThreadBase
 from ..model_zoo.model_router import get_model
+from ..utils.decorator import error_handler
+from ..utils.time_tracker import time_tracker
 
 logger = logging.getLogger(__name__)
 
 
-class DetectorBase:
+class Detector:
     """
     scrfd det_2.5g.onnx with onnxruntime
     """
@@ -55,32 +54,3 @@ class DetectorBase:
             img2detect.faces.append(face)
         logger.debug(f"detector detect {len(img2detect.faces)} faces")
         return img2detect
-
-
-class Detector(ThreadBase):
-    def __init__(self):
-        super().__init__()
-        self.detector = DetectorBase()
-        super().start()
-
-    @time_tracker.track_func
-    def produce(self) -> ImageFaces:
-        while True:
-            try:
-                return self._result_queue.popleft()
-            except IndexError:
-                # logger.debug("detector._result_queue is empty")
-                sleep(0.03)
-
-    @error_handler
-    def run(self):
-        while self._is_running.is_set():
-            self._is_sleeping.wait()
-            try:
-                img2detect = self._jobs_queue.popleft()
-            except IndexError:
-                # logger.debug("detector._jobs_queue is empty")
-                sleep(0.03)
-            else:
-                img2detect = self.detector.run_onnx(img2detect)
-                self._result_queue.append(img2detect)
