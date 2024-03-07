@@ -13,8 +13,7 @@ from websockets import WebSocketClientProtocol
 
 from ..setttings import BACKEND_URL
 from .types import WebsocketRSData
-from .utils.decorator import error_handler, calm_down, calm_down_async
-from .utils.time_tracker import time_tracker
+from .utils.decorator import error_handler
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +75,7 @@ class WebSocketBase(Thread, WebSocketDataProcessor):
 class WebSocketClient(WebSocketBase):
     """WebsocketClient thread"""
 
-    def __init__(self, ws_type: str | None = None):
+    def __init__(self):
         super().__init__()
         self._is_running = False
         self.sender_queue = asyncio.Queue()
@@ -143,14 +142,14 @@ class WebSocketClient(WebSocketBase):
                 task.cancel()
 
     @error_handler
+    # @profile
     async def _receive_messages(self, websocket: WebSocketClientProtocol):
         logger.debug(f"start receive messages")
         while self._is_running:
             try:
-                async with calm_down_async(0.001):
-                    message = await asyncio.wait_for(websocket.recv(), timeout=1.0)
-                    decoded = self._decode(message)
-                    await self.receiver_queue.put(decoded)
+                message = await asyncio.wait_for(websocket.recv(), timeout=1.0)
+                decoded = self._decode(message)
+                await self.receiver_queue.put(decoded)
             except asyncio.TimeoutError:
                 logger.debug(f"{self.ws_url} : receive timeout")
                 continue
@@ -161,17 +160,17 @@ class WebSocketClient(WebSocketBase):
                 logger.error(f"WebSocket error occurred: {e.__class__.__name__} - {e}")
 
     @error_handler
+    # @profile
     async def _send_messages(self, websocket: WebSocketClientProtocol):
         logger.debug(f"start send messages")
         while self._is_running:
             try:
-                async with calm_down_async(0.001):
-                    data = await self.sender_queue.get()
-                    if data == "STOP":
-                        break
-                    encoded = self._encode(data)
-                    await websocket.send(encoded)
-                    self.sender_queue.task_done()
+                data = await self.sender_queue.get()
+                if data == "STOP":
+                    break
+                encoded = self._encode(data)
+                await websocket.send(encoded)
+                self.sender_queue.task_done()
             except websockets.exceptions.ConnectionClosedError:
                 logger.info(f"{self.ws_url} : Connection closed")
                 break
