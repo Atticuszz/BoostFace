@@ -10,7 +10,6 @@ from dataclasses import dataclass
 
 import numpy as np
 from numpy._typing import NDArray
-
 from src.boostface.db.base_model import MatchedResult
 
 Kps = NDArray[np.float64]  # shape: (5, 2)

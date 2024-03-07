@@ -12,7 +12,7 @@ from pathlib import Path
 import cv2
 from web.inference.common import ImageFaces
 from web.inference.component.detector import Detector
-from web.setttings import DetectorConfig
+from web.settings import DetectorConfig
 
 IMAGE_PATH = r"/home/atticuszz/DevSpace/python/BoostFace/src/boostface/dataset_loader/data/lfw-deepfunneled/lfw-deepfunneled"
 # IMAGE_PATH = (

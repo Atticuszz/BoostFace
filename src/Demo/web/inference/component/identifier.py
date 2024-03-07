@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import streamlit as st
 
-from ...setttings import TrackerConfig
+from ...settings import TrackerConfig
 from ..client import WebSocketClient
 from ..common import Face, ImageFaces
 from ..types import Bbox, Face2Search, IdentifyResult, Kps, MatchedResult

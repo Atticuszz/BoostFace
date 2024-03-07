@@ -8,7 +8,7 @@
 
 import logging
 
-from ..setttings import CameraConfig, DetectorConfig, TrackerConfig
+from ..settings import CameraConfig, DetectorConfig, TrackerConfig
 from .common import ImageFaces
 from .component.camera import Camera, CameraOpenError
 from .component.detector import Detector

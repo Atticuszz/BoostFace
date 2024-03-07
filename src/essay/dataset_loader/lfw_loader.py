@@ -14,7 +14,6 @@ from pathlib import Path
 import cv2
 import numpy as np
 from numpy.lib.npyio import NpzFile
-
 from src.boostface.base import Face, Image
 from src.boostface.inference import DetectorBase
 from src.boostface.utils.download import download_lfw

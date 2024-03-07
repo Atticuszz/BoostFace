@@ -11,7 +11,6 @@ import sys
 
 import cv2
 import onnxruntime
-
 from src.boostface.dataset_loader.lfw_loader import lfw, lfw_cropped
 from src.boostface.inference import detector
 
