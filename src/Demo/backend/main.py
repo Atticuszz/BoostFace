@@ -1,11 +1,10 @@
 import subprocess
 
 import uvicorn
+from backend.core.events import lifespan
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pygizmokit.rich_logger import set_up_logging
-
-from backend.core.events import lifespan
 
 set_up_logging()
 

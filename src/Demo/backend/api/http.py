@@ -1,6 +1,3 @@
-import logging
-
-import cv2
 from fastapi import APIRouter, Body
 
 from ..common import task_queue
@@ -35,6 +32,7 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 #     draw_line((pt2[0], pt2[1]), (pt2[0] - line_len, pt2[1]))
 #     draw_line((pt2[0], pt2[1]), (pt2[0], pt2[1] - line_len))
 #     return dimg
+
 
 @auth_router.post("/face-register/{id}/{name}")
 async def face_register(id: str, name: str, face: Face2SearchSchema = Body(...)) -> str:

@@ -9,7 +9,7 @@ from .configs import ClientConfig, basic_config, embedding_field
 __all__ = ["milvus_client"]
 
 
-# TODO: register and matcher use different milvus_client to avoid conflict
+
 class MilvusClient:
     """
     MilvusClient to connect to Milvus server, create collection, insert entities, create index, search from docker

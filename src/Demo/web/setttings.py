@@ -86,8 +86,3 @@ class ModelsConfig(Enum):
 
     def path(self) -> Path:
         return MODEL_ROOT / self.value
-
-
-# class Settings(Enum):
-#     model = ModelsConfig
-#     source = SourceConfig
