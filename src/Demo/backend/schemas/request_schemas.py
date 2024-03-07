@@ -2,8 +2,8 @@ from dataclasses import dataclass
 
 import cv2
 import numpy as np
-from pydantic import BaseModel, Field
-
+from pydantic import BaseModel, Field,ConfigDict
+from typing import ClassVar
 from ..services.inference.common import Face, Image, Kps
 from ..utils.base64_decode import decode_base64
 
@@ -15,7 +15,7 @@ class Face2SearchSchema(BaseModel):
     kps: list[list[float]] = Field(..., description="Keypoints")
     det_score: float = Field(..., description="Detection score")
     uid: str = Field(..., description="Face ID")
-
+    # Config: ClassVar[ConfigDict] = ConfigDict(extra='allow')
 
 @dataclass
 class Face2Search:
