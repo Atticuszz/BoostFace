@@ -4,11 +4,12 @@ from logging.handlers import QueueHandler
 from multiprocessing import Event, Process, Queue
 from pathlib import Path
 
+from ...core.config import logger
 from ..db.operations import Matcher, Registrar
 from ..inference.common import Face, TaskType
 from .model_zoo import ArcFaceONNX, get_model
 from .types import Embedding
-from ...core.config import logger
+
 matched_and_in_screen_deque = collections.deque(maxlen=1)
 
 
@@ -28,6 +29,7 @@ class Extractor:
         self.rec_model.prepare(ctx_id=0)
         logger.debug(f"extractor initialized from{root}")
 
+    # @profile
     def run_onnx(self, face: Face) -> Embedding:
         """
         get embedding of face from given target kps, and det_score
@@ -84,6 +86,7 @@ class IdentifyWorker(Process):
         self._is_running.clear()
         if self._matcher:
             self._matcher.stop_client()
+        super().terminate()
         super().join()
         logging.debug("IdentifyWorker stop")
 
