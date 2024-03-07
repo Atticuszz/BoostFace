@@ -8,7 +8,7 @@ packages = [{include = "src", from = "." },{include = "tests", from = "."}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
-onnxruntime-gpu = "^1.17.0"
+onnxruntime-gpu = "^1.17.1"
 mpld3 = "^0.5.10"
 pygizmokit = "^0.4.32"
 pyqt6 = "^6.6.1"
