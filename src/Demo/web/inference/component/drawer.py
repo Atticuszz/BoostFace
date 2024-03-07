@@ -12,7 +12,6 @@ from numpy import ndarray
 
 from ..common import ImageFaces
 from ..types import Bbox, Color, Image
-from ..utils.time_tracker import time_tracker
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +36,6 @@ class Drawer:
             (255, 165, 0),
         ]
 
-    @time_tracker.track_func
     def show(self, image2show: ImageFaces) -> ImageFaces:
         self._frame_cnt += 1
         if self._frame_cnt > 10000:
@@ -135,19 +133,18 @@ class Drawer:
 
     def _draw_on(self, image2draw_on: ImageFaces):
         dimg = image2draw_on.nd_arr
-        logger.debug(f"drawer draw {len(image2draw_on.faces)} faces")
+        # logger.debug(f"drawer draw {len(image2draw_on.faces)} faces")
         for face in image2draw_on.faces:
             # face=[bbox, kps, det_score, color, match_info]
 
             bbox = face.bbox.astype(int)
-            if face.match_info.uid:
+            if face.match_info.name == "unknown":
                 bbox_color = (0, 0, 255)
                 text_color = (0, 0, 255)
             else:
                 bbox_color = random.choice(self._colors)
                 text_color = random.choice(self._colors)
             name = face.match_info.name
-            # 黄色闪烁
             self._draw_bbox(dimg, bbox, bbox_color)
             # text show
             self._draw_text(dimg, bbox, name, text_color)
