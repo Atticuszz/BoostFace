@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 from .utils.decorator import error_handler
 
 Kps = NDArray[np.float64]  # shape: (5, 2)
-Bbox = NDArray[np.float64]  # shape: (4, 2)
+Bbox = NDArray[np.float64]  # shape: (4, 2) #FIXME: (4, )
 Embedding = NDArray[np.float64]  # shape: (512, )
 Image = NDArray[np.uint8]  # shape: (height, width, 3)
 Color = tuple[int, int, int]
