@@ -7,13 +7,10 @@
 """
 
 import logging
-from time import sleep
 
-from ...setttings import ModelsConfig
-from ..common import Face, ImageFaces, ThreadBase
+from ...setttings import DetectorConfig, ModelsConfig
+from ..common import Face, ImageFaces
 from ..model_zoo.model_router import get_model
-from ..utils.decorator import error_handler
-from ..utils.time_tracker import time_tracker
 
 logger = logging.getLogger(__name__)
 
@@ -23,16 +20,21 @@ class Detector:
     scrfd det_2.5g.onnx with onnxruntime
     """
 
-    def __init__(self):
+    def __init__(self, config: DetectorConfig):
         root = ModelsConfig.detect_model.path()
         logger.info(f"loading detector model from {root}")
         self.detector_model = get_model(
             root, providers=("CUDAExecutionProvider", "CPUExecutionProvider")
         )
-        prepare_params = {"ctx_id": 0, "det_thresh": 0.5, "input_size": (320, 320)}
+        prepare_params = {
+            "ctx_id": config.provider.value,
+            "det_thresh": config.threshold,
+            "input_size": (320, 320),
+        }
         self.detector_model.prepare(**prepare_params)
 
-    @time_tracker.track_func
+    # @time_tracker.track_func
+    # @profile
     def run_onnx(self, img2detect: ImageFaces) -> ImageFaces:
         """
         run onnx model

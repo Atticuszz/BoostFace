@@ -2,7 +2,7 @@ import asyncio
 import logging
 import time
 import traceback
-from contextlib import contextmanager, asynccontextmanager
+from contextlib import asynccontextmanager, contextmanager
 from functools import wraps
 from timeit import default_timer
 
@@ -44,6 +44,7 @@ def calm_down(min_time: float):
         elapsed_time = end_time - start_time
         if elapsed_time < min_time:
             time.sleep(min_time - elapsed_time)
+
 
 @asynccontextmanager
 async def calm_down_async(min_time: float):

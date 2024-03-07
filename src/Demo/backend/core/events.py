@@ -8,9 +8,9 @@ from fastapi import FastAPI
 
 from ..api.deps import init_super_client
 from ..common import registered_queue, result_queue, task_queue
+from ..core.config import logger
 from ..services.inference.identifier import IdentifyWorker
 from .config import queue_listener, sub_process_msg_queue
-from ..core.config import logger
 
 
 @asynccontextmanager

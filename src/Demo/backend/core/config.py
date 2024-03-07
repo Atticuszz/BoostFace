@@ -15,6 +15,7 @@ from typing import ClassVar
 from dotenv import load_dotenv
 from pydantic import AnyHttpUrl, ConfigDict, Field
 from pydantic_settings import BaseSettings
+from pygizmokit.rich_logger import set_up_logging
 
 """
 config stream handler and websocket handler for root logger
@@ -42,6 +43,7 @@ queue_listener = QueueListener(
 logger = logging.getLogger(__name__)
 
 load_dotenv()
+set_up_logging()
 
 
 class Settings(BaseSettings):
