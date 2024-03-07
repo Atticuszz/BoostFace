@@ -11,9 +11,7 @@ import logging
 import cv2
 
 from ...setttings import CameraConfig, SourceConfig
-from ..common import ImageFaces, ThreadBase
-from ..utils.decorator import calm_down, error_handler
-from ..utils.time_tracker import time_tracker
+from ..common import ImageFaces
 
 logger = logging.getLogger(__name__)
 
@@ -29,20 +27,28 @@ class CameraOpenError(Exception):
 
 
 class Camera:
-    """config for camera"""
-
-    def __init__(self, config=CameraConfig()):
+    def __init__(self, config: CameraConfig):
         """
+        for windows
         cmd 运行setx OPENCV_VIDEOIO_PRIORITY_MSMF 0后重启，可以加快摄像头打开的速度
         :param config: CameraOptions()
         """
         self.config = config
-        logger.debug(f"camera init with {config}")
-        self.videoCapture = cv2.VideoCapture(self.config.url.files()[1].as_posix())
+        logger.info(f"camera init with {config}")
         # self.videoCapture = cv2.VideoCapture(self.config.url.files())
-        if config.url != SourceConfig.video:
+        # print( self.config.url_type, SourceConfig.Webcam, self.config.url_type == SourceConfig.Webcam)
+        # print( self.config.url_type, SourceConfig.video, self.config.url_type == SourceConfig.video)
+        if config.url_type.value == SourceConfig.Webcam.value:
+            # linux device
+            self.videoCapture = cv2.VideoCapture(self.config.url, cv2.CAP_V4L2)
             self._prepare()
-        logger.debug(f"camera init success, {self}")
+        elif config.url_type.value == SourceConfig.video.value:
+            self.videoCapture = cv2.VideoCapture(self.config.url)
+        else:
+            # logger.info(f"not support {config.url_type}->{SourceConfig.video} yet")
+            raise NotImplementedError(f"not support {config.url_type} yet")
+
+        logger.info(f"camera init success, {self}")
 
     def read(self) -> ImageFaces:
         ret, frame = self.videoCapture.read()
@@ -50,7 +56,9 @@ class Camera:
             error_msg = (
                 f"in {self.videoCapture}.read()  self.videoCapture.read() get None"
             )
-            logger.error(f"camera._read with CameraOpenError{error_msg}")
+            logger.error(
+                f"camera._read with CameraOpenError{error_msg} with config {self.config}"
+            )
             raise CameraOpenError(error_msg)
         return ImageFaces(image=frame, faces=[])
 
@@ -59,9 +67,7 @@ class Camera:
         for usb or ip camera, set fps and resolution, not necessary for mp4
         :return:
         """
-        #  设置帧数
         self.videoCapture.set(cv2.CAP_PROP_FPS, self.config.fps)
-        # 设置分辨率
         self.videoCapture.set(cv2.CAP_PROP_FRAME_WIDTH, self.config.resolution[0])
         self.videoCapture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.config.resolution[1])
 
@@ -87,13 +93,15 @@ class Camera:
         """
         print camera info
         """
-        self.real_resolution = int(
-            self.videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH)
-        ), int(self.videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        real_resolution = int(self.videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH)), int(
+            self.videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        )
         # 获取帧数
-        self.real_fps = int(self.videoCapture.get(cv2.CAP_PROP_FPS))
+        real_fps = int(self.videoCapture.get(cv2.CAP_PROP_FPS))
         repr_string = (
             f"The video  codec  is {self.cap_codec_format}\n"
-            f"camera params = {self.config}"
+            f"camera params = {self.config}\n"
+            f"real resolution = {real_resolution}\n"
+            f"real fps = {real_fps}\n"
         )
         return repr_string
