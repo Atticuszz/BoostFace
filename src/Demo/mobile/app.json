@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "BoostFace_react_native",
+    "slug": "boostface-react-native",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/splash.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./src/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.atticuszhou.boostfacereactnative",
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
+    },
+    "web": {
+      "favicon": "./src/assets/splash.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a7676786-e363-42a4-9cd6-6725223cd03f"
+      }
+    },
+    "owner": "atticuszhou",
+    "plugins": [
+      "expo-localization"
+    ]
+  }
+}
