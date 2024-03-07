@@ -1627,13 +1627,13 @@ files = [
 
 [[package]]
 name = "pygizmokit"
-version = "0.4.32"
+version = "0.4.36"
 description = ""
 optional = false
 python-versions = ">=3.10,<3.13"
 files = [
-    {file = "pygizmokit-0.4.32-py3-none-any.whl", hash = "sha256:8936a07668cc47f77f40f4c6b0559135e1685325cbf53b9d9bf19e4610d3d584"},
-    {file = "pygizmokit-0.4.32.tar.gz", hash = "sha256:cb9477fdc2139e5f3e2aed285c67ce200df415d71dc84c600e3c91535236ccd9"},
+    {file = "pygizmokit-0.4.36-py3-none-any.whl", hash = "sha256:430d49b0749034e232fdf306cec00a9b5fc3bf6f0a3d76c9c24ebac6c3f04775"},
+    {file = "pygizmokit-0.4.36.tar.gz", hash = "sha256:c09cf517e1ca4cf36b62ec02a2d7fe64f64c080f07d711884c885d6e3cdfdb79"},
 ]
 
 [package.dependencies]
@@ -2272,4 +2272,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "20cad6b4b312e24a4ad193d9633d36bbde0600eb55bd51fe68c9d43dc92ebd8f"
+content-hash = "fea121fd9afc3be56baa451350cf770565118540a714ffa67752f3fe0513138a"

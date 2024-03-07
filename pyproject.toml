@@ -10,7 +10,7 @@ packages = [{include = "src", from = "." },{include = "tests", from = "."}]
 python = ">=3.10,<3.13"
 onnxruntime-gpu = "^1.17.0"
 mpld3 = "^0.5.10"
-pygizmokit = "^0.4.32"
+pygizmokit = "^0.4.36"
 pyqt6 = "^6.6.1"
 line-profiler-pycharm = "^1.1.0"
 
