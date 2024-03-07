@@ -10,11 +10,10 @@ from ...core.config import logger
 from ..inference.common import Embedding
 from .base_model import MatchedResult
 from .milvus_client import MilvusClient
+
 __all__ = ["Registrar", "Matcher"]
 
 # from src.backend.tests import data_generator
-
-
 
 
 class Matcher:
@@ -29,6 +28,7 @@ class Matcher:
             self._client.collection.load(timeout=10)
             utility.wait_for_loading_complete(self._client.collection.name, timeout=10)
 
+    # @profile
     def search(self, embedding: Embedding) -> MatchedResult:
         """
         :param embedding: must be normed
@@ -41,7 +41,7 @@ class Matcher:
             # TODO: set threshold?
             # if result['score'] > self._threshold:
             time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            logging.debug(f"matched {result['uid']} with score {result['score']}")
+            logging.debug(f"matched {result['name']} with score {result['score']}")
             return MatchedResult(
                 registered_id=str(result["uid"]),
                 name=result["name"],
