@@ -12,9 +12,12 @@ from pathlib import Path
 import cv2
 from web.inference.common import ImageFaces
 from web.inference.component.detector import Detector
+from web.setttings import DetectorConfig
 
-# IMAGE_PATH = r"/home/atticuszz/DevSpace/python/BoostFace/src/boostface/dataset_loader/data/lfw-deepfunneled/lfw-deepfunneled"
-IMAGE_PATH = "/home/atticuszz/DevSpace/python/BoostFace/src/Demo/web/data/image/Friends/simple"
+IMAGE_PATH = r"/home/atticuszz/DevSpace/python/BoostFace/src/boostface/dataset_loader/data/lfw-deepfunneled/lfw-deepfunneled"
+# IMAGE_PATH = (
+#     "/home/atticuszz/DevSpace/python/BoostFace/src/Demo/web/data/image/Friends/simple"
+# )
 # paper: 高并发注册人脸
 
 import asyncio
@@ -32,7 +35,7 @@ async def sign_up(session, base_url, face2register, id, name):
 
 class Register:
     def __init__(self, src_dir: Path, base_url: str):
-        self.detector = Detector()
+        self.detector = Detector(DetectorConfig())
         self.img_path = src_dir.rglob("*")
         self.base_url = base_url
 
@@ -51,6 +54,12 @@ class Register:
                 for face in res.faces:
                     try:
                         face_img = face.face_image(res.nd_arr)
+                        # cv2.imshow(
+                        #     "face",
+                        #     face_img.face_img,
+                        # )
+                        # cv2.waitKey(0)
+                        # cv2.destroyAllWindows()
                         task = asyncio.ensure_future(
                             sign_up(
                                 session,
