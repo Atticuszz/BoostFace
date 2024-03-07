@@ -5,7 +5,9 @@ from pymilvus import Collection, connections, utility
 from ...core.config import logger
 from ..inference.utils.checker import insert_data_check
 from .configs import ClientConfig, basic_config, embedding_field
+
 __all__ = ["milvus_client"]
+
 
 # TODO: register and matcher use different milvus_client to avoid conflict
 class MilvusClient:
@@ -201,8 +203,6 @@ class MilvusClient:
 
     def __bool__(self):
         return self.get_entity_num > 0
-
-
 
 
 if __name__ == "__main__":
