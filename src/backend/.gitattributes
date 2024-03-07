@@ -1,2 +1,0 @@
-src/app/services/inference/model_zoo/models/irn50_glint360k_r50.onnx filter=lfs diff=lfs merge=lfs -text
-*.onnx filter=lfs diff=lfs merge=lfs -text
