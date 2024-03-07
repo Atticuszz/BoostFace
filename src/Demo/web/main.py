@@ -1,95 +1,95 @@
-import cv2
-import numpy as np
+import logging
+from pathlib import Path
+
 import streamlit as st
 from pygizmokit.rich_logger import set_up_logging
-from setttings import ModelsConfig, SourceConfig
-from web.inference import onnx_runner
+from setttings import (
+    CameraConfig,
+    DetectorConfig,
+    InferenceProvider,
+    SourceConfig,
+    TrackerConfig,
+)
+from web.inference import BoostFace
 from web.inference.utils.decorator import calm_down
 
 set_up_logging()
+logger = logging.getLogger(__file__)
 
 
-def init_ui():
-    # 设置页面布局
+# @profile
+def run_app():
+    # init ui
     st.set_page_config(
         page_title="BoostFace: Real-Time Multi-Face Detection and Recognition System",
         page_icon="🤖",
         layout="wide",
         initial_sidebar_state="expanded",
     )
-
-    # 主页标题
     st.title("Real-Time Multi-Face Recognition")
 
-    # 侧边栏配置
     st.sidebar.header("Model Config")
-
-    model_type = st.sidebar.radio("Select Task", ["Detection", "Identification"])
-    confidence = (
-        float(st.sidebar.slider("Select Detection Threshold", 25, 100, 40)) / 100
-    )
-
-    # 根据模型类型选择模型路径
-    model_path = (
-        ModelsConfig.detect_model.path()
-        if model_type == "Detection"
-        else ModelsConfig.extract_model.path()
-    )
-
-
-# 加载预训练ML模型
-# try:
-#     model = helper.load_model(model_path)
-# except Exception as ex:
-#     st.error(f"Unable to load model. Check the specified path: {model_path}")
-#     st.error(ex)
-
-
-def run_app():
-    # 图像/视频配置
     st.sidebar.header("Image/Video Config")
-    source_type = st.sidebar.radio(
-        "Select Source", [source.value for source in SourceConfig]
-    )
 
-    # 图像源处理
-    if source_type == SourceConfig.Image.value:
-        source_img = st.sidebar.file_uploader(
-            "Choose an image...", type=("jpg", "jpeg", "png", "bmp", "webp")
+    with st.sidebar:
+        # source config
+        source_type = st.sidebar.radio(
+            "Select Source", [source for source in SourceConfig]
         )
-        col1, col2 = st.columns(2)
+        st.toast(f"Selected source: {source_type}", icon="📡")
+        # source file
+        file_path: dict[str, str] = {
+            file.name: file.as_posix()
+            for file in source_type.files()
+            if isinstance(file, Path) and file.is_file()
+        }
+        # camera config
+        source_file_name = st.sidebar.selectbox("Select File", list(file_path.keys()))
+        source_file = (
+            file_path[source_file_name] if source_file_name else 0
+        )  # 0 for webcam
+        st.toast(f"Selected file: {source_file}", icon="📁")
 
-        with col1:
-            if source_img is not None:
-                # 使用OpenCV加载和显示图像
-                file_bytes = np.asarray(bytearray(source_img.read()), dtype=np.uint8)
-                uploaded_image = cv2.imdecode(file_bytes, 1)
-                st.image(
-                    uploaded_image,
-                    caption="Uploaded Image",
-                    channels="BGR",
-                    use_column_width=True,
-                )
+        # detector config
+        threshold = st.sidebar.slider("Select Detection Threshold", 10, 100, 70) / 100
+        provider = st.sidebar.radio(
+            "Select Detection Provider", [prov for prov in InferenceProvider]
+        )
+        st.toast(f"Selected provider: {provider}", icon="🔍")
+        # tracker config
+        iou_threshold = st.sidebar.slider("Select IOU Threshold", 10, 100, 40) / 100
+        max_age = st.sidebar.slider("Select Max Age", 1, 100, 40)
+        scale_threshold = st.sidebar.slider("Select Scale Threshold", 5, 30, 15) / 1000
+        frames_threshold = st.sidebar.slider("Select Frames Threshold", 100, 400, 200)
+        min_hits = st.sidebar.slider("Select Min Hits", 1, 10, 10)
 
-        # 其他源类型（视频、Webcam、RTSP、YouTube）的处理可以类似地进行调整
+    with st.spinner(text="Loading models...", cache=True):
+        # config inference runner
+        inference_runner = BoostFace(
+            CameraConfig(url=source_file, url_type=source_type),
+            DetectorConfig(threshold=threshold, provider=provider),
+            TrackerConfig(
+                iou_threshold=iou_threshold,
+                max_age=max_age,
+                scale_threshold=scale_threshold,
+                frames_threshold=frames_threshold,
+                min_hits=min_hits,
+            ),
+        )
+    st.toast("Hooray! Models is ready!", icon="🎉")
+    with st.container():
+        run = st.toggle("Run", value=False)
+        FRAME_WINDOW = st.image([])
+        if run:
+            st.info("Running...")
+        while run:
 
-    elif source_type == SourceConfig.video.value:
-        st.info("Video source is not yet supported!")
-        st_frame = st.empty()
-        while True:
             with calm_down(1 / 30):
-                img = onnx_runner.get_result()
-                st_frame.image(
-                    img.nd_arr,
-                    caption="Detected Video",
-                    channels="BGR",
-                    use_column_width=True,
-                )
-
-    else:
-        st.error("Please select a valid source type!")
+                result = inference_runner.get_result()
+                FRAME_WINDOW.image(result, channels="BGR", use_column_width=True)
+        else:
+            st.error("Stopped!")
 
 
 if __name__ == "__main__":
-    init_ui()
     run_app()
