@@ -6,7 +6,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from ..api.deps import init_super_client
 from ..common import registered_queue, result_queue, task_queue
 from ..core.config import logger
 from ..services.inference.identifier import IdentifyWorker
@@ -18,7 +17,6 @@ async def lifespan(app: FastAPI):
     """life span events"""
     identify_worker = None
     try:
-        await init_super_client()
         logger.info("starting identify worker...")
         # start identify worker
         identify_worker = IdentifyWorker(

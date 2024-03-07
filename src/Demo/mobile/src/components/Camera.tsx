@@ -101,7 +101,7 @@ const CameraComponent = ({ onBack }: Props) => {
     }
     return null;
   };
-  
+
   // face detect and validate
 
   const handleFacesDetected = async ({ faces}) => {

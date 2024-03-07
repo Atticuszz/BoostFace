@@ -7,14 +7,10 @@
 """
 
 import logging
-import os
 from logging.handlers import QueueListener
 from multiprocessing import Queue
-from typing import ClassVar
 
 from dotenv import load_dotenv
-from pydantic import AnyHttpUrl, ConfigDict, Field
-from pydantic_settings import BaseSettings
 from pygizmokit.rich_logger import set_up_logging
 
 """
@@ -44,38 +40,3 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 set_up_logging()
-
-
-class Settings(BaseSettings):
-    API_V1_STR: str = "/api/v1"
-    SUPABASE_URL: str = Field(default_factory=lambda: os.getenv("SUPABASE_URL"))
-    SUPABASE_KEY: str = Field(default_factory=lambda: os.getenv("SUPABASE_KEY"))
-    SUPERUSER_EMAIL: str = Field(default_factory=lambda: os.getenv("SUPERUSER_EMAIL"))
-    SUPERUSER_PASSWORD: str = Field(default=lambda: os.getenv("SUPERUSER_PASSWORD"))
-    # SERVER_NAME: str
-    SERVER_HOST: AnyHttpUrl = "http://localhost"
-    SERVER_PORT: int = 8000
-    # # TODO: the following  need to follow the newest version of fastapi
-    # # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
-    # # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
-    # # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
-    BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
-    #
-    # @validator("BACKEND_CORS_ORIGINS", pre=True)
-    # def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
-    #     if isinstance(v, str) and not v.startswith("["):
-    #         return [i.strip() for i in v.split(",")]
-    #     elif isinstance(v, (list, str)):
-    #         return v
-    #     raise ValueError(v)
-    #
-    PROJECT_NAME: str = "fastapi supabase template"
-
-    # class Config(ConfigDict):
-    #     """sensitive to lowercase"""
-    #
-    #     case_sensitive = True
-    Config: ClassVar[ConfigDict] = ConfigDict(arbitrary_types_allowed=True)
-
-
-settings = Settings()
