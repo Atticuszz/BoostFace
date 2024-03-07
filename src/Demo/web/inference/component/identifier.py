@@ -1,11 +1,12 @@
 import logging
 
 import numpy as np
+import streamlit as st
 
+from ...setttings import TrackerConfig
 from ..client import WebSocketClient
 from ..common import Face, ImageFaces
 from ..types import Bbox, Face2Search, IdentifyResult, Kps, MatchedResult
-from ..utils.time_tracker import time_tracker
 from .sort_plus import KalmanBoxTracker, associate_detections_to_trackers
 
 logger = logging.getLogger(__name__)
@@ -28,15 +29,20 @@ class Target:
         self.face: Face = face
         self._tracker: KalmanBoxTracker = KalmanBoxTracker(face.bbox)
 
-    @property
-    def rec_satified(self) -> bool:
-        if self._scale_satisfied and not self._if_matched and self.in_screen:
+    def rec_satified(
+        self, scale_threshold: float, frames_threshold: int, min_hits: int
+    ) -> bool:
+        if (
+            self._scale_satisfied(scale_threshold)
+            and not self._if_matched
+            and self.in_screen(min_hits)
+        ):
             return True
         elif (
             self._if_matched
-            and self._scale_satisfied
-            and self._time_satisfied
-            and self.in_screen
+            and self._scale_satisfied(scale_threshold)
+            and self._time_satisfied(frames_threshold)
+            and self.in_screen(min_hits)
         ):
             return True
         else:
@@ -69,12 +75,12 @@ class Target:
         """
         return self._frames_since_update > max_age
 
-    @property
-    def in_screen(self, min_hits=3) -> bool:
+    def in_screen(self, min_hits: int) -> bool:
         """
         if the target is in screen should be satisfied min_hits,forbid the shiver
         """
         # almost 0.1s if fps=30
+
         return self._hit_streak >= min_hits
         # return True
 
@@ -102,12 +108,12 @@ class Target:
         else:
             return f"target[{self.face.uid}]"
 
-    @property
-    def _time_satisfied(self) -> bool:
+    def _time_satisfied(self, frames_threshold: int) -> bool:
         """
         Checks if the time(frames) elapsed since the target was last identified exceeds a predefined threshold.
         """
-        frames_threshold = 100  # almost 3 sec if fps=30
+        # almost 3 sec if fps=30
+        logger.debug(f"frames_since_identified: {self._frames_since_identified}")
         if not self._if_matched:
             return False
         elif self._frames_since_identified < frames_threshold:
@@ -117,19 +123,18 @@ class Target:
             self._frames_since_identified = 0
             return True
 
-    @property
-    def _scale_satisfied(self) -> bool:
+    def _scale_satisfied(self, scale_threshold: float) -> bool:
         """
         if the scale of target is satisfied
         """
-        # TODO：test to fit
-        scale_threshold = 0.005
+
         target_area = (self.face.bbox[2] - self.face.bbox[0]) * (
             self.face.bbox[3] - self.face.bbox[1]
         )
         screen_area = (self.face.scene_scale[3] - self.face.scene_scale[1]) * (
             self.face.scene_scale[2] - self.face.scene_scale[0]
         )
+
         return (target_area / screen_area) > scale_threshold
 
     @property
@@ -142,17 +147,30 @@ class Tracker:
     tracker for a single target
     :param max_age: del as frames not matched
     :param iou_threshold: for Hungarian algorithm
+    :param scale_threshold: for scale satisfied
+    :param frames_threshold: for time satisfied
+    :param min_hits: for in_screen
+    :ivar _targets: dict[str, Target] uid to Target
     """
 
-    def __init__(self, max_age=10, iou_threshold=0.3):
-        super().__init__()
-
+    def __init__(
+        self,
+        max_age: int,
+        iou_threshold: float,
+        scale_threshold: float,
+        frames_threshold: int,
+        min_hits: int,
+    ):
         self._targets: dict[str, Target] = {}
         self.max_age = max_age
         self.iou_threshold = iou_threshold
+        self.scale_threshold = scale_threshold
+        self.frames_threshold = frames_threshold
+        self.min_hits = min_hits
         self._recycled_ids = []
 
-    @time_tracker.track_func
+    # @time_tracker.track_func
+    # @profile
     def _update(self, image2update: ImageFaces):
         """
         according to the "memory" in Kalman tracker update former targets info by Hungarian algorithm
@@ -226,12 +244,14 @@ class Tracker:
 
 
 class Identifier(Tracker):
-    def __init__(self):
-        super().__init__()
-        self.indentify_client = WebSocketClient("identify")
+    def __init__(self, tracker_config: TrackerConfig):
+        st.toast(f"tracker config: {tracker_config}")
+        super().__init__(**tracker_config._asdict())
+        self.indentify_client = WebSocketClient()
         self.indentify_client.start_ws()
 
-    @time_tracker.track_func
+    # @time_tracker.track_func
+    # @profile
     def identify(self, image2identify: ImageFaces) -> ImageFaces:
         """
         fill image2identify.faces with match info or return MatchInfo directly
@@ -247,32 +267,46 @@ class Identifier(Tracker):
         # logger.debug(f"identifier identify {len(self._targets)} targets")
         return ImageFaces(
             image2identify.nd_arr,
-            [tar.face for tar in self._targets.values() if tar.in_screen],
+            [
+                tar.face
+                for tar in self._targets.values()
+                if tar.in_screen(self.min_hits)
+            ],
         )
 
     def stop_ws_client(self):
         self.indentify_client.stop_ws()
 
-    @time_tracker.track_func
+    # @time_tracker.track_func
+    # @profile
     def _update_from_result(self):
         """update from client results"""
-        logger.debug("call Identifier.receive")
-        with time_tracker.track("Identifier.receive"):
+        # logger.debug("call Identifier.receive")
+        # receive all results from server once
+        while True:
             result_dict = self.indentify_client.receive()
             if result_dict:
                 # update match info
                 result = IdentifyResult.from_dict(result_dict)
-                logger.debug(f"Identifier receive {result}")
-                for tar in self._targets.values():
-                    if tar.face.uid == result.uid:
-                        tar.face.match_info = MatchedResult.from_IdentifyResult(result)
+                # logger.debug(f"Identifier receive {result}")
+                if result.uid in self._targets:
+                    self._targets[result.uid].face.match_info = (
+                        MatchedResult.from_IdentifyResult(result)
+                    )
+            else:
+                # no more results now
+                break
 
-    @time_tracker.track_func
+    # @time_tracker.track_func
+    # @profile
     def _search(self, image2identify: ImageFaces):
         """send data to search"""
         for tar in self._targets.values():
-            if (
-                tar.rec_satified
-            ):  # FIXME: seems like send data under wrong condition，send too much
+            # if tar.in_screen(self.min_hits):
+            #     logger.info(
+            #         f"in screen:{tar.in_screen(self.min_hits)}, scale_satisfied:{tar._scale_satisfied(self.scale_threshold)}, time_satisfied:{tar._time_satisfied(self.frames_threshold)}")
+            if tar.rec_satified(
+                self.scale_threshold, self.frames_threshold, self.min_hits
+            ):
                 data_2_send: Face2Search = tar.face.face_image(image2identify.nd_arr)
                 self.indentify_client.send(data_2_send)
