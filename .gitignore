@@ -75,3 +75,19 @@ dmypy.json
 .pytype/
 cython_debug/
 *.jpg
+node_modules/**/*
+.expo/*
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+web-report/
++ android
++ ios
+
+# macOS
+.DS_Store
