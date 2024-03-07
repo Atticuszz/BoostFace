@@ -610,6 +610,17 @@ files = [
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
+name = "cloudpickle"
+version = "3.0.0"
+description = "Pickler class to extend the standard pickle.Pickler functionality"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "cloudpickle-3.0.0-py3-none-any.whl", hash = "sha256:246ee7d0c295602a036e86369c77fecda4ab17b506496730f2f576d9016fd9c7"},
+    {file = "cloudpickle-3.0.0.tar.gz", hash = "sha256:996d9a482c6fb4f33c1a35335cf8afd065d2a56e973270364840712d9131a882"},
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -1581,13 +1592,13 @@ files = [
 
 [[package]]
 name = "marshmallow"
-version = "3.21.0"
+version = "3.21.1"
 description = "A lightweight library for converting complex datatypes to and from native Python datatypes."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "marshmallow-3.21.0-py3-none-any.whl", hash = "sha256:e7997f83571c7fd476042c2c188e4ee8a78900ca5e74bd9c8097afa56624e9bd"},
-    {file = "marshmallow-3.21.0.tar.gz", hash = "sha256:20f53be28c6e374a711a16165fb22a8dc6003e3f7cda1285e3ca777b9193885b"},
+    {file = "marshmallow-3.21.1-py3-none-any.whl", hash = "sha256:f085493f79efb0644f270a9bf2892843142d80d7174bbbd2f3713f2a589dc633"},
+    {file = "marshmallow-3.21.1.tar.gz", hash = "sha256:4e65e9e0d80fc9e609574b9983cf32579f305c718afb30d7233ab818571768c3"},
 ]
 
 [package.dependencies]
@@ -2133,13 +2144,13 @@ xmp = ["defusedxml"]
 
 [[package]]
 name = "postgrest"
-version = "0.15.1"
+version = "0.16.1"
 description = "PostgREST client for Python. This library provides an ORM interface to PostgREST."
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "postgrest-0.15.1-py3-none-any.whl", hash = "sha256:511bcc36ec4ce25b7288557ef900ec4061638ef75fce8f5b45e293322cc41f71"},
-    {file = "postgrest-0.15.1.tar.gz", hash = "sha256:73210dcd356f8549645cdde1fcfa3e9cc9c6d431067d54e010a504df9e3eac41"},
+    {file = "postgrest-0.16.1-py3-none-any.whl", hash = "sha256:412ec6bf61c58f38c92b6b61f57ab50e25c73ca9ef415a6f56ed9cf5429614cb"},
+    {file = "postgrest-0.16.1.tar.gz", hash = "sha256:d955824d37e7123a8313cbf10c8e0a8d42418fcb942cd8e1526e8509fb71574d"},
 ]
 
 [package.dependencies]
@@ -2637,6 +2648,17 @@ pyarrow = ">=12.0.0"
 requests = "*"
 setuptools = ">=67"
 ujson = ">=2.0.0"
+
+[[package]]
+name = "pynvml"
+version = "11.5.0"
+description = "Python Bindings for the NVIDIA Management Library"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pynvml-11.5.0-py3-none-any.whl", hash = "sha256:5cce014ac01b098d08f06178f86c37be409b80b2e903a5a03ce15eed60f55e25"},
+    {file = "pynvml-11.5.0.tar.gz", hash = "sha256:d027b21b95b1088b9fc278117f9f61b7c67f8e33a787e9f83f735f0f71ac32d0"},
+]
 
 [[package]]
 name = "pyparsing"
@@ -3185,6 +3207,39 @@ files = [
 ]
 
 [[package]]
+name = "scalene"
+version = "1.5.36"
+description = "Scalene: A high-resolution, low-overhead CPU, GPU, and memory profiler for Python with AI-powered optimization suggestions"
+optional = false
+python-versions = ">=3.8,!=3.11.0"
+files = [
+    {file = "scalene-1.5.36-cp310-cp310-macosx_12_0_universal2.whl", hash = "sha256:8af4db8745642ac7d59bfec33456ba5dcb2990876dad5300e6c2f52fc7e90875"},
+    {file = "scalene-1.5.36-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c77d388dfd00e0971bd62642c99fec4ec12265e830706b39262641db06e268e4"},
+    {file = "scalene-1.5.36-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:d20fdadee07f6182d453436eae47719a7de010fb6abbd28ea91d0111f1a6697b"},
+    {file = "scalene-1.5.36-cp310-cp310-win_amd64.whl", hash = "sha256:865d36ee99f2b60c10e0dff97ea2420949b3e39dfc047bda896c7c140f03d076"},
+    {file = "scalene-1.5.36-cp311-cp311-macosx_12_0_universal2.whl", hash = "sha256:05f028c9b5bb20e36c1a3826119ecb56b9050f1d3c1a8ed4b57a9eaeeadd0f9d"},
+    {file = "scalene-1.5.36-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4afc7a192ab7664e04c4339d7c4c86ee775fdde9902a816d5958c6369f8bcba6"},
+    {file = "scalene-1.5.36-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:634e61172e167a8a28cabb3ffd38beac13a5cf8f61ce2004a873e993407b720f"},
+    {file = "scalene-1.5.36-cp38-cp38-macosx_12_0_universal2.whl", hash = "sha256:39768c673986039bcf4b005889cb6f004acb610751a0ffe49f59bc623c1a1406"},
+    {file = "scalene-1.5.36-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:64c27881115d8b2e7801a73ebb86dda2e5a9c45865607c956657daf7b2c6dac3"},
+    {file = "scalene-1.5.36-cp38-cp38-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:eb46293525945626969f181d8628d350201accd9ecf64d9ef485ca61a3791d72"},
+    {file = "scalene-1.5.36-cp38-cp38-win_amd64.whl", hash = "sha256:21282c346023c3955c0cbe3b87adb9c3bcda302450b116c089a1f806f11ef913"},
+    {file = "scalene-1.5.36-cp39-cp39-macosx_12_0_universal2.whl", hash = "sha256:fbacbf060ff32e42e3405a6345e4d41386fd72f481059946929dff43cbfb9d3b"},
+    {file = "scalene-1.5.36-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7fa2bcc6f815ee1579271b6cdbfac29915058491222e03c60a31025b758b73e9"},
+    {file = "scalene-1.5.36-cp39-cp39-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:1585f92fdf57d7f19bfd9ebdd4d061e91ed643a3482668ff11bec077f0853682"},
+    {file = "scalene-1.5.36-cp39-cp39-win_amd64.whl", hash = "sha256:4fd082e79c89ba1df5b38a8bc5c93a9e1cd3f1322b20af11bfd839a205092320"},
+    {file = "scalene-1.5.36.tar.gz", hash = "sha256:c8a4576d2cb2c1bef599adfd25e0f90c981d50ac27243ca2d61640fa29bd4bc6"},
+]
+
+[package.dependencies]
+cloudpickle = ">=2.2.1"
+Jinja2 = ">=3.0.3"
+psutil = ">=5.9.2"
+pynvml = ">=11.0.0,<=11.5"
+rich = ">=10.7.0"
+wheel = ">=0.36.1"
+
+[[package]]
 name = "scikit-image"
 version = "0.22.0"
 description = "Image processing in Python"
@@ -3434,13 +3489,13 @@ test = ["pylint", "pytest", "pytest-black", "pytest-cov", "pytest-pylint"]
 
 [[package]]
 name = "supabase-py-async"
-version = "2.5.4"
+version = "2.5.5"
 description = "supabase-py with async synax"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "supabase_py_async-2.5.4-py3-none-any.whl", hash = "sha256:6ecb43048d267ab6522b72f13b3b0f006f421b74fa2fdbcab38f041409cc25c5"},
-    {file = "supabase_py_async-2.5.4.tar.gz", hash = "sha256:3a5139958f87cc5c1241ea7a1354efa531723753318f1ef06aaf173724caed5e"},
+    {file = "supabase_py_async-2.5.5-py3-none-any.whl", hash = "sha256:cbb7fb870be5bfa5df73b8191c2f41134bc65157e7f4bee646ccc7332344a4a3"},
+    {file = "supabase_py_async-2.5.5.tar.gz", hash = "sha256:77a1e0474763c7509e6b5c77259ddbdd209faa863348ef4075959a109e32860f"},
 ]
 
 [package.dependencies]
@@ -3448,20 +3503,20 @@ aiohttp = ">=3.9.0,<4.0.0"
 commitizen = ">=3.13.0,<4.0.0"
 deprecation = ">=2.1.0,<3.0.0"
 gotrue = ">=1.2,<3.0"
-postgrest = ">=0.13,<0.16"
-realtime = ">=1.0.0,<2.0.0"
+postgrest = ">=0.13,<0.17"
+realtime = ">=1.0.2,<2.0.0"
 storage3 = ">=0.6.1,<0.8.0"
-supafunc = "0.3.3"
+supafunc = "0.4.0"
 
 [[package]]
 name = "supafunc"
-version = "0.3.3"
+version = "0.4.0"
 description = "Library for Supabase Functions"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "supafunc-0.3.3-py3-none-any.whl", hash = "sha256:8260b4742335932f9cab64c8f66fb6998681b7e8ca7a46b559a4eb640cc0af80"},
-    {file = "supafunc-0.3.3.tar.gz", hash = "sha256:c35897a2f40465b40d7a08ae11f872f08eb8d1390c3ebc72c80e27d33ba91b99"},
+    {file = "supafunc-0.4.0-py3-none-any.whl", hash = "sha256:260c833523c3f5430a4f49ededd9b09a79ddcfe41279be5f987ab604731d62a3"},
+    {file = "supafunc-0.4.0.tar.gz", hash = "sha256:7fc3b1eca86f6aacf65030fd74b0c8b9e6bbf07e690319e7570a9510a917c755"},
 ]
 
 [package.dependencies]
@@ -3893,6 +3948,20 @@ files = [
 ]
 
 [[package]]
+name = "wheel"
+version = "0.42.0"
+description = "A built-package format for Python"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "wheel-0.42.0-py3-none-any.whl", hash = "sha256:177f9c9b0d45c47873b619f5b650346d632cdc35fb5e4d25058e09c9e581433d"},
+    {file = "wheel-0.42.0.tar.gz", hash = "sha256:c45be39f7882c9d34243236f2d63cbd58039e360f85d0913425fbd7ceea617a8"},
+]
+
+[package.extras]
+test = ["pytest (>=6.0.0)", "setuptools (>=65)"]
+
+[[package]]
 name = "yarl"
 version = "1.9.4"
 description = "Yet another URL library"
@@ -4012,5 +4081,5 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.10,<3.13"
-content-hash = "87b3acbbde0c82b95abf1cd4282e48ae83fb518e01cc24b962194b27c8e77119"
+python-versions = ">=3.10,<3.11.0 || >3.11.0,<3.13"
+content-hash = "2ed1030e345767fb0c05b70c4b13f9c8bfaa17a208ea9cc8087f24449e2c4781"

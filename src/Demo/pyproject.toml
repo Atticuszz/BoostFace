@@ -7,7 +7,7 @@ license = "MIT"
 packages = [{ include = "web", from = "." }, { include = "backend", from = "." }]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = ">=3.10,<3.11.0 || >3.11.0,<3.13"
 websockets = "^11.0.3"
 numpy = "^1.26.4"
 opencv-python = "^4.9.0.80"
@@ -24,6 +24,9 @@ uvicorn = "^0.27.1"
 pymilvus = "^2.3.6"
 onnx = "^1.15.0"
 scikit-image = "^0.22.0"
+
+[tool.poetry.group.dev.dependencies]
+scalene = "^1.5.36"
 
 [build-system]
 requires = ["poetry-core"]
