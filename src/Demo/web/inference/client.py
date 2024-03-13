@@ -11,7 +11,7 @@ from cv2 import Mat
 from numpy import dtype, ndarray
 from websockets import WebSocketClientProtocol
 
-from ..settings import BACKEND_URL
+from .settings import BACKEND_URL
 from .types import WebsocketRSData
 from .utils.decorator import error_handler
 

@@ -7,7 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/Demo" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/src/frontend/env" />
     </content>
-    <orderEntry type="jdk" jdkName="Poetry (BoostFace) (3)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Poetry (BoostFace)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="PyQt-Fluent-Widgets" />
     <orderEntry type="module" module-name="yolov8-streamlit-detection-tracking" />

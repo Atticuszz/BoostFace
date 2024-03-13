@@ -8,7 +8,7 @@
 
 import logging
 
-from ...settings import DetectorConfig, ModelsConfig
+from ..settings import DetectorConfig, ModelsConfig
 from ..common import Face, ImageFaces
 from ..model_zoo.model_router import get_model
 
