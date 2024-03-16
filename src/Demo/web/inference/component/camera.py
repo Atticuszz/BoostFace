@@ -10,8 +10,8 @@ import logging
 
 import cv2
 
-from ..settings import CameraConfig, SourceConfig
 from ..common import ImageFaces
+from ..settings import CameraConfig, SourceConfig
 
 logger = logging.getLogger(__name__)
 

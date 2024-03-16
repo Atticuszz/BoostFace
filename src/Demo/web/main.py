@@ -2,11 +2,16 @@ import logging
 from pathlib import Path
 
 import streamlit as st
-from pygizmokit.rich_logger import set_up_logging
-
 from inference import BoostFace
-from inference.settings import SourceConfig, InferenceProvider, CameraConfig, DetectorConfig, TrackerConfig
+from inference.settings import (
+    CameraConfig,
+    DetectorConfig,
+    InferenceProvider,
+    SourceConfig,
+    TrackerConfig,
+)
 from inference.utils.decorator import calm_down
+from pygizmokit.rich_logger import set_up_logging
 
 set_up_logging()
 logger = logging.getLogger(__file__)

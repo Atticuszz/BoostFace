@@ -8,12 +8,12 @@
 
 import logging
 
-from .settings import CameraConfig, DetectorConfig, TrackerConfig
 from .common import ImageFaces
 from .component.camera import Camera, CameraOpenError
 from .component.detector import Detector
 from .component.drawer import Drawer
 from .component.identifier import Identifier
+from .settings import CameraConfig, DetectorConfig, TrackerConfig
 from .types import Image
 from .utils.decorator import error_handler
 from .utils.time_tracker import time_tracker
