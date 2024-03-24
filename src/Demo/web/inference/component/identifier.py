@@ -3,9 +3,9 @@ import logging
 import numpy as np
 import streamlit as st
 
-from ..settings import TrackerConfig
 from ..client import WebSocketClient
 from ..common import Face, ImageFaces
+from ..settings import TrackerConfig
 from ..types import Bbox, Face2Search, IdentifyResult, Kps, MatchedResult
 from .sort_plus import KalmanBoxTracker, associate_detections_to_trackers
 
