@@ -1,7 +1,8 @@
 # 🚀 BoostFace 🚀
 
 Welcome to **BoostFace**! The cutting-edge, high-performance face recognition system designed to revolutionize the way we think about real-time identification and tracking. Built with a powerful stack of technologies, BoostFace is your go-to solution for handling high-load, high-concurrency scenarios with ease and efficiency. 🌟
-
+## Demo
+![img.png](assets/img.png)
 ## 🛠 Tech Stack
 
 - **Frontend**: Leveraging [Streamlit](https://streamlit.io/) for an intuitive, user-friendly interface, combined with SCRFD for efficient and accurate face detection, and SORT for multi-object tracking. Real-time image transmission is facilitated through Websockets, ensuring a seamless and dynamic user experience. 🖥️
@@ -27,6 +28,7 @@ git clone https://github.com/Atticuszz/boostface.git
 cd boostface
 ```
 
+### prepare
 - download arcface_onnx model
 ```bash
 cd src/Demo/backend/services/inference/model_zoo
@@ -34,9 +36,32 @@ wget https://github.com/Atticuszz/BoostFace/releases/download/dataset/models.zip
 unzip models.zip
 rm -rf models.zip
 ```
-
-- install env
+- init env
 ```bash
 cd src/Demo
 conda env create -f environment.yml
+conda activate BoostFace-demo
+```
+- register demo face after backend start
+```bash
+# register demo
+python src/Demo/web/inference/utils/register.py
+```
+
+### run 
+
+- start vector database
+```bash
+docker-compose up src/Demo/backend/services/db/milvus-standalone-docker-compose.yml
+```
+
+- start backend
+```bash
+# run backend
+python src/Demo/backend/main.py
+```
+
+- start web
+```bash
+streamlit run src/Demo/web/main.py
 ```

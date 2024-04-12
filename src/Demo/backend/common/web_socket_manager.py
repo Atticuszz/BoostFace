@@ -1,9 +1,10 @@
 from contextlib import asynccontextmanager
 
-from backend.core.config import logger
 from fastapi import WebSocket
 from pydantic import BaseModel
 from starlette.websockets import WebSocketState
+
+from ..core.config import logger
 
 
 class WebSocketManager:

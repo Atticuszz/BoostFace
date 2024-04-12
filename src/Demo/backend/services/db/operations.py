@@ -28,7 +28,6 @@ class Matcher:
             self._client.collection.load(timeout=10)
             utility.wait_for_loading_complete(self._client.collection.name, timeout=10)
 
-    # @profile
     def search(self, embedding: Embedding) -> MatchedResult:
         """
         :param embedding: must be normed
@@ -51,9 +50,6 @@ class Matcher:
 
     def stop_client(self):
         self._client.shut_down()
-
-
-# TODO: register if the operation is registered instead of identify
 
 
 class Registrar:

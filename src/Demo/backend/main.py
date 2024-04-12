@@ -1,10 +1,11 @@
 import subprocess
 
 import uvicorn
-from backend.core.events import lifespan
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pygizmokit.rich_logger import set_up_logging
+
+from src.Demo.backend.core.events import lifespan
 
 set_up_logging()
 
@@ -22,7 +23,7 @@ def create_app() -> FastAPI:
     )
 
     # Include the routers
-    from backend.api import auth_router, identify_router
+    from src.Demo.backend.api import auth_router, identify_router
 
     app.include_router(auth_router)
     app.include_router(identify_router)

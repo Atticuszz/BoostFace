@@ -10,15 +10,12 @@ import logging
 from pathlib import Path
 
 import cv2
-from web.inference.common import ImageFaces
-from web.inference.component.detector import Detector
-from web.settings import DetectorConfig
 
-IMAGE_PATH = r"/home/atticuszz/DevSpace/python/BoostFace/src/boostface/dataset_loader/data/lfw-deepfunneled/lfw-deepfunneled"
-# IMAGE_PATH = (
-#     "/home/atticuszz/DevSpace/python/BoostFace/src/Demo/web/data/image/Friends/simple"
-# )
-# paper: 高并发注册人脸
+from src.Demo.web.inference.common import ImageFaces
+from src.Demo.web.inference.component.detector import Detector
+from src.Demo.web.inference.settings import DetectorConfig
+
+IMAGE_PATH = Path(__file__).parents[2] / r"data/image/Friends/simple"
 
 import asyncio
 
