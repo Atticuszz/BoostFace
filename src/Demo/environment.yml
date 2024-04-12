@@ -1,0 +1,28 @@
+name: BoostFace-demo
+channels:
+  - conda-forge
+  - nvidia
+  - defaults
+dependencies:
+  - python=3.11
+  - cudatoolkit=11.8
+  - cudnn=8.9.2.26
+  - numpy=1.26.4
+  - streamlit=1.31.1
+  - pydantic-settings=2.2.1
+  - uvicorn=0.27.1
+  - scikit-image=0.22.0
+  - onnx=1.15.0
+  - scalene
+  - pip
+  - pip:
+    - onnxruntime-gpu
+    - supabase-py-async
+    - pymilvus
+    - python-dotenv
+    - pygizmokit
+    - fastapi
+    - opencv-python
+    - pydantic
+    - filterpy
+    - websockets

@@ -61,7 +61,7 @@ class MilvusClient:
 
         logger.debug(f"\nCollection {self._config.collection.name} is creating...")
         collection = Collection(**self._config.collection.as_dict())
-        logger.debug("collection created:", self._config.collection.name)
+        logger.debug(f"collection created:{self._config.collection.name}")
         return collection
 
     def insert(self, entities: list[ndarray, ndarray, ndarray]):

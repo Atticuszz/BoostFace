@@ -11,7 +11,7 @@ __all__ = [
 
 from typing import NamedTuple
 
-DATA_ROOT = Path(__file__).parent / "data"
+DATA_ROOT = Path(__file__).parents[1] / "data"
 VIDEO_ROOT = DATA_ROOT / "video"
 IMAGE_ROOT = DATA_ROOT / "image"
 MODEL_ROOT = DATA_ROOT / "model"

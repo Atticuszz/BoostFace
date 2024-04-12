@@ -25,4 +25,18 @@ Dive into the world of high-performance face recognition by cloning this repo an
 ```bash
 git clone https://github.com/Atticuszz/boostface.git
 cd boostface
-# Follow the setup instructions in the documentation
+```
+
+- download arcface_onnx model
+```bash
+cd src/Demo/backend/services/inference/model_zoo
+wget https://github.com/Atticuszz/BoostFace/releases/download/dataset/models.zip
+unzip models.zip
+rm -rf models.zip
+```
+
+- install env
+```bash
+cd src/Demo
+conda env create -f environment.yml
+```
