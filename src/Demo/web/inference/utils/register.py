@@ -15,7 +15,8 @@ from src.Demo.web.inference.common import ImageFaces
 from src.Demo.web.inference.component.detector import Detector
 from src.Demo.web.inference.settings import DetectorConfig
 
-IMAGE_PATH = Path(__file__).parents[2] / r"data/image/Friends/simple"
+# IMAGE_PATH = Path(__file__).parents[2] / r"data/image/Friends/simple"
+IMAGE_PATH = Path(__file__).parents[2] / r"data/image/gym"
 
 import asyncio
 
